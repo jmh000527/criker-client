@@ -21,7 +21,7 @@ class TitleBar : public QWidget {
 
 public:
 	TitleBar(QWidget* parent = nullptr);
-	~TitleBar();
+	~TitleBar() override;
 
 	void setTitleIcon(const QString& filePath);
 	void setTitleContent(const QString& titleContent);
