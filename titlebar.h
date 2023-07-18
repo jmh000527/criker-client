@@ -24,7 +24,7 @@ public:
 	~TitleBar();
 
 	void setTitleIcon(const QString& filePath);
-	void setTitleContent(const QString& filePath);
+	void setTitleContent(const QString& titleContent);
 	void setTitleWidth(int width);
 	void setButtonType(ButtonType buttonType);
 
@@ -44,7 +44,7 @@ private:
 	//初始化signal-slot
 	void initConnections();
 	//加载样式表
-	void loadStyleSheet();
+	void loadStyleSheet(const QString& sheetName);
 
 signals:
 	//最小化按钮
@@ -54,7 +54,7 @@ signals:
 	//最大化按钮
 	void signalButtonMaxClicked();
 	//关闭按钮
-	void signalButtonClose();
+	void signalButtonCloseClicked();
 
 private slots:
 	void onButtonMinClicked();
@@ -64,13 +64,13 @@ private slots:
 
 private:
 	//标题栏图标
-	QLabel* m_pIcon;
+	QLabel* m_pIcon{};
 	//标题栏内容
-	QLabel* m_ptitleContent;
-	QPushButton* m_pButtonMin;
-	QPushButton* m_pButtonRestore;
-	QPushButton* m_pButtonMax;
-	QPushButton* m_pButtonClose;
+	QLabel* m_ptitleContent{};
+	QPushButton* m_pButtonMin{};
+	QPushButton* m_pButtonRestore{};
+	QPushButton* m_pButtonMax{};
+	QPushButton* m_pButtonClose{};
 
 	//最大化还原按钮
 	QPoint m_restorePos;
