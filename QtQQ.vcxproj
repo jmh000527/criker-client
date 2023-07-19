@@ -31,14 +31,14 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>5.12.3_msvc2017_64</QtInstall>
     <QtModules>core;gui;network;sql;webchannel;webengine;webenginewidgets;widgets;xml</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
+    <QtInstall>5.12.12_msvc2017_64</QtInstall>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>5.12.3_msvc2017_64</QtInstall>
     <QtModules>core;gui;network;sql;webchannel;webengine;webenginewidgets;widgets;xml</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtInstall>5.12.12_msvc2017_64</QtInstall>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="basicwindow.cpp" />
     <ClCompile Include="titlebar.cpp" />
     <QtRcc Include="CCMainWindow.qrc" />
     <QtUic Include="CCMainWindow.ui" />
@@ -102,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="basicwindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

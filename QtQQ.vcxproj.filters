@@ -43,10 +43,16 @@
     <ClCompile Include="titlebar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="basicwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="basicwindow.h">
+      <Filter>Source Files</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
