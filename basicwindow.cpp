@@ -1,16 +1,22 @@
 #include "basicwindow.h"
+#include "CommonUtils.h"
+#include "NotifyManager.h"
 
 #include <QFile>
+#include <QMouseEvent>
 #include <QStyle>
 #include <QStyleOption>
 #include <QPainter>
+#include <QDesktopWidget>
 
 #include "CCMainWindow.h"
 
 BasicWindow::BasicWindow(QWidget* parent)
-	: QDialog{ parent } {
+	: QDialog{ parent }, m_isMousePressed{ false }, m_colorBackground{ CommonUtils::getDefaultSkinColor()} {
 	setWindowFlags(Qt::FramelessWindowHint);
 	setAttribute(Qt::WA_TranslucentBackground);
+
+	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)), this, SLOT(onSignalSkinChanged()));
 }
 
 BasicWindow::~BasicWindow() {}
@@ -47,8 +53,8 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 }
 
 QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize) {
-	if(maskSize == QSize{0, 0}) {
-		maskSize - mask.size();
+	if (maskSize == QSize{ 0, 0 }) {
+		maskSize = mask.size();
 	} else {
 		mask.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
@@ -58,10 +64,13 @@ QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 
 	painter.setCompositionMode(QPainter::CompositionMode_Source);
 	painter.fillRect(resultImage.rect(), Qt::transparent);
+
 	painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 	painter.drawPixmap(0, 0, mask);
+
 	painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
 	painter.drawPixmap(0, 0, src.scaled(Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
 	painter.end();
 
 	return QPixmap::fromImage(resultImage);
@@ -82,6 +91,31 @@ void BasicWindow::paintEvent(QPaintEvent* event) {
 	return QDialog::paintEvent(event);
 }
 
+void BasicWindow::mousePressEvent(QMouseEvent* event) {
+	if (event->button() == Qt::LeftButton) {
+		m_isMousePressed = true;
+		m_mousePos = event->globalPos() - pos();
+		accept();
+	}
+
+	return QDialog::mousePressEvent(event);
+}
+
+void BasicWindow::mouseMoveEvent(QMouseEvent* event) {
+	if (m_isMousePressed && (event->buttons() && Qt::LeftButton)) {
+		move(event->globalPos() - m_mousePos);
+		event->accept();
+	}
+
+	return QDialog::mouseMoveEvent(event);
+}
+
+void BasicWindow::mouseReleaseEvent(QMouseEvent* event) {
+	m_isMousePressed = false;
+
+	return QDialog::mouseReleaseEvent(event);
+}
+
 void BasicWindow::initTitleBar(ButtonType buttonType) {
 	m_titlebar = new TitleBar{ this };
 	m_titlebar->setButtonType(buttonType);
@@ -98,7 +132,58 @@ void BasicWindow::setTitleBarTitle(const QString& title, const QString& icon) {
 	m_titlebar->setTitleContent(title);
 }
 
+void BasicWindow::onShowMin(bool) {
+	showMinimized();
+}
+
+void BasicWindow::onShowHide(bool) {
+	hide();
+}
+
+void BasicWindow::onShowNormal(bool) {
+	show();
+	activateWindow();
+}
+
+void BasicWindow::onShowQuit(bool) {
+	QApplication::quit();
+}
+
+void BasicWindow::onShowClose(bool) {
+	close();
+}
+
 void BasicWindow::onSignalSkinChanged(const QColor& color) {
 	m_colorBackground = color;
 	loadStyleSheet(m_styleSheetName);
+}
+
+void BasicWindow::onButtonMinClicked() {
+	if (Qt::Tool == (windowFlags() & Qt::Tool)) {
+		hide();
+	} else {
+		showMinimized();
+	}
+}
+
+void BasicWindow::onButtonRestoreClicked() {
+	QPoint windowPos;
+	QSize windowSize;
+
+	m_titlebar->getRestoreInfo(windowPos, windowSize);
+	setGeometry(QRect{ windowPos, windowSize });
+}
+
+void BasicWindow::onButtonMaxClicked() {
+	m_titlebar->saveRestoreInfo(pos(), size());
+
+	QRect desktopRect{ QApplication::desktop()->availableGeometry() };
+	QRect factRect{
+		QRect{ desktopRect.x() - 3, desktopRect.y() - 3, desktopRect.width() + 6, desktopRect.height() + 6 } };
+
+	setGeometry(factRect);
+}
+
+void BasicWindow::onButtonCloseClicked() {
+	close();
 }

@@ -13,7 +13,7 @@ enum {
 };
 
 TitleBar::TitleBar(QWidget* parent)
-	: QWidget(parent), m_isPressed{ false }, m_buttonType{ ButtonType::MIN_MAX_BUTTON } {
+	: QWidget{ parent }, m_isPressed{ false }, m_buttonType{ ButtonType::MIN_MAX_BUTTON } {
 	initControl();
 	initConnections();
 	loadStyleSheet("Title");

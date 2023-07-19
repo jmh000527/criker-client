@@ -27,11 +27,11 @@ protected:
 	void setTitleBarTitle(const QString& title, const QString& icon = "");
 
 public slots:
-	void onShow(bool);
 	void onShowMin(bool);
 	void onShowHide(bool);
-	void onShowNoemal(bool);
+	void onShowNormal(bool);
 	void onShowQuit(bool);
+	void onShowClose(bool);
 	void onSignalSkinChanged(const QColor& color);
 
 	void onButtonMinClicked();
@@ -42,7 +42,7 @@ public slots:
 protected:
 	TitleBar* m_titlebar{};
 
-	QPoint mousePos;
+	QPoint m_mousePos;
 	bool m_isMousePressed;
 	QColor m_colorBackground;
 	QString m_styleSheetName;
