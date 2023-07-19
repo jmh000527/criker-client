@@ -7,6 +7,11 @@ class BasicWindow  : public QDialog
 	Q_OBJECT
 
 public:
-	BasicWindow(QWidget *parent);
-	~BasicWindow();
+	BasicWindow(QWidget *parent = nullptr);
+	virtual ~BasicWindow();
+
+public:
+	void loadStyleSheet(const QString& sheetName);
+
+	QPixmap getRoundedImage(const QPixmap& src, QPixmap);
 };

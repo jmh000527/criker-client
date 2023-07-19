@@ -52,7 +52,7 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="basicwindow.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
