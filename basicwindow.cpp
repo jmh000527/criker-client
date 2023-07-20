@@ -37,7 +37,8 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 
 		qStyleSheet += QString("QWidget[titleSkin = true]\
 								{background-color: rgb(%1, %2, %3);\
-								border-top-left-radius: 4px;}\
+								border-top-left-radius: 4px;\
+								border-top-right-radius: 4px;}\
 								QWidget[bottomSkin = true]\
 								{border-top: 1px solid rgba(%1, %2, %3, 50);\
 								background-color: rgba(%1, %2, %3, 50);\
