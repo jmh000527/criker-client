@@ -48,7 +48,7 @@ void CommonUtils::loadStyleSheet(QWidget* widget, const QString& sheetName) {
 }
 
 void CommonUtils::setDefaultSkinColor(const QColor& color) {
-	const QString&& path{ QApplication::applicationDirPath() + QDir::separator() + QString{ "tradeprintinfo.ini" } };
+	const QString path{ QApplication::applicationDirPath() + QDir::separator() + QString{ "tradeprintinfo.ini" } };
 	QSettings settings{ path, QSettings::IniFormat };
 
 	settings.setValue("DefaultSkin/red", color.red());
@@ -57,7 +57,7 @@ void CommonUtils::setDefaultSkinColor(const QColor& color) {
 }
 
 QColor CommonUtils::getDefaultSkinColor() {
-	const QString&& path{ QApplication::applicationDirPath() + QDir::separator() + QString{ "tradeprintinfo.ini" } };
+	const QString path{ QApplication::applicationDirPath() + QDir::separator() + QString{ "tradeprintinfo.ini" } };
 	QColor color;
 
 	if (!QFile::exists(path)) {

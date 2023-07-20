@@ -17,10 +17,14 @@ UserLogin::~UserLogin() {}
 
 void UserLogin::initControl() {
 	QLabel* headLabel{ new QLabel{ this } };
-	headLabel->setFixedSize(QSize{ 68, 68 });
+	QSize headLabelSize{ 68, 68 };
+
+	headLabel->setFixedSize(headLabelSize);
+
 	QPixmap pix{ ":/Resources/MainWindow/head_mask.png" };
+
 	headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/girl.png" }, pix, headLabel->size()));
-	headLabel->move(width() / 2 - 34, ui.titleWidget->height() - 34);
+	headLabel->move(width() / 2 - headLabelSize.width() / 2, ui.titleWidget->height() - headLabelSize.height() / 2);
 
 	connect(ui.buttonLogin, &QPushButton::clicked, this, &UserLogin::onLoginButtonClicked);
 }
