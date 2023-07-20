@@ -13,7 +13,7 @@ QPixmap CommonUtils::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 	if (maskSize == QSize{ 0, 0 }) {
 		maskSize = mask.size();
 	} else {
-		mask.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		mask = mask.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	QImage resultImage{ maskSize, QImage::Format_ARGB32_Premultiplied };
@@ -26,7 +26,7 @@ QPixmap CommonUtils::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 	painter.drawPixmap(0, 0, mask);
 
 	painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-	painter.drawPixmap(0, 0, src.scaled(Qt::KeepAspectRatio, Qt::SmoothTransformation));
+	painter.drawPixmap(0, 0, src.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
 	painter.end();
 
@@ -65,8 +65,12 @@ QColor CommonUtils::getDefaultSkinColor() {
 		setDefaultSkinColor(color);
 	} else {
 		QSettings settings{ path, QSettings::IniFormat };
-		color = QColor{ settings.value("DefaultSkin/red").toInt(), settings.value("Default/green").toInt(),
-		                settings.value("Default/blue").toInt() };
+
+		int r{ settings.value("DefaultSkin/red").toInt() };
+		int g{ settings.value("DefaultSkin/green").toInt() };
+		int b{ settings.value("DefaultSkin/blue").toInt() };
+
+		color = QColor{ r, g, b };
 	}
 
 	return color;

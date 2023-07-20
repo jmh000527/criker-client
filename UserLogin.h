@@ -15,4 +15,9 @@ public:
 
 private:
 	Ui::UserLoginClass ui;
+
+	void initControl();
+
+private slots:
+	void onLoginButtonClicked();
 };

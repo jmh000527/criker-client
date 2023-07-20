@@ -184,7 +184,7 @@ void TitleBar::initConnections() {
 }
 
 void TitleBar::loadStyleSheet(const QString& sheetName) {
-	QFile file{ ":/Resources/QSS" + sheetName + ".css" };
+	QFile file{ ":/Resources/QSS/" + sheetName + ".css" };
 
 	file.open(QFile::ReadOnly);
 	if(file.isOpen()) {

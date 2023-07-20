@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>434</width>
-    <height>316</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>434</width>
-    <height>316</height>
+    <height>304</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>434</width>
-    <height>316</height>
+    <height>304</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -59,7 +59,7 @@
     </size>
    </property>
    <property name="titleSkin" stdset="0">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QWidget" name="bodyWidget" native="true">
@@ -67,7 +67,7 @@
     <rect>
      <x>0</x>
      <y>104</y>
-     <width>502</width>
+     <width>434</width>
      <height>200</height>
     </rect>
    </property>
@@ -84,7 +84,7 @@
     </size>
    </property>
    <property name="bottomSkin" stdset="0">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
@@ -121,7 +121,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="lineEditUserAccount">
         <property name="minimumSize">
          <size>
           <width>260</width>
@@ -176,7 +176,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="lineEditUserPassword">
         <property name="minimumSize">
          <size>
           <width>260</width>
@@ -259,7 +259,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="buttonForgetPassword">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -284,7 +284,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="buttonRegister">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -342,7 +342,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="buttonLogin">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>

@@ -12,18 +12,18 @@
 #include "CCMainWindow.h"
 
 BasicWindow::BasicWindow(QWidget* parent)
-	: QDialog{ parent }, m_isMousePressed{ false }, m_colorBackground{ CommonUtils::getDefaultSkinColor()} {
+	: QDialog{ parent }, m_isMousePressed{ false }, m_colorBackground{ CommonUtils::getDefaultSkinColor() } {
 	setWindowFlags(Qt::FramelessWindowHint);
-	setAttribute(Qt::WA_TranslucentBackground);
-
-	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)), this, SLOT(onSignalSkinChanged()));
+	setAttribute(Qt::WA_TranslucentBackground, false);
+	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)),
+	        this, SLOT(onSinnalSkinChanged(const QColor&)));
 }
 
 BasicWindow::~BasicWindow() {}
 
 void BasicWindow::loadStyleSheet(const QString& sheetName) {
 	m_styleSheetName = sheetName;
-	QFile file{ ":/Resource/QSS/" + sheetName + ".css" };
+	QFile file{ ":/Resources/QSS/" + sheetName + ".css" };
 	file.open(QFile::ReadOnly);
 
 	if (file.isOpen()) {
@@ -35,16 +35,14 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 		const QString g{ QString::number(m_colorBackground.green()) };
 		const QString b{ QString::number(m_colorBackground.blue()) };
 
-		qStyleSheet += QString{
-			"QWidget[titleskin=true]\
-				{background-color: rgb(%1, %2, %3);\
-				border-top-left-radius: 4px;}\
-				QWidget[bottomskin=true]\
-				{boeder-top: 1px solid rgba(%1, %2, %3, 100);\
-				background-color: rgba(%1, %2, %3, 50)£»\
-				border-bottom-left-radius: 4px;\
-				border-bottom-right-radius: 4px;}"
-		}.arg(r).arg(g).arg(b);
+		qStyleSheet += QString("QWidget[titleSkin = true]\
+								{background-color: rgb(%1, %2, %3);\
+								border-top-left-radius: 4px;}\
+								QWidget[bottomSkin = true]\
+								{border-top: 1px solid rgba(%1, %2, %3, 50);\
+								background-color: rgba(%1, %2, %3, 50);\
+								border-bottom-left-radius: 4px;\
+								border-bottom-right-radius: 4px;}").arg(r).arg(g).arg(b);
 
 		setStyleSheet(qStyleSheet);
 	}
@@ -56,7 +54,7 @@ QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 	if (maskSize == QSize{ 0, 0 }) {
 		maskSize = mask.size();
 	} else {
-		mask.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		mask = mask.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	QImage resultImage{ maskSize, QImage::Format_ARGB32_Premultiplied };
@@ -69,7 +67,7 @@ QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 	painter.drawPixmap(0, 0, mask);
 
 	painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-	painter.drawPixmap(0, 0, src.scaled(Qt::KeepAspectRatio, Qt::SmoothTransformation));
+	painter.drawPixmap(0, 0, src.scaled(maskSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
 	painter.end();
 
@@ -79,7 +77,7 @@ QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 void BasicWindow::initBackgroundColor() {
 	QStyleOption opt;
 	opt.init(this);
-	QPainter p;
+	QPainter p{ this };
 
 	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
@@ -95,7 +93,7 @@ void BasicWindow::mousePressEvent(QMouseEvent* event) {
 	if (event->button() == Qt::LeftButton) {
 		m_isMousePressed = true;
 		m_mousePos = event->globalPos() - pos();
-		accept();
+		event->accept();
 	}
 
 	return QDialog::mousePressEvent(event);
