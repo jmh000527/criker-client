@@ -14,7 +14,8 @@
 BasicWindow::BasicWindow(QWidget* parent)
 	: QDialog{ parent }, m_isMousePressed{ false }, m_colorBackground{ CommonUtils::getDefaultSkinColor() } {
 	setWindowFlags(Qt::FramelessWindowHint);
-	setAttribute(Qt::WA_TranslucentBackground, false);
+	// setAttribute(Qt::WA_TranslucentBackground, false);
+	setAttribute(Qt::WA_TranslucentBackground);
 	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)),
 	        this, SLOT(onSinnalSkinChanged(const QColor&)));
 }
@@ -35,15 +36,17 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 		const QString g{ QString::number(m_colorBackground.green()) };
 		const QString b{ QString::number(m_colorBackground.blue()) };
 
-		qStyleSheet += QString("QWidget[titleSkin = true]\
-								{background-color: rgb(%1, %2, %3);\
+		qStyleSheet += QString("QWidget[titleSkin = true] {\
+								background-color: rgb(%1, %2, %3);\
 								border-top-left-radius: 4px;\
-								border-top-right-radius: 4px;}\
-								QWidget[bottomSkin = true]\
-								{border-top: 1px solid rgba(%1, %2, %3, 50);\
-								background-color: rgba(%1, %2, %3, 50);\
+								border-top-right-radius: 4px;\
+								}\
+								QWidget[bottomSkin = true] {\
+								border-top: 1px solid rgb(%1, %2, %3);\
+								background-color: rgb(250, 250, 250);\
 								border-bottom-left-radius: 4px;\
-								border-bottom-right-radius: 4px;}").arg(r).arg(g).arg(b);
+								border-bottom-right-radius: 4px;\
+								}").arg(r).arg(g).arg(b);
 
 		setStyleSheet(qStyleSheet);
 	}
