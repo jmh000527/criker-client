@@ -37,12 +37,18 @@
     <QtBuildConfig>debug</QtBuildConfig>
     <QtInstall>6.6.0_msvc2019_64</QtInstall>
     <QtQMakeTemplate>vcapp</QtQMakeTemplate>
+    <QtPlugin>true</QtPlugin>
+    <QtDeploy>true</QtDeploy>
+    <QtQMLDebugEnable>true</QtQMLDebugEnable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtModules>core;gui;network;qml;widgets;core5compat;sql;webchannel;webenginecore;xml;webenginewidgets;</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
     <QtInstall>6.6.0_msvc2019_64</QtInstall>
     <QtQMakeTemplate>vcapp</QtQMakeTemplate>
+    <QtPlugin>true</QtPlugin>
+    <QtDeploy>true</QtDeploy>
+    <QtQMLDebugEnable>true</QtQMLDebugEnable>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
