@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include <QPixmap>
 #include <QSize>
 #include <QProxyStyle>
 
-//¸Ä±äÄ¬ÈÏ²¿¼ş·ç¸ñ
+//æ”¹å˜é»˜è®¤éƒ¨ä»¶é£æ ¼
 class CustomProxyStyle: public QProxyStyle{
 public:
 	CustomProxyStyle(QObject* parent) {
@@ -12,7 +12,7 @@ public:
 
 	virtual void drawPrimitive(PrimitiveElement pe, const QStyleOption* opt, QPainter* p, const QWidget* w) const override {
 		if(PE_FrameFocusRect == pe) {
-			//È¥µôWindowsÖĞÄ¬ÈÏ²¿¼şµÄ±ß¿ò»òĞéÏß£¬²¿¼ş»ñÈ¡½¹µãÊ±Ö±½Ó·µ»Ø£¬²»½øĞĞ»æÖÆ
+			//å»æ‰Windowsä¸­é»˜è®¤éƒ¨ä»¶çš„è¾¹æ¡†æˆ–è™šçº¿ï¼Œéƒ¨ä»¶è·å–ç„¦ç‚¹æ—¶ç›´æ¥è¿”å›ï¼Œä¸è¿›è¡Œç»˜åˆ¶
 			return;
 		} else {
 			QProxyStyle::drawPrimitive(pe, opt, p, w);

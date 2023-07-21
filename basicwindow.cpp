@@ -1,4 +1,4 @@
-#include "basicwindow.h"
+ï»¿#include "basicwindow.h"
 #include "CommonUtils.h"
 #include "NotifyManager.h"
 
@@ -7,7 +7,8 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QPainter>
-#include <QDesktopWidget>
+// #include <QDesktopWidget>
+#include <QGuiApplication>
 
 #include "CCMainWindow.h"
 
@@ -16,6 +17,7 @@ BasicWindow::BasicWindow(QWidget* parent)
 	setWindowFlags(Qt::FramelessWindowHint);
 	// setAttribute(Qt::WA_TranslucentBackground, false);
 	setAttribute(Qt::WA_TranslucentBackground);
+
 	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)),
 	        this, SLOT(onSinnalSkinChanged(const QColor&)));
 }
@@ -31,7 +33,7 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 		setStyleSheet("");
 		QString qStyleSheet{ QLatin1String{ file.readAll() } };
 
-		//»ñÈ¡ÓÃ»§µ±Ç°Æ¤·ôµÄRGB
+		//èŽ·å–ç”¨æˆ·å½“å‰çš®è‚¤çš„RGB
 		const QString r{ QString::number(m_colorBackground.red()) };
 		const QString g{ QString::number(m_colorBackground.green()) };
 		const QString b{ QString::number(m_colorBackground.blue()) };
@@ -80,13 +82,13 @@ QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize ma
 
 void BasicWindow::initBackgroundColor() {
 	QStyleOption opt;
-	opt.init(this);
+	opt.initFrom(this);
 	QPainter p{ this };
 
 	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-//×ÓÀà»¯²¿¼þÊ±£¬ÐèÒªÖØÐ´»æÍ¼ÊÂ¼þÉèÖÃ±³¾°Í¼
+//å­ç±»åŒ–éƒ¨ä»¶æ—¶ï¼Œéœ€è¦é‡å†™ç»˜å›¾äº‹ä»¶è®¾ç½®èƒŒæ™¯å›¾
 void BasicWindow::paintEvent(QPaintEvent* event) {
 	initBackgroundColor();
 
@@ -179,7 +181,7 @@ void BasicWindow::onButtonRestoreClicked() {
 void BasicWindow::onButtonMaxClicked() {
 	m_titlebar->saveRestoreInfo(pos(), size());
 
-	QRect desktopRect{ QApplication::desktop()->availableGeometry() };
+	QRect desktopRect{ QApplication::primaryScreen()->availableGeometry() };
 	QRect factRect{
 		QRect{ desktopRect.x() - 3, desktopRect.y() - 3, desktopRect.width() + 6, desktopRect.height() + 6 } };
 

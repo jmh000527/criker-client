@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <QWidget>
 #include <QLabel>
@@ -6,16 +6,16 @@
 
 enum class ButtonType {
 	MIN_BUTTON = 0,
-	//×îĞ¡»¯¼°¹Ø±Õ°´Å¥
+	//æœ€å°åŒ–åŠå…³é—­æŒ‰é’®
 
 	MIN_MAX_BUTTON,
-	//×îĞ¡»¯¡¢×î´ó»¯¼°¹Ø±Õ°´Å¥
+	//æœ€å°åŒ–ã€æœ€å¤§åŒ–åŠå…³é—­æŒ‰é’®
 
 	ONLY_CLOSE_BUTTON,
-	//½ö¹Ø±Õ°´Å¥
+	//ä»…å…³é—­æŒ‰é’®
 };
 
-//×Ô¶¨Òå±êÌâÀ¸
+//è‡ªå®šä¹‰æ ‡é¢˜æ 
 class TitleBar : public QWidget {
 	Q_OBJECT
 
@@ -28,7 +28,7 @@ public:
 	void setTitleWidth(int width);
 	void setButtonType(ButtonType buttonType);
 
-	//±£´æ&»ñÈ¡×î´ó»¯Ç°´°¿ÚÎ»ÖÃ¼°´óĞ¡
+	//ä¿å­˜&è·å–æœ€å¤§åŒ–å‰çª—å£ä½ç½®åŠå¤§å°
 	void saveRestoreInfo(const QPoint& point, const QSize& size);
 	void getRestoreInfo(QPoint& point, QSize& size);
 
@@ -39,21 +39,21 @@ private:
 	void mouseMoveEvent(QMouseEvent* event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
 
-	//³õÊ¼»¯¿Ø¼ş
+	//åˆå§‹åŒ–æ§ä»¶
 	void initControl();
-	//³õÊ¼»¯signal-slot
+	//åˆå§‹åŒ–signal-slot
 	void initConnections();
-	//¼ÓÔØÑùÊ½±í
+	//åŠ è½½æ ·å¼è¡¨
 	void loadStyleSheet(const QString& sheetName);
 
 signals:
-	//×îĞ¡»¯°´Å¥
+	//æœ€å°åŒ–æŒ‰é’®
 	void signalButtonMinClicked();
-	//×î´ó»¯»¹Ô­°´Å¥
+	//æœ€å¤§åŒ–è¿˜åŸæŒ‰é’®
 	void signalButtonRestoreClicked();
-	//×î´ó»¯°´Å¥
+	//æœ€å¤§åŒ–æŒ‰é’®
 	void signalButtonMaxClicked();
-	//¹Ø±Õ°´Å¥
+	//å…³é—­æŒ‰é’®
 	void signalButtonCloseClicked();
 
 private slots:
@@ -63,26 +63,26 @@ private slots:
 	void onButtonCloseClicked();
 
 private:
-	//±êÌâÀ¸Í¼±ê
+	//æ ‡é¢˜æ å›¾æ ‡
 	QLabel* m_pIcon{};
-	//±êÌâÀ¸ÄÚÈİ
+	//æ ‡é¢˜æ å†…å®¹
 	QLabel* m_ptitleContent{};
 	QPushButton* m_pButtonMin{};
 	QPushButton* m_pButtonRestore{};
 	QPushButton* m_pButtonMax{};
 	QPushButton* m_pButtonClose{};
 
-	//×î´ó»¯»¹Ô­°´Å¥
+	//æœ€å¤§åŒ–è¿˜åŸæŒ‰é’®
 	QPoint m_restorePos;
 	QSize m_restoreSize;
 
-	//ÊÇ·ñÒÆ¶¯
+	//æ˜¯å¦ç§»åŠ¨
 	bool m_isPressed;
 	QPoint m_startMovePos;
 
-	//±êÌâÀ¸ÄÚÈİ
+	//æ ‡é¢˜æ å†…å®¹
 	QString m_titleContent;
 
-	//±êÌâÀ¸°´Å¥ÀàĞÍ
+	//æ ‡é¢˜æ æŒ‰é’®ç±»å‹
 	ButtonType m_buttonType;
 };

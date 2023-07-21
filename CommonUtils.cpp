@@ -1,4 +1,4 @@
-#include "CommonUtils.h"
+﻿#include "CommonUtils.h"
 
 #include <QFile>
 #include <QPainter>
