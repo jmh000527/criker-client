@@ -3,6 +3,7 @@
 #include <QPainter>
 
 #include "CommonUtils.h"
+#include "SkinWindow.h"
 
 CCMainWindow::CCMainWindow(QWidget* parent)
 	: BasicWindow{ parent } {
@@ -110,5 +111,8 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 }
 
 void CCMainWindow::onAppIconClicked() {
-	
+	if(sender()->objectName() == "app_skin") {
+		SkinWindow* skinWindow{ new SkinWindow };
+		skinWindow->show();
+	}
 }

@@ -9,6 +9,8 @@ int main(int argc, char *argv[])
     // CCMainWindow w;
     // w.show();
 
+    QApplication::setQuitOnLastWindowClosed(false);
+
     UserLogin* userLogin{ new UserLogin };
     userLogin->show();
 

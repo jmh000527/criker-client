@@ -17,7 +17,7 @@ BasicWindow::BasicWindow(QWidget* parent)
 	setAttribute(Qt::WA_TranslucentBackground);
 
 	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)),
-	        this, SLOT(onSinnalSkinChanged(const QColor&)));
+	        this, SLOT(onSignalSkinChanged(const QColor&)));
 }
 
 BasicWindow::~BasicWindow() = default;
@@ -36,17 +36,20 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 		const QString g{ QString::number(m_colorBackground.green()) };
 		const QString b{ QString::number(m_colorBackground.blue()) };
 
+		auto increaseValue{ 230 };
 		qStyleSheet += QString("QWidget[titleSkin = true] {\
 								background-color: rgb(%1, %2, %3);\
 								border-top-left-radius: 4px;\
 								border-top-right-radius: 4px;\
 								}\
 								QWidget[bottomSkin = true] {\
-								border-top: 1px solid rgb(%1, %2, %3);\
-								background-color: rgb(250, 250, 250);\
+								background-color: rgb(%4, %5, %6);\
 								border-bottom-left-radius: 4px;\
 								border-bottom-right-radius: 4px;\
-								}").arg(r).arg(g).arg(b);
+								}").arg(r).arg(g).arg(b)
+								   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
+								   .arg(g.toInt() / 10 + increaseValue, 255)
+								   .arg(b.toInt() / 10 + increaseValue, 255);
 
 		setStyleSheet(qStyleSheet);
 	}
