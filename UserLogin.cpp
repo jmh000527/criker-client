@@ -12,7 +12,7 @@ UserLogin::UserLogin(QWidget* parent)
 	initControl();
 }
 
-UserLogin::~UserLogin() {}
+UserLogin::~UserLogin() = default;
 
 void UserLogin::initControl() {
 	QLabel* headLabel{ new QLabel{ this } };

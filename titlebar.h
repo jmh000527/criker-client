@@ -23,14 +23,14 @@ public:
 	TitleBar(QWidget* parent = nullptr);
 	~TitleBar() override;
 
-	void setTitleIcon(const QString& filePath);
+	void setTitleIcon(const QString& filePath) const;
 	void setTitleContent(const QString& titleContent);
 	void setTitleWidth(int width);
 	void setButtonType(ButtonType buttonType);
 
 	//保存&获取最大化前窗口位置及大小
 	void saveRestoreInfo(const QPoint& point, const QSize& size);
-	void getRestoreInfo(QPoint& point, QSize& size);
+	void getRestoreInfo(QPoint& point, QSize& size) const;
 
 private:
 	void paintEvent(QPaintEvent* event) override;
@@ -42,7 +42,7 @@ private:
 	//初始化控件
 	void initControl();
 	//初始化signal-slot
-	void initConnections();
+	void initConnections() const;
 	//加载样式表
 	void loadStyleSheet(const QString& sheetName);
 

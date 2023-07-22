@@ -7,7 +7,6 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QPainter>
-// #include <QDesktopWidget>
 #include <QGuiApplication>
 
 #include "CCMainWindow.h"
@@ -15,14 +14,13 @@
 BasicWindow::BasicWindow(QWidget* parent)
 	: QDialog{ parent }, m_isMousePressed{ false }, m_colorBackground{ CommonUtils::getDefaultSkinColor() } {
 	setWindowFlags(Qt::FramelessWindowHint);
-	// setAttribute(Qt::WA_TranslucentBackground, false);
 	setAttribute(Qt::WA_TranslucentBackground);
 
 	connect(NotifyManager::getInstance(), SIGNAL(signalSkinChanged(const QColor&)),
 	        this, SLOT(onSinnalSkinChanged(const QColor&)));
 }
 
-BasicWindow::~BasicWindow() {}
+BasicWindow::~BasicWindow() = default;
 
 void BasicWindow::loadStyleSheet(const QString& sheetName) {
 	m_styleSheetName = sheetName;
@@ -56,7 +54,7 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 	file.close();
 }
 
-QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize) {
+QPixmap BasicWindow::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize) const {
 	if (maskSize == QSize{ 0, 0 }) {
 		maskSize = mask.size();
 	} else {
@@ -120,7 +118,7 @@ void BasicWindow::mouseReleaseEvent(QMouseEvent* event) {
 	return QDialog::mouseReleaseEvent(event);
 }
 
-void BasicWindow::initTitleBar(ButtonType buttonType) {
+void BasicWindow::initTitleBar(const ButtonType buttonType) {
 	m_titlebar = new TitleBar{ this };
 	m_titlebar->setButtonType(buttonType);
 	m_titlebar->move(QPoint{ 0, 0 });
@@ -131,7 +129,7 @@ void BasicWindow::initTitleBar(ButtonType buttonType) {
 	connect(m_titlebar, SIGNAL(signalButtonCloseClicked()), this, SLOT(onButtonCloseClicked()));
 }
 
-void BasicWindow::setTitleBarTitle(const QString& title, const QString& icon) {
+void BasicWindow::setTitleBarTitle(const QString& title, const QString& icon) const {
 	m_titlebar->setTitleIcon(icon);
 	m_titlebar->setTitleContent(title);
 }

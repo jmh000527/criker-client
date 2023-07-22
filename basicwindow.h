@@ -9,10 +9,10 @@ class BasicWindow : public QDialog {
 
 public:
 	BasicWindow(QWidget* parent = nullptr);
-	virtual ~BasicWindow();
+	~BasicWindow() override;
 
 	void loadStyleSheet(const QString& sheetName);
-	QPixmap getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize = QSize{ 0, 0 });
+	QPixmap getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize = QSize{ 0, 0 }) const;
 
 private:
 	void initBackgroundColor();
@@ -24,7 +24,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent* event) override;
 
 	void initTitleBar(ButtonType buttonType = ButtonType::MIN_BUTTON);
-	void setTitleBarTitle(const QString& title, const QString& icon = "");
+	void setTitleBarTitle(const QString& title, const QString& icon = "") const;
 
 public slots:
 	void onShowMin(bool);

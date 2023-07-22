@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QSettings>
 
-CommonUtils::CommonUtils() { }
+CommonUtils::CommonUtils() = default;
 
 QPixmap CommonUtils::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize) {
 	if (maskSize == QSize{ 0, 0 }) {

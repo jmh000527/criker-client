@@ -7,7 +7,7 @@ class NotifyManager : public QObject {
 
 public:
 	NotifyManager();
-	~NotifyManager();
+	~NotifyManager() override;
 
 
 signals:

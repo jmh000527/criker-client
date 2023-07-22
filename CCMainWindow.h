@@ -10,13 +10,13 @@ class CCMainWindow : public BasicWindow {
 
 public:
 	CCMainWindow(QWidget* parent = nullptr);
-	~CCMainWindow();
+	~CCMainWindow() override;
 
 private:
-	Ui::CCMainWindowClass ui;
+	Ui::CCMainWindowClass ui{};
 
 	void initColtrol();
 	void setUserName(const QString& username);
-	void setUserLevel(int level);
+	void setUserLevelPixmap(int level) const;
 	void setHeadPixmap(const QString& headPath);
 };

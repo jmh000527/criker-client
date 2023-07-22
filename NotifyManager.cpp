@@ -6,7 +6,7 @@ NotifyManager::NotifyManager()
 	
 }
 
-NotifyManager::~NotifyManager() {}
+NotifyManager::~NotifyManager() = default;
 
 NotifyManager* NotifyManager::getInstance() {
 	if(instance == nullptr) {

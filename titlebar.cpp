@@ -19,9 +19,9 @@ TitleBar::TitleBar(QWidget* parent)
 	loadStyleSheet("Title");
 }
 
-TitleBar::~TitleBar() {}
+TitleBar::~TitleBar() = default;
 
-void TitleBar::setTitleIcon(const QString& filePath) {
+void TitleBar::setTitleIcon(const QString& filePath) const {
 	QPixmap titleIcon{ filePath };
 	m_pIcon->setFixedSize(titleIcon.size());
 	m_pIcon->setPixmap(titleIcon);
@@ -32,11 +32,11 @@ void TitleBar::setTitleContent(const QString& titleContent) {
 	m_titleContent = titleContent;
 }
 
-void TitleBar::setTitleWidth(int width) {
+void TitleBar::setTitleWidth(const int width) {
 	setFixedWidth(width);
 }
 
-void TitleBar::setButtonType(ButtonType buttonType) {
+void TitleBar::setButtonType(const ButtonType buttonType) {
 	m_buttonType = buttonType;
 
 	switch (buttonType) {
@@ -69,7 +69,7 @@ void TitleBar::saveRestoreInfo(const QPoint& point, const QSize& size) {
 	m_restoreSize = size;
 }
 
-void TitleBar::getRestoreInfo(QPoint& point, QSize& size) {
+void TitleBar::getRestoreInfo(QPoint& point, QSize& size) const {
 	point = m_restorePos;
 	size = m_restoreSize;
 }
@@ -176,7 +176,7 @@ void TitleBar::initControl() {
 	setWindowFlags(Qt::FramelessWindowHint);
 }
 
-void TitleBar::initConnections() {
+void TitleBar::initConnections() const {
 	connect(m_pButtonMin, SIGNAL(clicked()), this, SLOT(onButtonMinClicked()));
 	connect(m_pButtonRestore, SIGNAL(clicked()), this, SLOT(onButtonRestoreClicked()));
 	connect(m_pButtonMax, SIGNAL(clicked()), this, SLOT(onButtonMaxClicked()));

@@ -10,7 +10,7 @@ public:
 		setParent(parent);
 	}
 
-	virtual void drawPrimitive(PrimitiveElement pe, const QStyleOption* opt, QPainter* p, const QWidget* w) const override {
+	void drawPrimitive(const PrimitiveElement pe, const QStyleOption* opt, QPainter* p, const QWidget* w) const override {
 		if(PE_FrameFocusRect == pe) {
 			//去掉Windows中默认部件的边框或虚线，部件获取焦点时直接返回，不进行绘制
 			return;

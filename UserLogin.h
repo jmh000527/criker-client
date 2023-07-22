@@ -11,10 +11,10 @@ class UserLogin : public BasicWindow
 
 public:
 	UserLogin(QWidget *parent = nullptr);
-	~UserLogin();
+	~UserLogin() override;
 
 private:
-	Ui::UserLoginClass ui;
+	Ui::UserLoginClass ui{};
 
 	void initControl();
 
