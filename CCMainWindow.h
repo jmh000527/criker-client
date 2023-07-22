@@ -22,4 +22,8 @@ private:
 	void setUserStatusMenuIcon(const QString& statusPath);
 
 	QWidget* createOtherAppExtension(const QString& appPath, const QString& appName);
+
+private slots:
+	void onAppIconClicked();
+
 };

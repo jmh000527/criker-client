@@ -627,7 +627,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
        <number>6</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="bottomLayoout_up"/>
+       <layout class="QHBoxLayout" name="bottomLayout_up"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">

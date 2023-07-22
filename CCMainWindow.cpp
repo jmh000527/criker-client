@@ -26,8 +26,28 @@ void CCMainWindow::initColtrol() {
 	auto appUpLayout{ new QHBoxLayout{this} };
 
 	appUpLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
-	// appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/"))
-	
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_7.png", "app_7"));
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_2.png", "app_2"));
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_3.png", "app_3"));
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_4.png", "app_4"));
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_5.png", "app_5"));
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_6.png", "app_6"));
+	appUpLayout->addStretch();
+	appUpLayout->setSpacing(2);
+	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/skin.png", "app_skin"));
+
+	ui.appWidget->setLayout(appUpLayout);
+
+	auto appBottomLayout{ new QHBoxLayout{this} };
+
+	appBottomLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
+	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_10.png", "app_10"));
+	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_8.png", "app_8"));
+	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_11.png", "app_11"));
+	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_9.png", "app_9"));
+
+	ui.bottomLayout_up->addLayout(appBottomLayout);
+	ui.bottomLayout_up->addStretch();
 }
 
 void CCMainWindow::setUserName(const QString& username) {}
@@ -81,6 +101,14 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 	painter.drawPixmap((button->width() - appPixmap.width()) / 2, (button->height() - appPixmap.height()) / 2, appPixmap);
 	button->setIcon(pixmap);
 	button->setIconSize(button->size());
+	button->setObjectName(appName);
+	button->setProperty("hasBorder", true);
+
+	connect(button, &QPushButton::clicked, this, &CCMainWindow::onAppIconClicked);
 
 	return button;
+}
+
+void CCMainWindow::onAppIconClicked() {
+	
 }
