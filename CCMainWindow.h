@@ -18,5 +18,8 @@ private:
 	void initColtrol();
 	void setUserName(const QString& username);
 	void setUserLevelPixmap(int level) const;
-	void setHeadPixmap(const QString& headPath);
+	void setUserHeadPixmap(const QString& headPath);
+	void setUserStatusMenuIcon(const QString& statusPath);
+
+	QWidget* createOtherAppExtension(const QString& appPath, const QString& appName);
 };
