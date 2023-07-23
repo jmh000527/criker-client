@@ -21,8 +21,8 @@ void SysTray::initSystemTray() {
 }
 
 void SysTray::addSysTrayMenu() const {
-	auto* customMenu{ new CustomMenu{ m_parent } };
-	// const QScopedPointer<CustomMenu> customMenu{new CustomMenu{ m_parent }};
+	// auto* customMenu{ new CustomMenu{ m_parent } };
+	const QScopedPointer<CustomMenu> customMenu{new CustomMenu{ m_parent }};
 	customMenu->addCustomMenu("onShow", ":/Resources/MainWindow/app/logo.ico", QStringLiteral("显示"));
 	customMenu->addCustomMenu("onQuit", ":/Resources/MainWindow/app/page_close_btn_hover.png", QStringLiteral("退出"));
 

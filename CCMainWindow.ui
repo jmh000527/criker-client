@@ -288,7 +288,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
 </string>
               </property>
               <property name="text">
-               <string>姬小明</string>
+               <string/>
               </property>
              </widget>
             </item>

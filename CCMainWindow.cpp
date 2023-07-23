@@ -79,7 +79,12 @@ void CCMainWindow::initColtrol() {
 	auto* sysTray{ new SysTray{this} };
 }
 
-void CCMainWindow::setUserName(const QString& username) {}
+void CCMainWindow::setUserName(const QString& username) {
+	//文本过长则省略过长部分
+	QString elidedUserName{ ui.nameLabel->fontMetrics().elidedText(username, Qt::ElideRight, ui.nameLabel->width()) };
+	
+	ui.nameLabel->setText(elidedUserName);
+}
 
 void CCMainWindow::setUserLevelPixmap(const int level) const {
 	QPixmap levePixmap{ ui.levelBtn->size() };
@@ -136,6 +141,12 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 	connect(button, &QPushButton::clicked, this, &CCMainWindow::onAppIconClicked);
 
 	return button;
+}
+
+void CCMainWindow::resizeEvent(QResizeEvent* event) {
+	setUserName(QString{ "姬小明zzzzzzzzzzzzzzzzzzzzzzzzzzzzz" });
+
+	return BasicWindow::resizeEvent(event);
 }
 
 void CCMainWindow::onAppIconClicked() const {
