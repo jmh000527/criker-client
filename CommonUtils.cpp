@@ -39,7 +39,7 @@ void CommonUtils::loadStyleSheet(QWidget* widget, const QString& sheetName) {
 	file.open(QFile::ReadOnly);
 	if (file.isOpen()) {
 		widget->setStyleSheet("");
-		QString qStyleSheet{ QLatin1String{ file.readAll() } };
+		const QString qStyleSheet{ QLatin1String{ file.readAll() } };
 
 		widget->setStyleSheet(qStyleSheet);
 	}
@@ -64,11 +64,11 @@ QColor CommonUtils::getDefaultSkinColor() {
 		color = QColor{ 22, 154, 218 };
 		setDefaultSkinColor(color);
 	} else {
-		QSettings settings{ path, QSettings::IniFormat };
+		const QSettings settings{ path, QSettings::IniFormat };
 
-		int r{ settings.value("DefaultSkin/red").toInt() };
-		int g{ settings.value("DefaultSkin/green").toInt() };
-		int b{ settings.value("DefaultSkin/blue").toInt() };
+		const int r{ settings.value("DefaultSkin/red").toInt() };
+		const int g{ settings.value("DefaultSkin/green").toInt() };
+		const int b{ settings.value("DefaultSkin/blue").toInt() };
 
 		color = QColor{ r, g, b };
 	}

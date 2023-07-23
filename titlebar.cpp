@@ -1,5 +1,6 @@
 ﻿#include "titlebar.h"
 
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QPainter>
 #include <QPainterPath>
@@ -22,7 +23,7 @@ TitleBar::TitleBar(QWidget* parent)
 TitleBar::~TitleBar() = default;
 
 void TitleBar::setTitleIcon(const QString& filePath) const {
-	QPixmap titleIcon{ filePath };
+	const QPixmap titleIcon{ filePath };
 	m_pIcon->setFixedSize(titleIcon.size());
 	m_pIcon->setPixmap(titleIcon);
 }
@@ -120,8 +121,8 @@ void TitleBar::mousePressEvent(QMouseEvent* event) {
 
 void TitleBar::mouseMoveEvent(QMouseEvent* event) {
 	if(m_isPressed) {
-		QPoint movePoint{ event->globalPos() - m_startMovePos };
-		QPoint widgetPos{ parentWidget()->pos() };
+		const QPoint movePoint{ event->globalPos() - m_startMovePos };
+		const QPoint widgetPos{ parentWidget()->pos() };
 
 		m_startMovePos = event->globalPos();
 		parentWidget()->move(widgetPos.x() + movePoint.x(), widgetPos.y() + movePoint.y());
@@ -214,4 +215,5 @@ void TitleBar::onButtonMaxClicked() {
 
 void TitleBar::onButtonCloseClicked() {
 	emit signalButtonCloseClicked();
+	QApplication::quit();
 }

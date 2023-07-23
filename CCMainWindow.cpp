@@ -5,6 +5,7 @@
 #include <QTimer>
 
 #include "CommonUtils.h"
+#include "NotifyManager.h"
 #include "SkinWindow.h"
 #include "SysTray.h"
 
@@ -46,7 +47,7 @@ void CCMainWindow::initColtrol() {
 	setUserHeadPixmap(":/Resources/MainWindow/girl.png");
 	setUserStatusMenuIcon(":/Resources/MainWindow/StatusSucceeded.png");
 
-	auto appUpLayout{ new QHBoxLayout{this} };
+	const auto appUpLayout{ new QHBoxLayout{this} };
 
 	appUpLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
 	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_7.png", "app_7"));
@@ -61,7 +62,7 @@ void CCMainWindow::initColtrol() {
 
 	ui.appWidget->setLayout(appUpLayout);
 
-	auto appBottomLayout{ new QHBoxLayout{this} };
+	const auto appBottomLayout{ new QHBoxLayout{this} };
 
 	appBottomLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
 	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_10.png", "app_10"));
@@ -72,16 +73,27 @@ void CCMainWindow::initColtrol() {
 	ui.bottomLayout_up->addLayout(appBottomLayout);
 	ui.bottomLayout_up->addStretch();
 
+	//个性签名
+	ui.lineEdit->installEventFilter(this);
+	//搜索
+	ui.searchLineEdit->installEventFilter(this);
+
+	//单独更新搜索部件的颜色
+	updateSearchStyle();
+
 	connect(ui.sysmin, SIGNAL(clicked(bool)), this, SLOT(onShowHide(bool)));
 	connect(ui.sysclose, SIGNAL(clicked(bool)), this, SLOT(onShowQuit(bool)));
+
+	//实现在更换皮肤时，同时更新搜索部件底色
+	connect(NotifyManager::getInstance(), &NotifyManager::signalSkinChanged, this, &CCMainWindow::updateSearchStyle);
 
 	//系统托盘
 	auto* sysTray{ new SysTray{this} };
 }
 
-void CCMainWindow::setUserName(const QString& username) {
+void CCMainWindow::setUserName(const QString& username) const {
 	//文本过长则省略过长部分
-	QString elidedUserName{ ui.nameLabel->fontMetrics().elidedText(username, Qt::ElideRight, ui.nameLabel->width()) };
+	const QString elidedUserName{ ui.nameLabel->fontMetrics().elidedText(username, Qt::ElideRight, ui.nameLabel->width()) };
 	
 	ui.nameLabel->setText(elidedUserName);
 }
@@ -147,6 +159,62 @@ void CCMainWindow::resizeEvent(QResizeEvent* event) {
 	setUserName(QString{ "姬小明zzzzzzzzzzzzzzzzzzzzzzzzzzzzz" });
 
 	return BasicWindow::resizeEvent(event);
+}
+
+bool CCMainWindow::eventFilter(QObject* watched, QEvent* event) {
+	if(ui.searchLineEdit == watched) {
+		//键盘焦点事件
+		if(event->type() == QEvent::FocusIn) {
+			//获取用户当前皮肤的RGB
+			const QString r{ QString::number(m_colorBackground.red()) };
+			const QString g{ QString::number(m_colorBackground.green()) };
+			const QString b{ QString::number(m_colorBackground.blue()) };
+
+			ui.searchWidget->setStyleSheet(QString{ "QWidget#searchWidget{\
+													background-color: rgb(255, 255, 255);\
+													border-bottom: 1px rgb(%1, %2, %3);\
+													}\
+													QWidget#searchLineEdit{\
+													border-bottom: 1px rgb(%1, %2, %3);\
+													}\
+													QPushButton#searchBtn{\
+													border-image:url(:/Resources/MainWindow/search/main_search_deldown.png)\
+													}\
+													QPushButton#searchBtn:hover{\
+													border-image:url(:/Resources/MainWindow/search/main_search_delhighlight.png)\
+													}\
+													QPushButton#searchBtn:pressed{\
+													border-image:url(:/Resources/MainWindow/search/main_search_delhighdown.png)\
+													}" }
+													.arg(r)
+													.arg(g)
+													.arg(b));
+		}else if(event->type() == QEvent::FocusOut) {
+			//还原搜索部件样式
+			updateSearchStyle();
+		}
+	}
+
+	return BasicWindow::eventFilter(watched, event);
+}
+
+void CCMainWindow::updateSearchStyle() {
+	//获取用户当前皮肤的RGB
+	const QString r{ QString::number(m_colorBackground.red()) };
+	const QString g{ QString::number(m_colorBackground.green()) };
+	const QString b{ QString::number(m_colorBackground.blue()) };
+	const auto increaseValue{ 230 };
+
+	ui.searchWidget->setStyleSheet(QString{ "QWidget#searchWidget {\
+											background-color:rgb(%1, %2, %3);\
+											border-bottom:1px rgb(%1, %2, %3);\
+											}\
+											QPushButton#searchBtn {\
+											border-image:url(:Resources/MainWindow/search/search_icon.png);\
+											}" }
+										   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
+										   .arg(qMin(g.toInt() / 10 + increaseValue, 255))
+										   .arg(qMin(b.toInt() / 10 + increaseValue, 255)));
 }
 
 void CCMainWindow::onAppIconClicked() const {

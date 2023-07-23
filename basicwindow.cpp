@@ -36,7 +36,7 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 		const QString g{ QString::number(m_colorBackground.green()) };
 		const QString b{ QString::number(m_colorBackground.blue()) };
 
-		auto increaseValue{ 230 };
+		const auto increaseValue{ 230 };
 		qStyleSheet += QString("QWidget[titleSkin = true] {\
 								background-color: rgb(%1, %2, %3);\
 								border-top-left-radius: 4px;\
@@ -48,8 +48,8 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 								border-bottom-right-radius: 4px;\
 								}").arg(r).arg(g).arg(b)
 								   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
-								   .arg(g.toInt() / 10 + increaseValue, 255)
-								   .arg(b.toInt() / 10 + increaseValue, 255);
+								   .arg(qMin(g.toInt() / 10 + increaseValue, 255))
+								   .arg(qMin(b.toInt() / 10 + increaseValue, 255));
 
 		setStyleSheet(qStyleSheet);
 	}
@@ -182,8 +182,8 @@ void BasicWindow::onButtonRestoreClicked() {
 void BasicWindow::onButtonMaxClicked() {
 	m_titlebar->saveRestoreInfo(pos(), size());
 
-	QRect desktopRect{ QApplication::primaryScreen()->availableGeometry() };
-	QRect factRect{
+	const QRect desktopRect{ QApplication::primaryScreen()->availableGeometry() };
+	const QRect factRect{
 		QRect{ desktopRect.x() - 3, desktopRect.y() - 3, desktopRect.width() + 6, desktopRect.height() + 6 } };
 
 	setGeometry(factRect);

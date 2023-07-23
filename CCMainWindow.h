@@ -17,7 +17,7 @@ private:
 
 	void initTimer();
 	void initColtrol();
-	void setUserName(const QString& username);
+	void setUserName(const QString& username) const;
 	void setUserLevelPixmap(int level) const;
 	void setUserHeadPixmap(const QString& headPath) const;
 	void setUserStatusMenuIcon(const QString& statusPath) const;
@@ -25,6 +25,8 @@ private:
 	QWidget* createOtherAppExtension(const QString& appPath, const QString& appName);
 
 	void resizeEvent(QResizeEvent* event) override;
+	bool eventFilter(QObject* watched, QEvent* event) override;
+	void updateSearchStyle();
 
 private slots:
 	void onAppIconClicked() const;

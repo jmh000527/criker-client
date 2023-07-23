@@ -1,0 +1,17 @@
+QWidget#searchWidget {
+    background-color: rgb(255, 255, 255);
+}
+
+QPushButton#searchBtn {
+    border-image: url(:/Resources/MainWindow/search/main_search_deldown.png);
+}
+
+
+QPushButton#searchBtn:hover {
+    border-image: url(:/Resources/MainWindow/search/main_search_delhighlight.png);
+}
+
+
+QPushButton#searchBtn:pressed {
+    border-image: url(:/Resources/MainWindow/search/main_search_delhighdown.png);
+}

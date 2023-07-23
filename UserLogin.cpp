@@ -16,7 +16,7 @@ UserLogin::~UserLogin() = default;
 
 void UserLogin::initControl() {
 	QLabel* headLabel{ new QLabel{ this } };
-	QSize headLabelSize{ 68, 68 };
+	const QSize headLabelSize{ 68, 68 };
 
 	headLabel->setFixedSize(headLabelSize);
 
