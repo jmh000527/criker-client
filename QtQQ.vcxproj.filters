@@ -61,6 +61,12 @@
     <ClCompile Include="QClickLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SysTray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h">
@@ -79,6 +85,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QClickLabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SysTray.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CustomMenu.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

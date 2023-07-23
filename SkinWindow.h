@@ -14,10 +14,6 @@ public:
 
 	void initControl();
 
-public slots:
-	void onShowClose();
-	void onSHowMin();
-
 private:
 	Ui::SkinWindowClass ui{};
 };

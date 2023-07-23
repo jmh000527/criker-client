@@ -15,15 +15,16 @@ public:
 private:
 	Ui::CCMainWindowClass ui{};
 
+	void initTimer();
 	void initColtrol();
 	void setUserName(const QString& username);
 	void setUserLevelPixmap(int level) const;
-	void setUserHeadPixmap(const QString& headPath);
-	void setUserStatusMenuIcon(const QString& statusPath);
+	void setUserHeadPixmap(const QString& headPath) const;
+	void setUserStatusMenuIcon(const QString& statusPath) const;
 
 	QWidget* createOtherAppExtension(const QString& appPath, const QString& appName);
 
 private slots:
-	void onAppIconClicked();
+	void onAppIconClicked() const;
 
 };

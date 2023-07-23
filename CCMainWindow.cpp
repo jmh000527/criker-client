@@ -1,9 +1,12 @@
 ﻿#include "CCMainWindow.h"
+#include "CCMainWindow.h"
 
 #include <QPainter>
+#include <QTimer>
 
 #include "CommonUtils.h"
 #include "SkinWindow.h"
+#include "SysTray.h"
 
 CCMainWindow::CCMainWindow(QWidget* parent)
 	: BasicWindow{ parent } {
@@ -13,9 +16,28 @@ CCMainWindow::CCMainWindow(QWidget* parent)
 	loadStyleSheet("CCMainWindow");
 
 	initColtrol();
+	initTimer();
 }
 
 CCMainWindow::~CCMainWindow() = default;
+
+void CCMainWindow::initTimer() {
+	auto* timer{ new QTimer{this} };
+	timer->setInterval(std::chrono::seconds(1));
+	connect(timer, &QTimer::timeout,
+			[this]() {
+				static int level{};
+				if (level == 99) {
+					level = 0;
+				}
+				level++;
+
+				setUserLevelPixmap(level);
+			}
+	);
+
+	timer->start();
+}
 
 void CCMainWindow::initColtrol() {
 	ui.treeWidget->setStyle(new CustomProxyStyle{ this });
@@ -49,6 +71,12 @@ void CCMainWindow::initColtrol() {
 
 	ui.bottomLayout_up->addLayout(appBottomLayout);
 	ui.bottomLayout_up->addStretch();
+
+	connect(ui.sysmin, SIGNAL(clicked(bool)), this, SLOT(onShowHide(bool)));
+	connect(ui.sysclose, SIGNAL(clicked(bool)), this, SLOT(onShowQuit(bool)));
+
+	//系统托盘
+	auto* sysTray{ new SysTray{this} };
 }
 
 void CCMainWindow::setUserName(const QString& username) {}
@@ -73,13 +101,13 @@ void CCMainWindow::setUserLevelPixmap(const int level) const {
 	ui.levelBtn->setIconSize(ui.levelBtn->size());
 }
 
-void CCMainWindow::setUserHeadPixmap(const QString& headPath) {
+void CCMainWindow::setUserHeadPixmap(const QString& headPath) const {
 	QPixmap pix;
 	pix.load(":/Resources/MainWindow/head_mask.png");
 	ui.headLabel->setPixmap(getRoundedImage(QPixmap{ headPath }, pix, ui.headLabel->size()));
 }
 
-void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) {
+void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) const {
 	QPixmap statusBtnPixmap{ ui.statusBtn->size() };
 	statusBtnPixmap.fill(Qt::transparent);
 	QPainter painter{ &statusBtnPixmap };
@@ -110,7 +138,7 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 	return button;
 }
 
-void CCMainWindow::onAppIconClicked() {
+void CCMainWindow::onAppIconClicked() const {
 	if(sender()->objectName() == "app_skin") {
 		SkinWindow* skinWindow{ new SkinWindow };
 		skinWindow->show();
