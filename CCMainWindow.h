@@ -17,6 +17,7 @@ private:
 
 	void initTimer();
 	void initColtrol();
+	void initContactTree();
 	void setUserName(const QString& username) const;
 	void setUserLevelPixmap(int level) const;
 	void setUserHeadPixmap(const QString& headPath) const;
@@ -30,5 +31,10 @@ private:
 
 private slots:
 	void onAppIconClicked() const;
+
+	void onItemClicked(QTreeWidgetItem* item, int column);
+	void onItemExpanded(QTreeWidgetItem* item);
+	void onItemCollapsed(QTreeWidgetItem* item);
+	void onItemDoubleClicked(QTreeWidgetItem* item, int column);
 
 };

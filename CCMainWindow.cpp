@@ -23,18 +23,18 @@ CCMainWindow::CCMainWindow(QWidget* parent)
 CCMainWindow::~CCMainWindow() = default;
 
 void CCMainWindow::initTimer() {
-	auto* timer{ new QTimer{this} };
+	auto* timer{ new QTimer{ this } };
 	timer->setInterval(std::chrono::seconds(1));
 	connect(timer, &QTimer::timeout,
-			[this]() {
-				static int level{};
-				if (level == 99) {
-					level = 0;
-				}
-				level++;
+	        [this]() {
+		        static int level{};
+		        if (level == 99) {
+			        level = 0;
+		        }
+		        level++;
 
-				setUserLevelPixmap(level);
-			}
+		        setUserLevelPixmap(level);
+	        }
 	);
 
 	timer->start();
@@ -47,7 +47,7 @@ void CCMainWindow::initColtrol() {
 	setUserHeadPixmap(":/Resources/MainWindow/girl.png");
 	setUserStatusMenuIcon(":/Resources/MainWindow/StatusSucceeded.png");
 
-	const auto appUpLayout{ new QHBoxLayout{this} };
+	const auto appUpLayout{ new QHBoxLayout{ this } };
 
 	appUpLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
 	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_7.png", "app_7"));
@@ -62,7 +62,7 @@ void CCMainWindow::initColtrol() {
 
 	ui.appWidget->setLayout(appUpLayout);
 
-	const auto appBottomLayout{ new QHBoxLayout{this} };
+	const auto appBottomLayout{ new QHBoxLayout{ this } };
 
 	appBottomLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
 	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_10.png", "app_10"));
@@ -88,13 +88,36 @@ void CCMainWindow::initColtrol() {
 	connect(NotifyManager::getInstance(), &NotifyManager::signalSkinChanged, this, &CCMainWindow::updateSearchStyle);
 
 	//系统托盘
-	auto* sysTray{ new SysTray{this} };
+	auto* sysTray{ new SysTray{ this } };
+
+	//初始化联系人部件
+	initContactTree();
+}
+
+void CCMainWindow::initContactTree() {
+	//展开与收纳的信号
+	connect(ui.treeWidget, SIGNAL(itemClicked(QTreeWidgetItem* item, int column)), this,
+	        SLOT(onItemClicked(QTreeWidgetItem* item, int column)));
+	connect(ui.treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem * item)), this,
+	        SLOT(onItemExpanded(QTreeWidgetItem * item)));
+	connect(ui.treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem * item)), this,
+			SLOT(onItemCollapsed(QTreeWidgetItem * item)));
+	connect(ui.treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem * item, int column)), this,
+			SLOT(onItemDoubleClicked(QTreeWidgetItem * item, int column)));
+
+	//根节点
+	QTreeWidgetItem* pRootGroupItem{ new QTreeWidgetItem };
+	pRootGroupItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+	pRootGroupItem->setData(0, Qt::UserRole, QVariant{ 0 });
+
+
 }
 
 void CCMainWindow::setUserName(const QString& username) const {
 	//文本过长则省略过长部分
-	const QString elidedUserName{ ui.nameLabel->fontMetrics().elidedText(username, Qt::ElideRight, ui.nameLabel->width()) };
-	
+	const QString elidedUserName{
+		ui.nameLabel->fontMetrics().elidedText(username, Qt::ElideRight, ui.nameLabel->width()) };
+
 	ui.nameLabel->setText(elidedUserName);
 }
 
@@ -105,8 +128,8 @@ void CCMainWindow::setUserLevelPixmap(const int level) const {
 	QPainter painter{ &levePixmap };
 	painter.drawPixmap(0, 4, QPixmap{ ":/Resources/MainWindow/lv.png" });
 
-	const auto unitNum{ level % 10 };	//个位数
-	const auto tenNum{ level / 10 % 10 };	//十位数
+	const auto unitNum{ level % 10 }; //个位数
+	const auto tenNum{ level / 10 % 10 }; //十位数
 
 	//十位，截取图片中的部分进行绘制
 	painter.drawPixmap(10, 4, QPixmap{ ":/Resources/MainWindow/levelvalue.png" }, tenNum * 6, 0, 6, 7);
@@ -135,7 +158,7 @@ void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) const {
 }
 
 QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QString& appName) {
-	const auto button{ new QPushButton{this} };
+	const auto button{ new QPushButton{ this } };
 	button->setFixedSize(QSize{ 20, 20 });
 
 	QPixmap pixmap{ button->size() };
@@ -144,7 +167,8 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 	QPainter painter{ &pixmap };
 	const QPixmap appPixmap{ appPath };
 
-	painter.drawPixmap((button->width() - appPixmap.width()) / 2, (button->height() - appPixmap.height()) / 2, appPixmap);
+	painter.drawPixmap((button->width() - appPixmap.width()) / 2, (button->height() - appPixmap.height()) / 2,
+	                   appPixmap);
 	button->setIcon(pixmap);
 	button->setIconSize(button->size());
 	button->setObjectName(appName);
@@ -162,9 +186,9 @@ void CCMainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 bool CCMainWindow::eventFilter(QObject* watched, QEvent* event) {
-	if(ui.searchLineEdit == watched) {
+	if (ui.searchLineEdit == watched) {
 		//键盘焦点事件
-		if(event->type() == QEvent::FocusIn) {
+		if (event->type() == QEvent::FocusIn) {
 			//获取用户当前皮肤的RGB
 			const QString r{ QString::number(m_colorBackground.red()) };
 			const QString g{ QString::number(m_colorBackground.green()) };
@@ -186,10 +210,10 @@ bool CCMainWindow::eventFilter(QObject* watched, QEvent* event) {
 													QPushButton#searchBtn:pressed{\
 													border-image:url(:/Resources/MainWindow/search/main_search_delhighdown.png)\
 													}" }
-													.arg(r)
-													.arg(g)
-													.arg(b));
-		}else if(event->type() == QEvent::FocusOut) {
+			                               .arg(r)
+			                               .arg(g)
+			                               .arg(b));
+		} else if (event->type() == QEvent::FocusOut) {
 			//还原搜索部件样式
 			updateSearchStyle();
 		}
@@ -212,14 +236,22 @@ void CCMainWindow::updateSearchStyle() {
 											QPushButton#searchBtn {\
 											border-image:url(:Resources/MainWindow/search/search_icon.png);\
 											}" }
-										   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
-										   .arg(qMin(g.toInt() / 10 + increaseValue, 255))
-										   .arg(qMin(b.toInt() / 10 + increaseValue, 255)));
+	                               .arg(qMin(r.toInt() / 10 + increaseValue, 255))
+	                               .arg(qMin(g.toInt() / 10 + increaseValue, 255))
+	                               .arg(qMin(b.toInt() / 10 + increaseValue, 255)));
 }
 
 void CCMainWindow::onAppIconClicked() const {
-	if(sender()->objectName() == "app_skin") {
+	if (sender()->objectName() == "app_skin") {
 		SkinWindow* skinWindow{ new SkinWindow };
 		skinWindow->show();
 	}
 }
+
+void CCMainWindow::onItemClicked(QTreeWidgetItem* item, int column) {}
+
+void CCMainWindow::onItemExpanded(QTreeWidgetItem* item) {}
+
+void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {}
+
+void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {}
