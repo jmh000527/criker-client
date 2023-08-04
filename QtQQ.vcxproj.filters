@@ -70,6 +70,9 @@
     <ClCompile Include="RootContactItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ContactItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h">
@@ -99,6 +102,9 @@
     <QtMoc Include="RootContactItem.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ContactItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonUtils.h">
@@ -110,6 +116,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="SkinWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ContactItem.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

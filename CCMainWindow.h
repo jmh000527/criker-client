@@ -28,6 +28,7 @@ private:
 	void resizeEvent(QResizeEvent* event) override;
 	bool eventFilter(QObject* watched, QEvent* event) override;
 	void updateSearchStyle();
+	void addDepartment(QTreeWidgetItem* pRootGroupItem, const QString& departmentName);
 
 private slots:
 	void onAppIconClicked() const;

@@ -5,7 +5,9 @@
 #include <QTimer>
 
 #include "CommonUtils.h"
+#include "ContactItem.h"
 #include "NotifyManager.h"
+#include "RootContactItem.h"
 #include "SkinWindow.h"
 #include "SysTray.h"
 
@@ -96,8 +98,8 @@ void CCMainWindow::initColtrol() {
 
 void CCMainWindow::initContactTree() {
 	//展开与收纳的信号
-	connect(ui.treeWidget, SIGNAL(itemClicked(QTreeWidgetItem* item, int column)), this,
-	        SLOT(onItemClicked(QTreeWidgetItem* item, int column)));
+	connect(ui.treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this,
+	        SLOT(onItemClicked(QTreeWidgetItem*, int)));
 	connect(ui.treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem * item)), this,
 	        SLOT(onItemExpanded(QTreeWidgetItem * item)));
 	connect(ui.treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem * item)), this,
@@ -110,7 +112,17 @@ void CCMainWindow::initContactTree() {
 	pRootGroupItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 	pRootGroupItem->setData(0, Qt::UserRole, QVariant{ 0 });
 
+	RootContactItem* pItemName{ new RootContactItem{true, ui.treeWidget} };
+	pItemName->setText(QString{ "西北大学" });
 
+	//插入分组节点
+	ui.treeWidget->addTopLevelItem(pRootGroupItem);
+	ui.treeWidget->setItemWidget(pRootGroupItem, 0, pItemName);
+
+	QStringList departments{ "信息科学与技术学院", "文学院", "外国语学院", "考古学院" };
+	for(const auto& department: departments) {
+		addDepartment(pRootGroupItem, department);
+	}
 }
 
 void CCMainWindow::setUserName(const QString& username) const {
@@ -241,6 +253,20 @@ void CCMainWindow::updateSearchStyle() {
 	                               .arg(qMin(b.toInt() / 10 + increaseValue, 255)));
 }
 
+void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const QString& departmentName) {
+	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+	//添加子节点，子项数据为1
+	pChildItem->setData(0, Qt::UserRole, 1);
+
+	QPixmap pixmap{ ":/Resources/MainWindow/head_mask.png" };
+
+	ContactItem* pContactItem{ new ContactItem{ui.treeWidget} };
+	pContactItem->setHeadPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/girl.png" }, pixmap, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(departmentName);
+
+	pRootGroupItem->addChild(pChildItem);
+	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
+}
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
 		SkinWindow* skinWindow{ new SkinWindow };
@@ -248,7 +274,13 @@ void CCMainWindow::onAppIconClicked() const {
 	}
 }
 
-void CCMainWindow::onItemClicked(QTreeWidgetItem* item, int column) {}
+void CCMainWindow::onItemClicked(QTreeWidgetItem* item, int column) {
+	//数据为0表示根项，数据为1表示子项
+	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	if(!isChild) {
+		item->setExpanded(!item->isExpanded());
+	}
+}
 
 void CCMainWindow::onItemExpanded(QTreeWidgetItem* item) {}
 
