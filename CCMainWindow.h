@@ -27,8 +27,12 @@ private:
 
 	void resizeEvent(QResizeEvent* event) override;
 	bool eventFilter(QObject* watched, QEvent* event) override;
-	void updateSearchStyle();
+	void mousePressEvent(QMouseEvent* event) override;
+
+	void updateSearchStyle() const;
 	void addDepartment(QTreeWidgetItem* pRootGroupItem, const QString& departmentName);
+
+	QMap<QTreeWidgetItem*, QString> m_groupMap;	//所有分组的分组项
 
 private slots:
 	void onAppIconClicked() const;
@@ -37,5 +41,4 @@ private slots:
 	void onItemExpanded(QTreeWidgetItem* item);
 	void onItemCollapsed(QTreeWidgetItem* item);
 	void onItemDoubleClicked(QTreeWidgetItem* item, int column);
-
 };

@@ -73,6 +73,24 @@
     <ClCompile Include="ContactItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ChatWindowShell.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmojiWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmojiLabelItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatWindowItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h">
@@ -105,9 +123,30 @@
     <QtMoc Include="ContactItem.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ChatWindowShell.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="EmojiWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="EmojiLabelItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ChatWindowItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ChatWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="WindowManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -121,5 +160,20 @@
     <QtUic Include="ContactItem.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="ChatWindowShell.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="EmojiWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ChatWindowItem.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ChatWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

@@ -3,13 +3,17 @@
 
 #include <QPainter>
 #include <QTimer>
+#include <QMap>
+#include <QMouseEvent>
 
+#include "ChatWindowShell.h"
 #include "CommonUtils.h"
 #include "ContactItem.h"
 #include "NotifyManager.h"
 #include "RootContactItem.h"
 #include "SkinWindow.h"
 #include "SysTray.h"
+#include "WindowManager.h"
 
 CCMainWindow::CCMainWindow(QWidget* parent)
 	: BasicWindow{ parent } {
@@ -100,19 +104,19 @@ void CCMainWindow::initContactTree() {
 	//展开与收纳的信号
 	connect(ui.treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this,
 	        SLOT(onItemClicked(QTreeWidgetItem*, int)));
-	connect(ui.treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem * item)), this,
-	        SLOT(onItemExpanded(QTreeWidgetItem * item)));
-	connect(ui.treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem * item)), this,
-			SLOT(onItemCollapsed(QTreeWidgetItem * item)));
-	connect(ui.treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem * item, int column)), this,
-			SLOT(onItemDoubleClicked(QTreeWidgetItem * item, int column)));
+	connect(ui.treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)), this,
+	        SLOT(onItemExpanded(QTreeWidgetItem*)));
+	connect(ui.treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem*)), this,
+	        SLOT(onItemCollapsed(QTreeWidgetItem*)));
+	connect(ui.treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this,
+	        SLOT(onItemDoubleClicked(QTreeWidgetItem *, int)));
 
 	//根节点
 	QTreeWidgetItem* pRootGroupItem{ new QTreeWidgetItem };
 	pRootGroupItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 	pRootGroupItem->setData(0, Qt::UserRole, QVariant{ 0 });
 
-	RootContactItem* pItemName{ new RootContactItem{true, ui.treeWidget} };
+	RootContactItem* pItemName{ new RootContactItem{ true, ui.treeWidget } };
 	pItemName->setText(QString{ "西北大学" });
 
 	//插入分组节点
@@ -120,7 +124,7 @@ void CCMainWindow::initContactTree() {
 	ui.treeWidget->setItemWidget(pRootGroupItem, 0, pItemName);
 
 	QStringList departments{ "信息科学与技术学院", "文学院", "外国语学院", "考古学院" };
-	for(const auto& department: departments) {
+	for (const auto& department : departments) {
 		addDepartment(pRootGroupItem, department);
 	}
 }
@@ -234,7 +238,17 @@ bool CCMainWindow::eventFilter(QObject* watched, QEvent* event) {
 	return BasicWindow::eventFilter(watched, event);
 }
 
-void CCMainWindow::updateSearchStyle() {
+void CCMainWindow::mousePressEvent(QMouseEvent* event) {
+	if (qApp->widgetAt(event->pos()) != ui.searchLineEdit && ui.searchLineEdit->hasFocus()) {
+		ui.searchLineEdit->clearFocus();
+	} else if (qApp->widgetAt(event->pos()) != ui.lineEdit && ui.lineEdit->hasFocus()) {
+		ui.lineEdit->clearFocus();
+	}
+
+	return BasicWindow::mousePressEvent(event);
+}
+
+void CCMainWindow::updateSearchStyle() const {
 	//获取用户当前皮肤的RGB
 	const QString r{ QString::number(m_colorBackground.red()) };
 	const QString g{ QString::number(m_colorBackground.green()) };
@@ -259,14 +273,19 @@ void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const QString&
 	pChildItem->setData(0, Qt::UserRole, 1);
 
 	QPixmap pixmap{ ":/Resources/MainWindow/head_mask.png" };
+	pChildItem->setData(0, Qt::UserRole + 1, QString::number(reinterpret_cast<int>(pChildItem)));
 
-	ContactItem* pContactItem{ new ContactItem{ui.treeWidget} };
-	pContactItem->setHeadPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/girl.png" }, pixmap, pContactItem->getHeadLabelSize()));
+	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
+	pContactItem->setHeadPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/girl.png" }, pixmap,
+	                                            pContactItem->getHeadLabelSize()));
 	pContactItem->setUsername(departmentName);
 
 	pRootGroupItem->addChild(pChildItem);
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
+
+	m_groupMap.insert(pChildItem, departmentName);
 }
+
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
 		SkinWindow* skinWindow{ new SkinWindow };
@@ -277,13 +296,54 @@ void CCMainWindow::onAppIconClicked() const {
 void CCMainWindow::onItemClicked(QTreeWidgetItem* item, int column) {
 	//数据为0表示根项，数据为1表示子项
 	bool isChild{ item->data(0, Qt::UserRole).toBool() };
-	if(!isChild) {
+	if (!isChild) {
 		item->setExpanded(!item->isExpanded());
 	}
+
+	update();
 }
 
-void CCMainWindow::onItemExpanded(QTreeWidgetItem* item) {}
+void CCMainWindow::onItemExpanded(QTreeWidgetItem* item) {
+	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	if (!isChild) {
+		RootContactItem* pRootContactItem{ dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(item, 0)) };
+		if (pRootContactItem != nullptr) {
+			pRootContactItem->setExpanded(true);
+		}
+	}
 
-void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {}
+	update();
+}
 
-void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {}
+void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {
+	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	if (!isChild) {
+		RootContactItem* pRootContactItem{ dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(item, 0)) };
+		if (pRootContactItem != nullptr) {
+			pRootContactItem->setExpanded(false);
+		}
+	}
+
+	update();
+}
+
+void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
+	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	if (isChild) {
+		QString strGroup{ m_groupMap.value(item) };
+
+		if (strGroup == QString{ "信息科学与技术学院" }) {
+			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
+			                                               GroupType::Company);
+		} else if (strGroup == QString{ "文学院" }) {
+			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
+			                                               GroupType::Personal);
+		} else if (strGroup == QString{ "外国语学院" }) {
+			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
+			                                               GroupType::Marketing);
+		} else if (strGroup == QString{ "考古学院" }) {
+			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
+			                                               GroupType::Development);
+		}
+	}
+}

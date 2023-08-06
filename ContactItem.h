@@ -10,9 +10,9 @@ public:
 	ContactItem(QWidget* parent = nullptr);
 	~ContactItem();
 
-	void setUsername(const QString& username);
-	void setSignature(const QString& signature);
-	void setHeadPixmap(const QPixmap& pixmap);
+	void setUsername(const QString& username) const;
+	void setSignature(const QString& signature) const;
+	void setHeadPixmap(const QPixmap& pixmap) const;
 
 	QString getUsername() const;
 	QSize getHeadLabelSize() const;

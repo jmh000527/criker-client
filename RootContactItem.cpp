@@ -9,7 +9,7 @@ RootContactItem::RootContactItem(bool showIndicator, QWidget* parent)
 
 	//初始化属性动画
 	m_animation = new QPropertyAnimation{ this, "rotation" };
-	m_animation->setDuration(50);
+	m_animation->setDuration(10);
 	m_animation->setEasingCurve(QEasingCurve::InQuad);
 }
 
@@ -30,9 +30,10 @@ void RootContactItem::setExpanded(bool expand) {
 	}
 
 	m_animation->start();
+	update();
 }
 
-int RootContactItem::rotation() {
+int RootContactItem::rotation() const {
 	return m_rotation;
 }
 

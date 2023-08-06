@@ -9,15 +9,15 @@ ContactItem::ContactItem(QWidget* parent)
 
 ContactItem::~ContactItem() {}
 
-void ContactItem::setUsername(const QString& username) {
+void ContactItem::setUsername(const QString& username) const {
 	ui.username->setText(username);
 }
 
-void ContactItem::setSignature(const QString& signature) {
+void ContactItem::setSignature(const QString& signature) const {
 	ui.signature->setText(signature);
 }
 
-void ContactItem::setHeadPixmap(const QPixmap& pixmap) {
+void ContactItem::setHeadPixmap(const QPixmap& pixmap) const {
 	ui.label->setPixmap(QPixmap{ pixmap });
 }
 

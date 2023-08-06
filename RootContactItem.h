@@ -16,7 +16,7 @@ public:
 	void setExpanded(bool expand);
 
 private:
-	int rotation();
+	int rotation() const;
 	void setRotation(int rotation);
 
 	QPropertyAnimation* m_animation;

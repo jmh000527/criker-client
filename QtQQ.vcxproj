@@ -104,9 +104,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basicwindow.cpp" />
+    <ClCompile Include="ChatWindow.cpp" />
+    <ClCompile Include="ChatWindowItem.cpp" />
+    <ClCompile Include="ChatWindowShell.cpp" />
     <ClCompile Include="CommonUtils.cpp" />
     <ClCompile Include="ContactItem.cpp" />
     <ClCompile Include="CustomMenu.cpp" />
+    <ClCompile Include="EmojiLabelItem.cpp" />
+    <ClCompile Include="EmojiWindow.cpp" />
     <ClCompile Include="NotifyManager.cpp" />
     <ClCompile Include="QClickLabel.cpp" />
     <ClCompile Include="RootContactItem.cpp" />
@@ -114,12 +119,17 @@
     <ClCompile Include="SysTray.cpp" />
     <ClCompile Include="titlebar.cpp" />
     <ClCompile Include="UserLogin.cpp" />
+    <ClCompile Include="WindowManager.cpp" />
     <QtRcc Include="CCMainWindow.qrc" />
     <QtUic Include="CCMainWindow.ui" />
     <QtMoc Include="CCMainWindow.h" />
     <ClCompile Include="CCMainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="ChatWindow.ui" />
+    <QtUic Include="ChatWindowItem.ui" />
+    <QtUic Include="ChatWindowShell.ui" />
     <QtUic Include="ContactItem.ui" />
+    <QtUic Include="EmojiWindow.ui" />
     <QtUic Include="SkinWindow.ui" />
     <QtUic Include="UserLogin.ui" />
   </ItemGroup>
@@ -133,6 +143,13 @@
     <QtMoc Include="NotifyManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GroupType.h" />
+    <QtMoc Include="WindowManager.h" />
+    <QtMoc Include="EmojiLabelItem.h" />
+    <QtMoc Include="EmojiWindow.h" />
+    <QtMoc Include="ChatWindowShell.h" />
+    <QtMoc Include="ChatWindowItem.h" />
+    <QtMoc Include="ChatWindow.h" />
     <ClInclude Include="CommonUtils.h" />
     <QtMoc Include="ContactItem.h" />
     <QtMoc Include="RootContactItem.h" />
@@ -141,6 +158,9 @@
     <QtMoc Include="QClickLabel.h" />
     <QtMoc Include="SkinWindow.h" />
     <QtMoc Include="UserLogin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
