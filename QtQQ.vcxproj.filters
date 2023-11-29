@@ -173,7 +173,4 @@
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
-  </ItemGroup>
 </Project>

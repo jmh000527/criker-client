@@ -5,6 +5,7 @@
 ChatWindowItem::ChatWindowItem(QWidget* parent)
 	: QWidget(parent) {
 	ui.setupUi(this);
+	CommonUtils::loadStyleSheet(this, "ChatWindowItem");
 
 	initControl();
 }
@@ -13,7 +14,8 @@ ChatWindowItem::~ChatWindowItem() {}
 
 void ChatWindowItem::setHeadPixmap(const QString& pixmap) const {
 	QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
-	const QPixmap& headPixmap{ CommonUtils::getRoundedImage(pixmap, mask, ui.headLabel->size()) };
+	QPixmap head = QPixmap{ ":/Resources/MainWindow/girl.png" };
+	const QPixmap& headPixmap{ CommonUtils::getRoundedImage(head, mask, ui.headLabel->size()) };
 
 	ui.headLabel->setPixmap(headPixmap);
 }

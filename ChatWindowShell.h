@@ -25,16 +25,18 @@ public:
 	~ChatWindowShell();
 
 	//添加新的聊天窗口
-	void addTalkWindow(ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& windowName);
+	void addTalkWindow(ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, GroupType groupType);
 	//设置当前聊天窗口
 	void setCurrentWidget(QWidget* widget) const;
+
+	QMap<QListWidgetItem*, QWidget*> getChatWindowItemMap()const;
 
 public slots:
 	void onEmojiBtnClicked() const;	//表情按钮被点击
 
 private slots:
 	void onChatWindowItemClicked(QListWidgetItem* item);	//左侧列表项被点击
-	void onEmojiItemClicked(int emojiNum);	//表情被选中
+	void onEmojiItemClicked(int emojiNum) const;	//表情被选中
 
 private:
 	Ui::ChatWindowShellClass ui;

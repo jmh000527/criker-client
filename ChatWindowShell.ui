@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1043</width>
-    <height>732</height>
+    <height>730</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,18 +32,13 @@
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="styleSheet">
-      <string notr="true">QSplitter::handle{
-	background-color: rgb(255, 255, 255);
-}
-QSplitter::handle::horizontal{
-	width: 1px
-}</string>
+      <string notr="true"/>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="handleWidth">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="childrenCollapsible">
       <bool>false</bool>
@@ -88,6 +83,9 @@ QSplitter::handle::horizontal{
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="titleSkin" stdset="0">
           <bool>true</bool>
          </property>
@@ -101,6 +99,9 @@ QSplitter::handle::horizontal{
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
       </property>
      </widget>
     </widget>

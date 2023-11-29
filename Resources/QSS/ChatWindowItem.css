@@ -1,0 +1,18 @@
+* {
+    font-family: Microsoft YaHei;
+}
+
+QPushButton#tclosebtn {
+    border-image: url(:Resources/MainWindow/close.png);
+    border-width: 0px;
+}
+
+QPushButton#tclosebtn:hover {
+    border-image: url(:Resources/MainWindow/close-hover.png);
+    border-width: 0px;
+}
+
+QPushButton#tclosebtn:pressed {
+    border-image: url(:Resources/MainWindow/close-hover.png);
+    border-width: 0px;
+}

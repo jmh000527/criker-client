@@ -35,7 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtModules>core;gui;network;qml;widgets;core5compat;sql;webchannel;webenginecore;xml;webenginewidgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
-    <QtInstall>6.6.0_msvc2019_64</QtInstall>
+    <QtInstall>6.5.2_msvc2019_64</QtInstall>
     <QtQMakeTemplate>vcapp</QtQMakeTemplate>
     <QtPlugin>false</QtPlugin>
     <QtDeploy>false</QtDeploy>
@@ -44,7 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtModules>core;gui;network;qml;widgets;core5compat;sql;webchannel;webenginecore;xml;webenginewidgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
-    <QtInstall>6.6.0_msvc2019_64</QtInstall>
+    <QtInstall>6.5.2_msvc2019_64</QtInstall>
     <QtQMakeTemplate>vcapp</QtQMakeTemplate>
     <QtPlugin>false</QtPlugin>
     <QtDeploy>false</QtDeploy>
@@ -158,9 +158,6 @@
     <QtMoc Include="QClickLabel.h" />
     <QtMoc Include="SkinWindow.h" />
     <QtMoc Include="UserLogin.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

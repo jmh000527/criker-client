@@ -2,12 +2,12 @@
    font-family: Microsoft YaHei;
 }
 
-QWidget#TalkWindow {
-   background-color: #ffffff;
+QWidget#ChatWindow {
+   background-color: #aa1010;
    border: 1px solid #eeeeee;
 }
 
-QWidget#frameWidhet {
+QWidget#frameWidget {
    background-color: #ffffff;
    border-top: 1px solid #eeeeee;
    border-bottom: 1px solid #eeeeee;
@@ -27,14 +27,17 @@ QPushButton#sysmin:pressed {
 
 QPushButton#sysclose {
    border-image: url(:Resources/MainWindow/sysbtn_close_normal.png);
+   border-top-right-radius: 4px;
 }
 
 QPushButton#sysclose:hover {
    border-image: url(:Resources/MainWindow/sysbtn_close_hover.png);
+   border-top-right-radius: 4px;
 }
 
 QPushButton#sysclose:pressed {
    border-image: url(:Resources/MainWindow/sysbtn_close_down.png);
+   border-top-right-radius: 4px;
 }
 
 QLabel#nameLabel {
@@ -72,52 +75,6 @@ QPushButton#rightSpliterBtn:hover {
 QPushButton#rightSpliterBtn:pressed {
    border-image: url(:Resources/MainWindow/aio_splitbutton_right_down.png);
    border-width: 0px;
-}
-
-QToolButton#closeBtn {
-   background-color: rgb(141, 210, 235);
-   color: #ffffff;
-   font-size: 12px;
-   border-radius: 4px;
-   padding-right: 0px;
-}
-
-QToolButton#closeBtn:hover {
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QToolButton#closeBtn:pressed {
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QToolButton#sendBtn {
-   background-color: rgb(141, 210, 235);
-   color: #ffffff;
-   font-size: 12px;
-   border-radius: 4px;
-   padding-right: 20px;
-}
-
-QToolButton#sendBtn:hover {
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QToolButton#sendBtn:pressed {
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QToolButton#sendBtn::menu-button {
-   margin-top: 5px;
-   border-top-right-radius: 4px;
-   border-bottom-right-radius: 4px;
-   border-left: 1px solid rgba(255, 255, 255, 100);
-   background-color: transparent;
-   width: 24px;
-   height: 14px;
-}
-
-QToolButton#sendBtn::menu-arrow {
-   image: url(:Resources/MainWindow/aio_setting_white_normal.png);
 }
 
 QPushButton#faceBtn {
@@ -264,47 +221,17 @@ QWidget#rightStackedWidget {
    border-bottom-right-radius: 4px;
 }
 
-QListView {
-   background-color: rgb(48, 165, 106);
-   padding: 4px;
-}
-
-QListView::item {
-   border-radius: 4px;
-   background-color: transparent;
-   height: 44px;
-}
-
-QListView::item:selected {
-   border-radius: 4px;
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QListView::item:selected: !active {
-   border-radius: 4px;
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QListView::item:selected:active {
-   border-radius: 4px;
-   background-color: rgba(141, 210, 235, 150);
-}
-
-QListView::item:hover {
-   background-color: rgba(141, 210, 235, 100);
-}
-
-QPushButton#closeBtn {
+QPushButton#tclosebtn {
    border-image: url(:Resources/MainWindow/close.png);
    border-width: 0px;
 }
 
-QPushButton#closeBtn:hover {
+QPushButton#tclosebtn:hover {
    border-image: url(:Resources/MainWindow/close-hover.png);
    border-width: 0px;
 }
 
-QPushButton#closeBtn:pressed {
+QPushButton#tclosebtn:pressed {
    border-image: url(:Resources/MainWindow/close-hover.png);
    border-width: 0px;
 }
@@ -393,46 +320,4 @@ QComboBox QListView {
 QComboBox QAbstractItemView {
    color: #333333;
    font-size: 12px;
-}
-
-QScrollBar:horizontal {
-   background: #ffffff;
-   height: 6px;
-}
-
-QScrollBar::handle:horizontal {
-   background: #cccccc;
-   border-radius: 3px;
-   height: 6px;
-}
-
-QScrollBar::sub-line:horizontal {
-   background: transparent;
-}
-
-QScrollBar::add-line:horizontal {
-   background: transparent;
-}
-
-QScrollBar:vertical {
-   background: #ffffff;
-   width: 6px;
-}
-
-QScrollBar::handle:vertical {
-   background: #cccccc;
-   border-radius: 3px;
-   width: 6px;
-}
-
-QScrollBar::sub-line:vertical {
-   background: transparent;
-}
-
-QScrollBar::add-line:vertical {
-   background: transparent;
-}
-
-QWidget#titleWidget {
-   border-top: 0px;
 }

@@ -45,39 +45,48 @@ void WindowManager::addNewChatWindow(const QString& windowName, GroupType groupT
 
 	QWidget* widget{ findWindowByName(windowName) };
 	if (widget == nullptr) {
-		ChatWindow* chatWindow{ new ChatWindow{ m_chatWindowShell, windowName } };
+		ChatWindow* chatWindow{ new ChatWindow{ m_chatWindowShell, windowName, groupType } };
 		ChatWindowItem* chatWindowItem{ new ChatWindowItem{ chatWindow } };
 
 		switch (groupType) {
 			case GroupType::Company: {
 				chatWindow->setWindowName(QStringLiteral("信息科学与技术学院"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("信息科学与技术学院"));
+				chatWindowItem->setMsgLabelContent(QStringLiteral("信息科学与技术学院signature"));
 				break;
 			}
 			case GroupType::Personal: {
-				chatWindow->setWindowName(QStringLiteral("信息科学与技术学院2"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("信息科学与技术学院2"));
+				chatWindow->setWindowName(QStringLiteral("文学院"));
+				chatWindowItem->setMsgLabelContent(QStringLiteral("文学院"));
 				break;
 			}
 			case GroupType::Development: {
-				chatWindow->setWindowName(QStringLiteral("信息科学与技术学院3"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("信息科学与技术学院3"));
+				chatWindow->setWindowName(QStringLiteral("外国语学院"));
+				chatWindowItem->setMsgLabelContent(QStringLiteral("外国语学院"));
 				break;
 			}
 			case GroupType::Marketing: {
-				chatWindow->setWindowName(QStringLiteral("信息科学与技术学院4"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("信息科学与技术学院4"));
+				chatWindow->setWindowName(QStringLiteral("考古学院"));
+				chatWindowItem->setMsgLabelContent(QStringLiteral("考古学院"));
 				break;
 			}
 			case GroupType::P2P: {
+				chatWindow->setWindowName(QStringLiteral("P2P"));
+				chatWindowItem->setMsgLabelContent(people);
 				break;
 			}
 			default: {
 				break;
 			}
 		}
+
+		m_chatWindowShell->addTalkWindow(chatWindow, chatWindowItem, groupType);
 	} else {
+		//设置右侧聊天窗口
 		m_chatWindowShell->setCurrentWidget(widget);
+
+		//设置左侧列表选中
+		auto* item{ m_chatWindowShell->getChatWindowItemMap().key(widget) };
+		item->setSelected(true);
 	}
 
 	m_chatWindowShell->show();
