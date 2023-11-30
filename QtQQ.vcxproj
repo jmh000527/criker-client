@@ -65,6 +65,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
@@ -112,8 +113,10 @@
     <ClCompile Include="CustomMenu.cpp" />
     <ClCompile Include="EmojiLabelItem.cpp" />
     <ClCompile Include="EmojiWindow.cpp" />
+    <ClCompile Include="MsgWebView.cpp" />
     <ClCompile Include="NotifyManager.cpp" />
     <ClCompile Include="QClickLabel.cpp" />
+    <ClCompile Include="QMsgTextEdit.cpp" />
     <ClCompile Include="RootContactItem.cpp" />
     <ClCompile Include="SkinWindow.cpp" />
     <ClCompile Include="SysTray.cpp" />
@@ -144,6 +147,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GroupType.h" />
+    <QtMoc Include="MsgWebView.h" />
+    <QtMoc Include="QMsgTextEdit.h" />
     <QtMoc Include="WindowManager.h" />
     <QtMoc Include="EmojiLabelItem.h" />
     <QtMoc Include="EmojiWindow.h" />

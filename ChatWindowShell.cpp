@@ -89,7 +89,16 @@ QMap<QListWidgetItem*, QWidget*> ChatWindowShell::getChatWindowItemMap() const {
 	return m_chatWindowItemMap;
 }
 
-void ChatWindowShell::onEmojiBtnClicked() const {
+bool ChatWindowShell::eventFilter(QObject* obj, QEvent* event) {
+	if (obj == m_emojiWindow && event->type() == QEvent::Leave) {
+		// 鼠标离开Emoji面板时隐藏面板
+		m_emojiWindow->hide();
+		return true;
+	}
+	return QObject::eventFilter(obj, event);
+}
+
+void ChatWindowShell::onEmojiBtnClicked(bool) {
 	m_emojiWindow->setVisible(!m_emojiWindow->isVisible());
 	QPoint emojiPoint = this->mapToGlobal(QPoint{ 0, 0 }); //将当前控件的相对位置转换为屏幕的绝对位置
 
@@ -97,6 +106,9 @@ void ChatWindowShell::onEmojiBtnClicked() const {
 	emojiPoint.setY(emojiPoint.y() + 220);
 
 	m_emojiWindow->move(emojiPoint);
+
+	// 安装事件过滤器，以捕获鼠标离开事件
+	m_emojiWindow->installEventFilter(this);
 }
 
 void ChatWindowShell::onChatWindowItemClicked(QListWidgetItem* item) {
@@ -104,7 +116,7 @@ void ChatWindowShell::onChatWindowItemClicked(QListWidgetItem* item) {
 	ui.rightStackedWidget->setCurrentWidget(chatWindowWidget);
 }
 
-void ChatWindowShell::onEmojiItemClicked(int emojiNum) const {
+void ChatWindowShell::onEmojiItemClicked(int emojiNum){
 	ChatWindow* currentChatWindow{ dynamic_cast<ChatWindow*>(ui.rightStackedWidget->currentWidget()) };
 	if (currentChatWindow != nullptr) {
 		currentChatWindow->addEmojiImage(emojiNum);

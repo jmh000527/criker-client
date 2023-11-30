@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QMouseEvent>
 #include <QWidget>
 #include "ui_EmojiWindow.h"
 
@@ -19,7 +20,7 @@ private:
 
 signals:
 	void signalEmojiWindowHide();
-	void siganlEmohiItemClicked(int emojiNum);
+	void signalEmojiItemClicked(int emojiNum);
 
 
 private slots:

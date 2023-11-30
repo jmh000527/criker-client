@@ -8,6 +8,7 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QGuiApplication>
+#include <QPainterPath>
 
 #include "CCMainWindow.h"
 

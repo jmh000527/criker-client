@@ -31,12 +31,15 @@ public:
 
 	QMap<QListWidgetItem*, QWidget*> getChatWindowItemMap()const;
 
+protected:
+	bool eventFilter(QObject* obj, QEvent* event) override;
+
 public slots:
-	void onEmojiBtnClicked() const;	//表情按钮被点击
+	void onEmojiBtnClicked(bool);	//表情按钮被点击
 
 private slots:
 	void onChatWindowItemClicked(QListWidgetItem* item);	//左侧列表项被点击
-	void onEmojiItemClicked(int emojiNum) const;	//表情被选中
+	void onEmojiItemClicked(int emojiNum);	//表情被选中
 
 private:
 	Ui::ChatWindowShellClass ui;

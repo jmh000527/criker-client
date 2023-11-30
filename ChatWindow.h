@@ -35,6 +35,6 @@ private:
 	QMap<QTreeWidgetItem*, QString> m_groupPeopleMap;	//所有分组联系人姓名
 
 private slots:
-	void onSendBtnClicked();
+	void onSendBtnClicked(bool);
 	void onItemDoubleClicked(QTreeWidgetItem* item, int colum);
 };

@@ -1,6 +1,8 @@
 #include "ChatWindow.h"
 
 #include <QFile>
+#include <QMessageBox>
+#include <QToolTip>
 
 #include "ChatWindowShell.h"
 #include "CommonUtils.h"
@@ -20,19 +22,22 @@ ChatWindow::~ChatWindow() {
 	WindowManager::getInstance()->deleteWindowByName(m_chatId);
 }
 
-void ChatWindow::addEmojiImage(int emojiNum) {}
+void ChatWindow::addEmojiImage(int emojiNum) {
+	ui.textEdit->setFocus();
+	ui.textEdit->addEmojiUrl(emojiNum);
+}
 
 void ChatWindow::setWindowName(const QString& name) {
 	ui.nameLabel->setText(name);
 }
 
 void ChatWindow::addPeopInfo(QTreeWidgetItem* pRootItem) {
-	QTreeWidgetItem* pChild = new QTreeWidgetItem();
+	auto* pChild = new QTreeWidgetItem();
 
 	//添加子节点
 	pChild->setData(0, Qt::UserRole, 1);
 	pChild->setData(0, Qt::UserRole + 1, QString::number((int)pChild));
-	ContactItem* pContactItem = new ContactItem(ui.treeWidget);
+	auto* pContactItem = new ContactItem(ui.treeWidget);
 
 	static int i = 0;
 	QPixmap pix1;
@@ -148,7 +153,7 @@ void ChatWindow::initP2PChat() {
 	pixSkin.load(":/Resources/MainWindow/skin.png");
 	// ui.widget->setFixedSize(pixSkin.size());
 
-	QLabel* skinLabel = new QLabel(ui.widget);
+	auto* skinLabel = new QLabel(ui.widget);
 	skinLabel->setPixmap(pixSkin);
 	skinLabel->setFixedSize(ui.widget->size());
 
@@ -267,7 +272,38 @@ void ChatWindow::loadStyleSheet(const QString& sheetName) {
 	file.close();
 }
 
-void ChatWindow::onSendBtnClicked() {}
+void ChatWindow::onSendBtnClicked(bool) {
+	if (ui.textEdit->toPlainText().isEmpty()) {
+		QToolTip::showText(this->mapToGlobal(QPoint(630, 660)), QString::fromLocal8Bit("发送的信息不能为空"),
+		                   this, QRect(0, 0, 120, 100), 2000);
+		return;
+	}
+
+	QString html = ui.textEdit->document()->toHtml();
+
+	//文本HTML如果没有字体则添加字体
+	if (!html.contains(".png") && !html.contains("</span>")) {
+		QString fontHtml;
+		QString text = ui.textEdit->toPlainText();
+		QFile file(":/Resources/MainWindow/MsgHtml/msgFont.txt");
+		if (file.open(QIODevice::ReadOnly)) {
+			fontHtml = file.readAll();
+			fontHtml.replace("%1", text);
+			file.close();
+		} else {
+			QMessageBox::information(this, QString::fromLocal8Bit("提示"),
+			                         QString::fromLocal8Bit("msgFont.txt 不存在"));
+			return;
+		}
+		if (!html.contains(fontHtml)) {
+			html.replace(text, fontHtml);
+		}
+	}
+
+	ui.textEdit->clear();
+	ui.textEdit->deleteAllEmojiImage();
+	ui.msgWidget->appendMsg(html); //收信息窗口
+}
 
 void ChatWindow::onItemDoubleClicked(QTreeWidgetItem* item, int colum) {
 	if (bool isChild = item->data(0, Qt::UserRole).toBool(); isChild) {

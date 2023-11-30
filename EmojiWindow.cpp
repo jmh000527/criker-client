@@ -19,6 +19,11 @@ EmojiWindow::EmojiWindow(QWidget* parent)
 	setAttribute(Qt::WA_TranslucentBackground);
 	setAttribute(Qt::WA_DeleteOnClose);
 
+	// // 设置QWidget的样式
+	// this->setStyleSheet("QWidget {"
+	// 					 "    border-radius: 4px;"       // 圆角为4px
+	// 					 "}");
+
 	initControl();
 }
 
@@ -51,5 +56,5 @@ void EmojiWindow::paintEvent(QPaintEvent* event) {
 void EmojiWindow::addEmoji(int emojiNum) {
 	hide();
 	emit signalEmojiWindowHide();
-	emit siganlEmohiItemClicked(emojiNum);
+	emit signalEmojiItemClicked(emojiNum);
 }
