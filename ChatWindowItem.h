@@ -10,7 +10,7 @@ public:
 	ChatWindowItem(QWidget* parent = nullptr);
 	~ChatWindowItem();
 
-	void setHeadPixmap(const QString& pixmap) const;
+	void setHeadPixmap(const QPixmap& pixmap) const;
 	void setMsgLabelContent(const QString& msg) const;
 	QString getMsgLabelText() const;
 

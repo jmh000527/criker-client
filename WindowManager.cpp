@@ -1,5 +1,6 @@
-﻿#include "WindowManager.h"
+﻿#include <QSqlQueryModel>
 
+#include "WindowManager.h"
 #include "ChatWindowShell.h"
 
 //单例模式，创建全局静态对象
@@ -32,7 +33,7 @@ void WindowManager::addWindowName(QWidget* windowWidget, const QString& windowNa
 	}
 }
 
-void WindowManager::addNewChatWindow(const QString& windowName, GroupType groupType, const QString& people) {
+void WindowManager::addNewChatWindow(const QString& uid) {
 	if (m_chatWindowShell == nullptr) {
 		m_chatWindowShell = new ChatWindowShell;
 
@@ -43,43 +44,32 @@ void WindowManager::addNewChatWindow(const QString& windowName, GroupType groupT
 		);
 	}
 
-	QWidget* widget{ findWindowByName(windowName) };
+	QWidget* widget{ findWindowByName(uid) };
 	if (widget == nullptr) {
-		ChatWindow* chatWindow{ new ChatWindow{ m_chatWindowShell, windowName, groupType } };
+		ChatWindow* chatWindow{ new ChatWindow{ m_chatWindowShell, uid } };
 		ChatWindowItem* chatWindowItem{ new ChatWindowItem{ chatWindow } };
 
-		switch (groupType) {
-			case GroupType::Company: {
-				chatWindow->setWindowName(QStringLiteral("信息科学与技术学院"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("信息科学与技术学院signature"));
-				break;
-			}
-			case GroupType::Personal: {
-				chatWindow->setWindowName(QStringLiteral("文学院"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("文学院"));
-				break;
-			}
-			case GroupType::Development: {
-				chatWindow->setWindowName(QStringLiteral("外国语学院"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("外国语学院"));
-				break;
-			}
-			case GroupType::Marketing: {
-				chatWindow->setWindowName(QStringLiteral("考古学院"));
-				chatWindowItem->setMsgLabelContent(QStringLiteral("考古学院"));
-				break;
-			}
-			case GroupType::P2P: {
-				chatWindow->setWindowName(QStringLiteral("P2P"));
-				chatWindowItem->setMsgLabelContent(people);
-				break;
-			}
-			default: {
-				break;
-			}
+		//判断群聊还是单聊
+		QSqlQueryModel sqlDepModel;
+		QString strSql = QString("SELECT department_name,sign FROM tab_department WHERE departmentID=%1").arg(uid);
+		sqlDepModel.setQuery(strSql);
+		int rows = sqlDepModel.rowCount();
+
+		//单聊
+		if (rows == 0) {
+			QString sql = QString("SELECT employee_name,employee_sign FROM tab_employees WHERE employeeID=%1").arg(uid);
+			sqlDepModel.setQuery(sql);
 		}
 
-		m_chatWindowShell->addTalkWindow(chatWindow, chatWindowItem, groupType);
+		QModelIndex indexDepIndex = sqlDepModel.index(0, 0);
+		QModelIndex signIndex = sqlDepModel.index(0, 1);
+		QString strWindowName = sqlDepModel.data(signIndex).toString();
+		QString strMsgLabel = sqlDepModel.data(indexDepIndex).toString();
+
+		chatWindow->setWindowName(strWindowName);
+		chatWindowItem->setMsgLabelContent(strMsgLabel); //左侧文本显示
+
+		m_chatWindowShell->addTalkWindow(chatWindow, chatWindowItem, uid);
 	} else {
 		//设置右侧聊天窗口
 		m_chatWindowShell->setCurrentWidget(widget);
@@ -91,4 +81,8 @@ void WindowManager::addNewChatWindow(const QString& windowName, GroupType groupT
 
 	m_chatWindowShell->show();
 	m_chatWindowShell->activateWindow();
+}
+
+ChatWindowShell* WindowManager::getChatWindowShell() {
+	return m_chatWindowShell;
 }

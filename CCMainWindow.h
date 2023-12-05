@@ -9,7 +9,7 @@ class CCMainWindow : public BasicWindow {
 	Q_OBJECT
 
 public:
-	CCMainWindow(QWidget* parent = nullptr);
+	CCMainWindow(QString employeeID, QWidget* parent = nullptr);
 	~CCMainWindow() override;
 
 private:
@@ -23,6 +23,9 @@ private:
 	void setUserHeadPixmap(const QString& headPath) const;
 	void setUserStatusMenuIcon(const QString& statusPath) const;
 
+	QString getHeadPicturePath();
+	QString getUsername();
+
 	QWidget* createOtherAppExtension(const QString& appPath, const QString& appName);
 
 	void resizeEvent(QResizeEvent* event) override;
@@ -30,9 +33,9 @@ private:
 	void mousePressEvent(QMouseEvent* event) override;
 
 	void updateSearchStyle() const;
-	void addDepartment(QTreeWidgetItem* pRootGroupItem, const QString& departmentName);
+	void addDepartment(QTreeWidgetItem* pRootGroupItem, const int DepID);
 
-	QMap<QTreeWidgetItem*, QString> m_groupMap;	//所有分组的分组项
+	QString m_employeeID;	//账号 或QQ 号
 
 private slots:
 	void onAppIconClicked() const;

@@ -65,7 +65,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);D:\Qt_Projects\QtQQ\thirdparty\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
@@ -108,20 +108,26 @@
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="ChatWindowItem.cpp" />
     <ClCompile Include="ChatWindowShell.cpp" />
+    <ClCompile Include="CommonInfo.cpp" />
     <ClCompile Include="CommonUtils.cpp" />
     <ClCompile Include="ContactItem.cpp" />
     <ClCompile Include="CustomMenu.cpp" />
     <ClCompile Include="EmojiLabelItem.cpp" />
     <ClCompile Include="EmojiWindow.cpp" />
+    <ClCompile Include="Group.cpp" />
     <ClCompile Include="MsgWebView.cpp" />
     <ClCompile Include="NotifyManager.cpp" />
     <ClCompile Include="QClickLabel.cpp" />
     <ClCompile Include="QMsgTextEdit.cpp" />
+    <ClCompile Include="QNChatMessage.cpp" />
     <ClCompile Include="RootContactItem.cpp" />
     <ClCompile Include="SkinWindow.cpp" />
     <ClCompile Include="SysTray.cpp" />
+    <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="titlebar.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="UserLogin.cpp" />
+    <ClCompile Include="UserManager.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <QtRcc Include="CCMainWindow.qrc" />
     <QtUic Include="CCMainWindow.ui" />
@@ -146,7 +152,15 @@
     <QtMoc Include="NotifyManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommonInfo.h" />
+    <ClInclude Include="Group.h" />
     <ClInclude Include="GroupType.h" />
+    <ClInclude Include="MsgType.h" />
+    <ClInclude Include="thirdparty\json.hpp" />
+    <ClInclude Include="User.h" />
+    <ClInclude Include="UserManager.h" />
+    <QtMoc Include="TcpClient.h" />
+    <QtMoc Include="QNChatMessage.h" />
     <QtMoc Include="MsgWebView.h" />
     <QtMoc Include="QMsgTextEdit.h" />
     <QtMoc Include="WindowManager.h" />

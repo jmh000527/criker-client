@@ -17,7 +17,9 @@ public:
 	QWidget* findWindowByName(const QString& windowName);
 	void deleteWindowByName(const QString& windowName);
 	void addWindowName(QWidget* windowWidgetconst, const QString& windowName);
-	void addNewChatWindow(const QString& windowName, GroupType groupType, const QString& people = "");
+	void addNewChatWindow(const QString& uid);
+
+	ChatWindowShell* getChatWindowShell();
 
 
 private:

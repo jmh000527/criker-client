@@ -38,7 +38,7 @@ public:
 	MsgWebView(QWidget* parent);
 	~MsgWebView();
 
-	void appendMsg(const QString& html);
+	void appendMsg(const QString& html, QString obj = "0");
 
 private:
 	QList<QStringList> parseHtml(const QString& html); //解析HTML
@@ -48,5 +48,5 @@ private:
 	QWebChannel* m_channel; //网络通道
 
 signals:
-	void signalSendMsg(QString& strData, int& msgType, QString sFile = "");
+	void signalSendMsg(const QString& strData, int& msgType, QString sFile = "");
 };

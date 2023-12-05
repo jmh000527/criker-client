@@ -12,10 +12,9 @@ ChatWindowItem::ChatWindowItem(QWidget* parent)
 
 ChatWindowItem::~ChatWindowItem() {}
 
-void ChatWindowItem::setHeadPixmap(const QString& pixmap) const {
+void ChatWindowItem::setHeadPixmap(const QPixmap& pixmap) const {
 	QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
-	QPixmap head = QPixmap{ ":/Resources/MainWindow/girl.png" };
-	const QPixmap& headPixmap{ CommonUtils::getRoundedImage(head, mask, ui.headLabel->size()) };
+	const QPixmap& headPixmap{ CommonUtils::getRoundedImage(pixmap, mask, ui.headLabel->size()) };
 
 	ui.headLabel->setPixmap(headPixmap);
 }

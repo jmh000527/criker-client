@@ -54,10 +54,9 @@ MsgWebView::MsgWebView(QWidget* parent)
 	m_msgHtmlObj = new MsgHtmlObj(this);
 	channel->registerObject("external0", m_msgHtmlObj);
 
-	// ChatWindowShell* talkWindowShell = WindowManager::getInstance()->getTalkWindowShell();
-	// connect(this, &MsgWebView::signalSendMsg,
-	// 		talkWindowShell, &ChatWindowShell::updateSendTcpMsg);
-	//
+	ChatWindowShell* chatWindowShell = WindowManager::getInstance()->getChatWindowShell();
+	connect(this, &MsgWebView::signalSendMsg, chatWindowShell, &ChatWindowShell::updateSendTcpMsg);
+
 	// //当前正在聊天的窗口ID
 	// QString strTalkId = WindowManger::getInstance()->getCreatingTalkId();
 	//
@@ -114,13 +113,13 @@ MsgWebView::MsgWebView(QWidget* parent)
 
 MsgWebView::~MsgWebView() {}
 
-void MsgWebView::appendMsg(const QString& html) {
+void MsgWebView::appendMsg(const QString& html, QString obj) {
 	QJsonObject msgObj;
 	QString qsMsg;
 	const QList<QStringList> msgList = parseHtml(html);
 
 	int imageNum = 0;
-	int msgType = 1; //信息类型: 0表情 1 文本 2 文件
+	int msgType = 1; //信息类型: 0表情 1文本 2文件
 	bool isImageMsg = false;
 	QString strData;
 
@@ -164,20 +163,17 @@ void MsgWebView::appendMsg(const QString& html) {
 	}
 	msgObj.insert("MSG", qsMsg);
 	const QString& Msg = QJsonDocument(msgObj).toJson(QJsonDocument::Compact);
-	this->page()->runJavaScript(QString{ "appendHtml0(%1)" }.arg(Msg));
 
-	// if (strObj == "0") //发送信息
-	// {
-	// 	//appendHtml0
-	// 	this->page()->runJavaScript(QString("appendHtml0(%1)").arg(Msg));
-	// 	if (isImageMsg) {
-	// 		strData = QString::number(imageNum) + "images" + strData;
-	// 	}
-	// 	emit signalSendMsg(strData, msgType);
-	// } else //来信息
-	// {
-	// 	this->page()->runJavaScript(QString("recvHtml_%1(%2)").arg(strObj).arg(Msg));
-	// }
+	if (obj == "0") {	//发送信息
+		//appendHtml0
+		this->page()->runJavaScript(QString("appendHtml0(%1)").arg(Msg));
+		if (isImageMsg) {
+			strData = QString::number(imageNum) + "images" + strData;
+		}
+		emit signalSendMsg(strData, msgType);
+	} else {	//来信息
+		this->page()->runJavaScript(QString("recvHtml_%1(%2)").arg(obj).arg(Msg));
+	}
 }
 
 QList<QStringList> MsgWebView::parseHtml(const QString& html) {

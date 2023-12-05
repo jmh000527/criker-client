@@ -1,12 +1,12 @@
 ﻿#include "CCMainWindow.h"
-#include "CCMainWindow.h"
 
 #include <QPainter>
 #include <QTimer>
 #include <QMap>
-#include <QMouseEvent>
+#include <QSqlQuery>
 
 #include "ChatWindowShell.h"
+#include "CommonInfo.h"
 #include "CommonUtils.h"
 #include "ContactItem.h"
 #include "NotifyManager.h"
@@ -15,12 +15,14 @@
 #include "SysTray.h"
 #include "WindowManager.h"
 
-CCMainWindow::CCMainWindow(QWidget* parent)
-	: BasicWindow{ parent } {
+CCMainWindow::CCMainWindow(QString employeeID, QWidget* parent)
+	: BasicWindow{ parent }, m_employeeID{ std::move(employeeID) } {
 	ui.setupUi(this);
 
 	setWindowFlags(windowFlags() | Qt::Tool);
 	loadStyleSheet("CCMainWindow");
+
+	setUserHeadPixmap(getHeadPicturePath());
 
 	initColtrol();
 	initTimer();
@@ -50,7 +52,6 @@ void CCMainWindow::initColtrol() {
 	ui.treeWidget->setStyle(new CustomProxyStyle{ this });
 
 	setUserLevelPixmap(0);
-	setUserHeadPixmap(":/Resources/MainWindow/girl.png");
 	setUserStatusMenuIcon(":/Resources/MainWindow/StatusSucceeded.png");
 
 	const auto appUpLayout{ new QHBoxLayout{ this } };
@@ -116,17 +117,34 @@ void CCMainWindow::initContactTree() {
 	pRootGroupItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 	pRootGroupItem->setData(0, Qt::UserRole, QVariant{ 0 });
 
-	RootContactItem* pItemName{ new RootContactItem{ true, ui.treeWidget } };
-	pItemName->setText(QString{ "西北大学" });
+	//获取公司部门ID
+	QSqlQuery queryComDepID(
+		QString("SELECT departmentID FROM tab_department WHERE department_name='%1'").arg(QString{ "公司群" }));
+	queryComDepID.exec();
+	queryComDepID.first();
+	int CompDepID = queryComDepID.value(0).toInt();
+
+	//获取登陆者所在的部门ID
+	QSqlQuery querySelfDepID(
+		QString("SELECT departmentID FROM tab_employees WHERE employeeID=%1").arg(CommonInfo::loginEmployeeID));
+	querySelfDepID.exec();
+	querySelfDepID.first();
+	int SelfDepID = querySelfDepID.value(0).toInt();
+
+	//初始化公司群及所在的群
+	addDepartment(pRootGroupItem, CompDepID);
+	addDepartment(pRootGroupItem, SelfDepID);
 
 	//插入分组节点
+	RootContactItem* pItemName{ new RootContactItem{ true, ui.treeWidget } };
+	pItemName->setText(QString{ "西北大学" });
 	ui.treeWidget->addTopLevelItem(pRootGroupItem);
 	ui.treeWidget->setItemWidget(pRootGroupItem, 0, pItemName);
 
-	QStringList departments{ "信息科学与技术学院", "文学院", "外国语学院", "考古学院" };
-	for (const auto& department : departments) {
-		addDepartment(pRootGroupItem, department);
-	}
+	// QStringList departments{ "信息科学与技术学院", "文学院", "外国语学院", "考古学院" };
+	// for (const auto& department : departments) {
+	// 	addDepartment(pRootGroupItem, department);
+	// }
 }
 
 void CCMainWindow::setUserName(const QString& username) const {
@@ -173,6 +191,29 @@ void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) const {
 	ui.statusBtn->setIconSize(ui.statusBtn->size());
 }
 
+QString CCMainWindow::getHeadPicturePath() {
+	QString headPicturePath{};
+
+	QSqlQuery queryPicture{ QString{ "SELECT picture FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
+	queryPicture.exec();
+	queryPicture.next();
+	headPicturePath = queryPicture.value(0).toString();
+
+	return headPicturePath;
+}
+
+QString CCMainWindow::getUsername() {
+	QString username{};
+
+	QSqlQuery queryUsername{
+		QString{ "SELECT employee_name FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
+	queryUsername.exec();
+	queryUsername.next();
+	username = queryUsername.value(0).toString();
+
+	return username;
+}
+
 QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QString& appName) {
 	const auto button{ new QPushButton{ this } };
 	button->setFixedSize(QSize{ 20, 20 });
@@ -196,7 +237,7 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 }
 
 void CCMainWindow::resizeEvent(QResizeEvent* event) {
-	setUserName(QString{ "姬小明zzzzzzzzzzzzzzzzzzzzzzzzzzzzz" });
+	setUserName(QString{ getUsername() });
 
 	return BasicWindow::resizeEvent(event);
 }
@@ -267,23 +308,37 @@ void CCMainWindow::updateSearchStyle() const {
 	                               .arg(qMin(b.toInt() / 10 + increaseValue, 255)));
 }
 
-void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const QString& departmentName) {
+void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depID) {
 	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+
 	//添加子节点，子项数据为1
 	pChildItem->setData(0, Qt::UserRole, 1);
+	pChildItem->setData(0, Qt::UserRole + 1, depID);
 
-	QPixmap pixmap{ ":/Resources/MainWindow/head_mask.png" };
-	pChildItem->setData(0, Qt::UserRole + 1, QString::number(reinterpret_cast<int>(pChildItem)));
+	//获取部门头像路径
+	QSqlQuery queryDepPic(
+		QString("SELECT picture,department_name FROM tab_department WHERE departmentID=%1").arg(depID));
+	queryDepPic.exec();
+	queryDepPic.first();
 
+	QPixmap groupPix;
+	groupPix.load(queryDepPic.value(0).toString());
+
+	//获取部门名称
+	QSqlQuery queryDepName(QString("SELECT department_name FROM tab_department WHERE departmentID=%1").arg(depID));
+	queryDepName.exec();
+	queryDepName.first();
+
+	//设置头像
 	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
-	pContactItem->setHeadPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/girl.png" }, pixmap,
-	                                            pContactItem->getHeadLabelSize()));
-	pContactItem->setUsername(departmentName);
+	QPixmap pixmap{ ":/Resources/MainWindow/head_mask.png" };
+	pContactItem->setHeadPixmap(getRoundedImage(groupPix, pixmap, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(queryDepName.value(0).toString());
 
 	pRootGroupItem->addChild(pChildItem);
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
 
-	m_groupMap.insert(pChildItem, departmentName);
+	// m_groupMap.insert(pChildItem, departmentName);
 }
 
 void CCMainWindow::onAppIconClicked() const {
@@ -328,22 +383,7 @@ void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {
 }
 
 void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
-	bool isChild{ item->data(0, Qt::UserRole).toBool() };
-	if (isChild) {
-		QString strGroup{ m_groupMap.value(item) };
-
-		if (strGroup == QString{ "信息科学与技术学院" }) {
-			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
-			                                               GroupType::Company);
-		} else if (strGroup == QString{ "文学院" }) {
-			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
-			                                               GroupType::Personal);
-		} else if (strGroup == QString{ "外国语学院" }) {
-			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
-			                                               GroupType::Marketing);
-		} else if (strGroup == QString{ "考古学院" }) {
-			WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(),
-			                                               GroupType::Development);
-		}
+	if (bool bIsChild = item->data(0, Qt::UserRole).toBool(); bIsChild) {
+		WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
 	}
 }

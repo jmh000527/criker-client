@@ -1,7 +1,10 @@
 #include "ChatWindow.h"
 
+#include <QDateTime>
 #include <QFile>
 #include <QMessageBox>
+#include <QSqlQuery>
+#include <QSqlQueryModel>
 #include <QToolTip>
 
 #include "ChatWindowShell.h"
@@ -10,11 +13,13 @@
 #include "RootContactItem.h"
 #include "WindowManager.h"
 
-ChatWindow::ChatWindow(QWidget* parent, const QString& uid, GroupType groupType)
-	: QWidget{ parent }, m_chatId{ uid }, m_groupType{ groupType } {
+ChatWindow::ChatWindow(QWidget* parent, const QString& uid)
+	: QWidget{ parent }, m_chatId{ uid } {
 	ui.setupUi(this);
 	WindowManager::getInstance()->addWindowName(this, m_chatId);
 	setAttribute(Qt::WA_DeleteOnClose);
+
+	initGroupChatStatus();
 	initControl();
 }
 
@@ -24,128 +29,46 @@ ChatWindow::~ChatWindow() {
 
 void ChatWindow::addEmojiImage(int emojiNum) {
 	ui.textEdit->setFocus();
-	ui.textEdit->addEmojiUrl(emojiNum);
+	// ui.textEdit->addEmojiUrl(emojiNum);
 }
 
 void ChatWindow::setWindowName(const QString& name) {
 	ui.nameLabel->setText(name);
 }
 
-void ChatWindow::addPeopInfo(QTreeWidgetItem* pRootItem) {
-	auto* pChild = new QTreeWidgetItem();
+void ChatWindow::addPeopInfo(QTreeWidgetItem* pRootItem, int employeeID) {
+	QTreeWidgetItem* pChild = new QTreeWidgetItem();
 
 	//添加子节点
 	pChild->setData(0, Qt::UserRole, 1);
-	pChild->setData(0, Qt::UserRole + 1, QString::number((int)pChild));
-	auto* pContactItem = new ContactItem(ui.treeWidget);
+	pChild->setData(0, Qt::UserRole + 1, employeeID);
+	ContactItem* pContactItem = new ContactItem(ui.treeWidget);
 
-	static int i = 0;
+	//获取名 签名 头像路径
+	QString strName, strSign, strPicPath, strQuery;
+	QSqlQueryModel queryInfoModel;
+	queryInfoModel.setQuery(QString("SELECT employee_name,employee_sign,picture FROM tab_employees WHERE employeeID=%1").arg(employeeID));
+	QModelIndex nameIndex, signIndex, picIndex;
+	nameIndex = queryInfoModel.index(0, 0);
+	signIndex = queryInfoModel.index(0, 1);
+	picIndex = queryInfoModel.index(0, 2);
+	strName = queryInfoModel.data(nameIndex).toString();
+	strSign = queryInfoModel.data(signIndex).toString();
+	strPicPath = queryInfoModel.data(picIndex).toString();
+
 	QPixmap pix1;
 	pix1.load(":/Resources/MainWindow/head_mask.png");
 	QImage imageHead;
-	imageHead.load(":/Resources/MainWindow/girl.png");
-	pContactItem->setHeadPixmap(
-		CommonUtils::getRoundedImage(QPixmap::fromImage(imageHead), pix1, pContactItem->getHeadLabelSize()));
-	pContactItem->setUsername(QString::fromLocal8Bit("test%1").arg(i++));
-	pContactItem->setSignature("hhhhh");
+	imageHead.load(strPicPath);
+	pContactItem->setHeadPixmap(CommonUtils::getRoundedImage(QPixmap::fromImage(imageHead), pix1, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(strName);
+	pContactItem->setSignature(strSign);
 
 	pRootItem->addChild(pChild);
 	ui.treeWidget->setItemWidget(pChild, 0, pContactItem);
 
 	QString str = pContactItem->getUsername();
 	m_groupPeopleMap.insert(pChild, str);
-}
-
-void ChatWindow::initCompanyTalk() {
-	QTreeWidgetItem* pRootItem{ new QTreeWidgetItem{} };
-	pRootItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-
-	//设置data，区分根项子项
-	pRootItem->setData(0, Qt::UserRole, 0);
-	RootContactItem* pItemName{ new RootContactItem{ false, ui.treeWidget } };
-	ui.treeWidget->setFixedHeight(646);
-	int nEmployeeNum = 50;
-	QString qsGroupName{ QString::fromLocal8Bit("公司群 %1%2").arg(0).arg(nEmployeeNum) };
-	pItemName->setText(qsGroupName);
-
-	//插入分组节点
-	ui.treeWidget->addTopLevelItem(pRootItem);
-	ui.treeWidget->setItemWidget(pRootItem, 0, pItemName);
-
-	//展开
-	pRootItem->setExpanded(true);
-	for (int i{}; i < nEmployeeNum; ++i) {
-		addPeopInfo(pRootItem);
-	}
-}
-
-void ChatWindow::initPersonalTalk() {
-	QTreeWidgetItem* pRootItem{ new QTreeWidgetItem{} };
-	pRootItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-
-	//设置data，区分根项子项
-	pRootItem->setData(0, Qt::UserRole, 0);
-	RootContactItem* pItemName{ new RootContactItem{ false, ui.treeWidget } };
-	ui.treeWidget->setFixedHeight(646);
-	int nEmployeeNum = 10;
-	QString qsGroupName{ QString::fromLocal8Bit("人事部 %1/%2").arg(0).arg(nEmployeeNum) };
-	pItemName->setText(qsGroupName);
-
-	//插入分组节点
-	ui.treeWidget->addTopLevelItem(pRootItem);
-	ui.treeWidget->setItemWidget(pRootItem, 0, pItemName);
-
-	//展开
-	pRootItem->setExpanded(true);
-	for (int i{}; i < nEmployeeNum; ++i) {
-		addPeopInfo(pRootItem);
-	}
-}
-
-void ChatWindow::initMarketingTalk() {
-	QTreeWidgetItem* pRootItem{ new QTreeWidgetItem{} };
-	pRootItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-
-	//设置data，区分根项子项
-	pRootItem->setData(0, Qt::UserRole, 0);
-	RootContactItem* pItemName{ new RootContactItem{ false, ui.treeWidget } };
-	ui.treeWidget->setFixedHeight(646);
-	int nEmployeeNum = 5;
-	QString qsGroupName{ QString::fromLocal8Bit("市场部 %1%2").arg(0).arg(nEmployeeNum) };
-	pItemName->setText(qsGroupName);
-
-	//插入分组节点
-	ui.treeWidget->addTopLevelItem(pRootItem);
-	ui.treeWidget->setItemWidget(pRootItem, 0, pItemName);
-
-	//展开
-	pRootItem->setExpanded(true);
-	for (int i{}; i < nEmployeeNum; ++i) {
-		addPeopInfo(pRootItem);
-	}
-}
-
-void ChatWindow::initDevelopmentTalk() {
-	QTreeWidgetItem* pRootItem{ new QTreeWidgetItem{} };
-	pRootItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-
-	//设置data，区分根项子项
-	pRootItem->setData(0, Qt::UserRole, 0);
-	RootContactItem* pItemName{ new RootContactItem{ false, ui.treeWidget } };
-	ui.treeWidget->setFixedHeight(646);
-	int nEmployeeNum = 50;
-	QString qsGroupName{ QString::fromLocal8Bit("研发部 %1%2").arg(0).arg(nEmployeeNum) };
-	pItemName->setText(qsGroupName);
-
-	//插入分组节点
-	ui.treeWidget->addTopLevelItem(pRootItem);
-	ui.treeWidget->setItemWidget(pRootItem, 0, pItemName);
-
-	//展开
-	pRootItem->setExpanded(true);
-	for (int i{}; i < nEmployeeNum; ++i) {
-		addPeopInfo(pRootItem);
-	}
 }
 
 void ChatWindow::initP2PChat() {
@@ -158,6 +81,62 @@ void ChatWindow::initP2PChat() {
 	skinLabel->setFixedSize(ui.widget->size());
 
 	ui.widget->hide();
+}
+
+int ChatWindow::getCompDepID() {
+	QSqlQuery queryDepID(
+		QString("SELECT departmentID FROM tab_department WHERE department_name='%1'").
+		arg(QString::fromLocal8Bit("公司群")));
+	queryDepID.exec();
+	queryDepID.next();
+
+	return queryDepID.value(0).toInt();
+}
+
+void ChatWindow::initTalkWindow() {
+	QTreeWidgetItem* pRootItem = new QTreeWidgetItem();
+	pRootItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+	pRootItem->setData(0, Qt::UserRole, 0);
+	RootContactItem* pItemName = new RootContactItem(false, ui.treeWidget);
+	ui.treeWidget->setFixedHeight(646);
+
+	//当前聊天的群组名或人名
+	QString strGroupName;
+	QSqlQuery queryGroupName(QString("SELECT department_name FROM tab_department WHERE departmentID=%1").arg(m_chatId));
+	queryGroupName.exec();
+	if (queryGroupName.first()) {
+		strGroupName = queryGroupName.value(0).toString();
+	}
+
+	int nEmployeeNum = 0;
+
+	//获取员工人数
+	QSqlQueryModel queryEmployeeModel;
+	//公司群
+	if (getCompDepID() == m_chatId.toInt()) {
+		queryEmployeeModel.setQuery("SELECT employeeID FROM tab_employees WHERE `status`=1");
+	} else {
+		queryEmployeeModel.setQuery(
+			QString("SELECT employeeID FROM tab_employees WHERE `status`=1 AND departmentID=%1").arg(m_chatId));
+	}
+	nEmployeeNum = queryEmployeeModel.rowCount();
+	QString qsGroupName = QString{ "%1 %2/%3" }.arg(strGroupName).arg(0).arg(nEmployeeNum);
+	pItemName->setText(qsGroupName);
+
+	//插入分组节点
+	ui.treeWidget->addTopLevelItem(pRootItem);
+	ui.treeWidget->setItemWidget(pRootItem, 0, pItemName);
+
+	//展开
+	pRootItem->setExpanded(true);
+	for (int i = 0; i < nEmployeeNum; i++) {
+		//添加子节点
+		int employeeID;
+		QModelIndex modelIndex = queryEmployeeModel.index(i, 0);
+		employeeID = queryEmployeeModel.data(modelIndex).toInt();
+
+		addPeopInfo(pRootItem, employeeID);
+	}
 }
 
 void ChatWindow::initControl() {
@@ -176,27 +155,23 @@ void ChatWindow::initControl() {
 	connect(ui.treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this,
 	        SLOT(onItemDoubleClicked(QTreeWidgetItem*, int)));
 
-	switch (m_groupType) {
-		case GroupType::Company: {
-			initCompanyTalk();
-			break;
-		}
-		case GroupType::Personal: {
-			initPersonalTalk();
-			break;
-		}
-		case GroupType::Marketing: {
-			initMarketingTalk();
-			break;
-		}
-		case GroupType::Development: {
-			initDevelopmentTalk();
-			break;
-		}
-		default: {
-			initP2PChat();
-			break;
-		}
+	if (m_isGroupChat) {
+		initTalkWindow();
+	} else {
+		initP2PChat();
+	}
+}
+
+void ChatWindow::initGroupChatStatus() {
+	QSqlQueryModel sqlDepModel;
+	QString sql = QString("SELECT * FROM tab_department WHERE departmentID=%1").arg(m_chatId);
+
+	sqlDepModel.setQuery(sql);
+	int rows = sqlDepModel.rowCount();
+	if (rows == 0) {
+		m_isGroupChat = false;
+	} else {
+		m_isGroupChat = true;
 	}
 }
 
@@ -272,37 +247,84 @@ void ChatWindow::loadStyleSheet(const QString& sheetName) {
 	file.close();
 }
 
+void ChatWindow::dealMessage(QNChatMessage* messageW, QListWidgetItem* item, QString text, QString time, QNChatMessage::User_Type type) {
+	auto width = ui.listWidget->size().width();
+	messageW->setFixedWidth(width);
+	QSize size = messageW->fontRect(text);
+	item->setSizeHint(QSize{ ui.listWidget->width(), size.height() });
+	messageW->setText(text, time, size, type);
+	ui.listWidget->setItemWidget(item, messageW);
+}
+
+void ChatWindow::dealMessageTime(QString curMsgTime) {
+	bool isShowTime = false;
+	if (ui.listWidget->count() > 0) {
+		QListWidgetItem* lastItem = ui.listWidget->item(ui.listWidget->count() - 1);
+		// QNChatMessage* messageW = (QNChatMessage*)ui.listWidget->itemWidget(lastItem);
+		QNChatMessage* messageW = dynamic_cast<QNChatMessage*>(ui.listWidget->itemWidget(lastItem));
+		int lastTime = messageW->time().toInt();
+		int curTime = curMsgTime.toInt();
+		// qDebug() << "curTime lastTime:" << curTime - lastTime;
+		isShowTime = ((curTime - lastTime) > 60); // 两个消息相差一分钟
+		//        isShowTime = true;
+	}
+	else {
+		isShowTime = true;
+	}
+	if (isShowTime) {
+		QNChatMessage* messageTime = new QNChatMessage(ui.listWidget->parentWidget());
+		QListWidgetItem* itemTime = new QListWidgetItem(ui.listWidget);
+
+		QSize size{ this->width(), 40 };
+		messageTime->resize(size);
+		itemTime->setSizeHint(QSize{ ui.listWidget->width(), size.height() });
+		messageTime->setText(curMsgTime, curMsgTime, size, QNChatMessage::User_Time);
+		ui.listWidget->setItemWidget(itemTime, messageTime);
+	}
+}
+
 void ChatWindow::onSendBtnClicked(bool) {
 	if (ui.textEdit->toPlainText().isEmpty()) {
-		QToolTip::showText(this->mapToGlobal(QPoint(630, 660)), QString::fromLocal8Bit("发送的信息不能为空"),
-		                   this, QRect(0, 0, 120, 100), 2000);
+		QToolTip::showText(this->mapToGlobal(QPoint(630, 660)), QString::fromLocal8Bit("发送的信息不能为空"),this, QRect(0, 0, 120, 100), 2000);
 		return;
 	}
 
-	QString html = ui.textEdit->document()->toHtml();
+	// QString html = ui.textEdit->document()->toHtml();
 
-	//文本HTML如果没有字体则添加字体
-	if (!html.contains(".png") && !html.contains("</span>")) {
-		QString fontHtml;
-		QString text = ui.textEdit->toPlainText();
-		QFile file(":/Resources/MainWindow/MsgHtml/msgFont.txt");
-		if (file.open(QIODevice::ReadOnly)) {
-			fontHtml = file.readAll();
-			fontHtml.replace("%1", text);
-			file.close();
-		} else {
-			QMessageBox::information(this, QString::fromLocal8Bit("提示"),
-			                         QString::fromLocal8Bit("msgFont.txt 不存在"));
-			return;
-		}
-		if (!html.contains(fontHtml)) {
-			html.replace(text, fontHtml);
-		}
-	}
+	// //文本HTML如果没有字体则添加字体
+	// if (!html.contains(".png") && !html.contains("</span>")) {
+	// 	QString fontHtml;
+	// 	QString text = ui.textEdit->toPlainText();
+	// 	QFile file(":/Resources/MainWindow/MsgHtml/msgFont.txt");
+	// 	if (file.open(QIODevice::ReadOnly)) {
+	// 		fontHtml = file.readAll();
+	// 		fontHtml.replace("%1", text);
+	// 		file.close();
+	// 	} else {
+	// 		QMessageBox::information(this, QString::fromLocal8Bit("提示"),
+	// 		                         QString::fromLocal8Bit("msgFont.txt 不存在"));
+	// 		return;
+	// 	}
+	//
+	// 	if (!html.contains(fontHtml)) {
+	// 		html.replace(text, fontHtml);
+	// 	}
+	// }
+
+	QString msg = ui.textEdit->toPlainText();
+	QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch());
+	bool isSending = true; // 发送中
+
+	dealMessageTime(time);
+	QNChatMessage* messageW = new QNChatMessage(ui.listWidget->parentWidget());
+	QListWidgetItem* item = new QListWidgetItem(ui.listWidget);
+	dealMessage(messageW, item, msg, time, QNChatMessage::User_Me);
+	messageW->setTextSuccess();
+	ui.listWidget->setCurrentRow(ui.listWidget->count() - 1);
 
 	ui.textEdit->clear();
-	ui.textEdit->deleteAllEmojiImage();
-	ui.msgWidget->appendMsg(html); //收信息窗口
+	// ui.textEdit->deleteAllEmojiImage();
+	// ui.msgWidget->appendMsg(html); //收信息窗口
 }
 
 void ChatWindow::onItemDoubleClicked(QTreeWidgetItem* item, int colum) {
@@ -311,7 +333,6 @@ void ChatWindow::onItemDoubleClicked(QTreeWidgetItem* item, int colum) {
 		// QString strEmployeeID = item->data(0, Qt::UserRole + 1).toString();
 		// if (strEmployeeID == gLoginEmployeeID)
 		// 	return;
-		WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString(), GroupType::P2P,
-		                                               peopleName);
+		WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
 	}
 }
