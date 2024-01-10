@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <QByteArray>
+#include <QtEndian>
 
 #include "Group.h"
 #include "MsgType.h"
@@ -16,7 +17,7 @@ std::atomic_bool TcpClient::isLoginSuccess{ false };
 std::counting_semaphore<1> TcpClient::rwsem(0);
 
 TcpClient* TcpClient::getInstance() {
-	static TcpClient instance; // 在首次调用时创建唯一实例
+	static TcpClient instance;
 	return &instance;
 }
 
@@ -33,16 +34,17 @@ bool TcpClient::establishConnection(const QString& ipAddress, quint16 portNumber
 	return true;
 }
 
-bool TcpClient::sendMessage(const QString& message) {
+bool TcpClient::sendMessage(const json& js, MsgType msgType) {
 	if (!m_socket) {
 		qDebug() << "Socket not initialized.";
 		return false;
 	}
 
-	QByteArray data = message.toUtf8();
-	qint64 len = m_socket->write(data);
+	const std::vector<char> message = constructMessage(js, msgType);
 
-	if (len == -1) {
+	const QByteArray data{ message.data(), static_cast<int>(message.size()) };
+
+	if (const qint64 len = m_socket->write(data); len == -1) {
 		qDebug() << "Error sending message: " << m_socket->errorString();
 		return false;
 	}
@@ -55,18 +57,40 @@ bool TcpClient::sendMessage(const QString& message) {
 	return true;
 }
 
-QByteArray TcpClient::receiveMessage() {
+std::tuple<QByteArray, MsgType> TcpClient::receiveMessage() {
 	if (!m_socket) {
 		qDebug() << "Socket not initialized.";
-		return QByteArray();
+		return {};
 	}
 
 	QByteArray buffer;
-	if (m_socket->waitForReadyRead(-1)) {
-		buffer = m_socket->readAll();
-	}
 
-	return buffer;
+	// 阻塞等待数据直到接收到完整的包头
+    if (!m_socket->waitForReadyRead(-1)) {
+        qDebug() << "waitForReadyRead failed.";
+        return {};
+    }
+
+    // 读取包头
+    MessageHeader header;
+    m_socket->read(reinterpret_cast<char*>(&header), sizeof(MessageHeader));
+
+	// 转换字节序，获取包头中各项的值
+	auto messageType = static_cast<MsgType>(qFromBigEndian(header.type));
+	const auto messageLength = qFromBigEndian(header.length);
+
+    // 阻塞等待数据直到接收到完整的消息体
+    while (m_socket->bytesAvailable() < messageLength) {
+        if (!m_socket->waitForReadyRead(-1)) {
+            qDebug() << "waitForReadyRead failed.";
+            return {};
+        }
+    }
+
+    // 读取消息体
+    buffer = m_socket->read(messageLength);
+
+    return std::make_tuple(buffer, messageType);
 }
 
 void TcpClient::closeConnection() {
@@ -79,23 +103,28 @@ void TcpClient::closeConnection() {
 
 void TcpClient::readTaskHandler() {
 	for (;;) {
-		QByteArray data = TcpClient::receiveMessage();
-		if (data.isEmpty()) {
+		const auto data = TcpClient::receiveMessage();
+
+		QByteArray message;
+		MsgType messageType;
+		std::tie(message, messageType) = data;
+
+		if (message.isEmpty()) {
 			qDebug() << "Error receiving message.";
 			continue;
 		}
 
 		// Convert QByteArray to std::string
-		std::string buffer = data.toStdString();
+		std::string buffer = message.toStdString();
 		// std::cout << buffer << std::endl;
 
 		// Deserialize the received data
 		json js = json::parse(buffer);
-		MsgType msgtype{ static_cast<MsgType>(getValueFromJson<int>(js, "msgtype")) };
+		// MsgType msgtype{ static_cast<MsgType>(getValueFromJson<int>(js, "msgtype")) };
 
-		if (MsgType::ONE_CHAT_MSG == msgtype) {
+		if (MsgType::ONE_CHAT_MSG == messageType) {
 			auto* targetWidget = WindowManager::getInstance()->findWindowByName(QString::number(getValueFromJson<int>(js, "id")));
-			auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
+			const auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
 
 			if (targetChatWindow) {
 				// 连接信号到槽函数
@@ -116,9 +145,9 @@ void TcpClient::readTaskHandler() {
 			continue;
 		}
 
-		if (MsgType::GROUP_CHAT_MSG == msgtype) {
+		if (MsgType::GROUP_CHAT_MSG == messageType) {
 			auto* targetWidget = WindowManager::getInstance()->findWindowByName(QString::number(getValueFromJson<int>(js, "groupid")));
-			auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
+			const auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
 
 			if (targetChatWindow) {
 				// 连接信号到槽函数
@@ -139,14 +168,14 @@ void TcpClient::readTaskHandler() {
 			continue;
 		}
 
-		if (MsgType::LOGIN_MSG_ACK == msgtype) {
+		if (MsgType::LOGIN_MSG_ACK == messageType) {
 			doLoginResponse(js);
 			rwsem.release();
 
 			continue;
 		}
 
-		if (MsgType::REG_MSG_ACK == msgtype) {
+		if (MsgType::REG_MSG_ACK == messageType) {
 			doRegResponse(js);
 			rwsem.release();
 
@@ -223,9 +252,6 @@ void TcpClient::doLoginResponse(json& responsejs) {
 			UserManager::setCurrentUserGroupList(groups);
 		}
 
-		// 显示登录用户的基本信息
-		// showCurrentUserData();
-
 		// 显示当前用户的离线消息  个人聊天信息或者群组消息
 		if (responsejs.contains("offlinemsg")) {
 			for (const std::vector<std::string>& offlineMessages = responsejs["offlinemsg"]; const auto& str :
@@ -246,4 +272,19 @@ void TcpClient::doLoginResponse(json& responsejs) {
 
 		isLoginSuccess = true;
 	}
+}
+
+std::vector<char> TcpClient::constructMessage(const nlohmann::json& js, MsgType msgtype) {
+	// 构造包头
+	MessageHeader header;
+	header.type = qToBigEndian(static_cast<uint16_t>(msgtype));
+	header.length = qToBigEndian(static_cast<uint16_t>(js.dump().size()));
+
+	// 合并包头和消息为一个连续的字节数组
+	std::vector<char> messageData(sizeof(header) + js.dump().size());
+
+	std::memcpy(messageData.data(), &header, sizeof(header));
+	std::memcpy(messageData.data() + sizeof(header), js.dump().c_str(), js.dump().size());
+
+	return messageData;
 }

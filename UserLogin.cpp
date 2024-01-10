@@ -99,11 +99,11 @@ bool UserLogin::verifyAccountCode() {
 	js["msgtype"] = static_cast<int>(MsgType::LOGIN_MSG);
 	js["id"] = std::atoi(account.toStdString().c_str());
 	js["password"] = password.toStdString();
-	QString request = QString{ js.dump().c_str() };
+
 	TcpClient::isLoginSuccess = false;
 
 	//发送登录请求
-	if (!TcpClient::sendMessage(request)) {
+	if (!TcpClient::sendMessage(js, MsgType::LOGIN_MSG)) {
 		QMessageBox::information(NULL, QString{ "请求发送失败" }, "请求发送失败");
 		exit(1);
 	} else {

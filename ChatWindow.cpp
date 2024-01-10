@@ -312,9 +312,7 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time) {
 		js["msg"] = message;
 		js["time"] = time.toStdString();
 
-		std::string buffer = js.dump();
-
-		TcpClient::sendMessage(buffer.c_str());
+		TcpClient::sendMessage(js, MsgType::GROUP_CHAT_MSG);
 	} else {
 		int friendid = m_chatId.toInt();
 		std::string message = msg.toStdString();
@@ -327,9 +325,7 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time) {
 		js["msg"] = message;
 		js["time"] = time.toStdString();
 
-		std::string buffer = js.dump();
-
-		TcpClient::sendMessage(buffer.c_str());
+		TcpClient::sendMessage(js, MsgType::ONE_CHAT_MSG);
 	}
 }
 
