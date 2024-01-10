@@ -13,6 +13,7 @@
 #include "RootContactItem.h"
 #include "SkinWindow.h"
 #include "SysTray.h"
+#include "UserManager.h"
 #include "WindowManager.h"
 
 CCMainWindow::CCMainWindow(QString employeeID, QWidget* parent)
@@ -113,33 +114,53 @@ void CCMainWindow::initContactTree() {
 	        SLOT(onItemDoubleClicked(QTreeWidgetItem *, int)));
 
 	//根节点
+	QTreeWidgetItem* pRootFriendItem{ new QTreeWidgetItem };
+	pRootFriendItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+	pRootFriendItem->setData(0, Qt::UserRole, QVariant{ 0 });
+
 	QTreeWidgetItem* pRootGroupItem{ new QTreeWidgetItem };
 	pRootGroupItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 	pRootGroupItem->setData(0, Qt::UserRole, QVariant{ 0 });
 
-	//获取公司部门ID
-	QSqlQuery queryComDepID(
-		QString("SELECT departmentID FROM tab_department WHERE department_name='%1'").arg(QString{ "公司群" }));
-	queryComDepID.exec();
-	queryComDepID.first();
-	int CompDepID = queryComDepID.value(0).toInt();
+	// //获取公司部门ID
+	// QSqlQuery queryComDepID(
+	// 	QString("SELECT departmentID FROM tab_department WHERE department_name='%1'").arg(QString{ "公司群" }));
+	// queryComDepID.exec();
+	// queryComDepID.first();
+	// int CompDepID = queryComDepID.value(0).toInt();
+	//
+	// //获取登陆者所在的部门ID
+	// QSqlQuery querySelfDepID(
+	// 	QString("SELECT departmentID FROM tab_employees WHERE employeeID=%1").arg(CommonInfo::loginEmployeeID));
+	// querySelfDepID.exec();
+	// querySelfDepID.first();
+	// int SelfDepID = querySelfDepID.value(0).toInt();
 
-	//获取登陆者所在的部门ID
-	QSqlQuery querySelfDepID(
-		QString("SELECT departmentID FROM tab_employees WHERE employeeID=%1").arg(CommonInfo::loginEmployeeID));
-	querySelfDepID.exec();
-	querySelfDepID.first();
-	int SelfDepID = querySelfDepID.value(0).toInt();
+	// //初始化公司群及所在的群
+	// addDepartment(pRootGroupItem, CompDepID);
+	// addDepartment(pRootFriendItem, SelfDepID);
 
-	//初始化公司群及所在的群
-	addDepartment(pRootGroupItem, CompDepID);
-	addDepartment(pRootGroupItem, SelfDepID);
+	//向treeWidget添加当前账户好友
+	for (const auto& user : UserManager::getCurrentUserFriendList()) {
+		addFriends(pRootFriendItem, user);
+	}
+
+	//向treeWidget添加当前账户群组
+	for (const auto& group : UserManager::getCurrentUserGroupList()) {
+		addGroups(pRootGroupItem, group);
+	}
 
 	//插入分组节点
-	RootContactItem* pItemName{ new RootContactItem{ true, ui.treeWidget } };
-	pItemName->setText(QString{ "西北大学" });
+	RootContactItem* pItemFriend{ new RootContactItem{ true, ui.treeWidget } };
+	pItemFriend->setText(QString{ "好友" });
+	RootContactItem* pItemGroup{ new RootContactItem{ true, ui.treeWidget } };
+	pItemGroup->setText(QString{ "群组" });
+
+	ui.treeWidget->addTopLevelItem(pRootFriendItem);
 	ui.treeWidget->addTopLevelItem(pRootGroupItem);
-	ui.treeWidget->setItemWidget(pRootGroupItem, 0, pItemName);
+
+	ui.treeWidget->setItemWidget(pRootFriendItem, 0, pItemFriend);
+	ui.treeWidget->setItemWidget(pRootGroupItem, 0, pItemGroup);
 
 	// QStringList departments{ "信息科学与技术学院", "文学院", "外国语学院", "考古学院" };
 	// for (const auto& department : departments) {
@@ -341,6 +362,36 @@ void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depI
 	// m_groupMap.insert(pChildItem, departmentName);
 }
 
+void CCMainWindow::addFriends(QTreeWidgetItem* pRootGroupItem, const User& user) {
+	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+
+	//添加子节点，子项数据为1
+	pChildItem->setData(0, Qt::UserRole, 1);
+	pChildItem->setData(0, Qt::UserRole + 1, user.getId());
+
+	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
+	// pContactItem->setHeadPixmap(getRoundedImage(groupPix, pixmap, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(QString{ user.getName().c_str() });
+
+	pRootGroupItem->addChild(pChildItem);
+	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
+}
+
+void CCMainWindow::addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group) {
+	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+
+	//添加子节点，子项数据为1
+	pChildItem->setData(0, Qt::UserRole, 1);
+	pChildItem->setData(0, Qt::UserRole + 1, group.getId());
+
+	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
+	// pContactItem->setHeadPixmap(getRoundedImage(groupPix, pixmap, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(QString{ group.getName().c_str() });
+
+	pRootGroupItem->addChild(pChildItem);
+	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
+}
+
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
 		SkinWindow* skinWindow{ new SkinWindow };
@@ -383,7 +434,31 @@ void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {
 }
 
 void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
-	if (bool bIsChild = item->data(0, Qt::UserRole).toBool(); bIsChild) {
-		WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
+	if (bool isChild = item->data(0, Qt::UserRole).toBool(); isChild == true && item!=nullptr) {
+		// 循环向上查找父节点，直到找到顶级节点
+		const auto itemClicked = item;
+		while (item->parent()) {
+			item = item->parent();
+		}
+
+		// 获取设置在 TopLevelItem 上的 ItemWidget
+		if (QTreeWidgetItem* topLevelItem = item) {
+			auto* topLevelItemWidget = dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(topLevelItem, 0));
+			const auto& topLevelItemText = topLevelItemWidget->text();
+			qDebug() << "Clicked on TopLevelItem: " << topLevelItemText;
+
+			WindowManager::getInstance()->addNewChatWindow(itemClicked->data(0, Qt::UserRole + 1).toString(), topLevelItemText == "群组");
+			// 在这里可以根据 topLevelItem 进行不同的处理
+		}
+
+		// // 继续处理你原有的子节点的点击逻辑
+		// bool bIsChild = item->data(0, Qt::UserRole).toBool();
+		// if (bIsChild) {
+		// 	WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
+		// }
 	}
+
+	// if (bool bIsChild = item->data(0, Qt::UserRole).toBool(); bIsChild) {
+	// 	WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
+	// }
 }

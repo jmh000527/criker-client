@@ -8,7 +8,7 @@
 
 #include "WindowManager.h"
 
-MsgHtmlObj::MsgHtmlObj(QObject* parent, QString msgLPicPath) {
+MsgHtmlObj::MsgHtmlObj(QObject* parent, const QString& msgLPicPath) {
 	m_msgPicPath = msgLPicPath;
 	initHtmlTmpl();
 }
@@ -113,7 +113,7 @@ MsgWebView::MsgWebView(QWidget* parent)
 
 MsgWebView::~MsgWebView() {}
 
-void MsgWebView::appendMsg(const QString& html, QString obj) {
+void MsgWebView::appendMsg(const QString& html, const QString& obj) {
 	QJsonObject msgObj;
 	QString qsMsg;
 	const QList<QStringList> msgList = parseHtml(html);

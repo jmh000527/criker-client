@@ -15,6 +15,8 @@ public:
 	void setText(const QString& title);
 	void setExpanded(bool expand);
 
+	const QString& text();
+
 private:
 	int rotation() const;
 	void setRotation(int rotation);

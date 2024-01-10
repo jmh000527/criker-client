@@ -10,7 +10,7 @@ class MsgHtmlObj : public QObject {
 	Q_PROPERTY(QString msgRHtmlTmpl MEMBER m_msgRHtmlTmpl NOTIFY signalMsgHtml)
 
 public:
-	MsgHtmlObj(QObject* parent, QString msgLPicPath = "");
+	MsgHtmlObj(QObject* parent, const QString& msgLPicPath = "");
 
 private:
 	void initHtmlTmpl(); //初始化聊天网页
@@ -38,7 +38,7 @@ public:
 	MsgWebView(QWidget* parent);
 	~MsgWebView();
 
-	void appendMsg(const QString& html, QString obj = "0");
+	void appendMsg(const QString& html, const QString& obj = "0");
 
 private:
 	QList<QStringList> parseHtml(const QString& html); //解析HTML

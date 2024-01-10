@@ -33,6 +33,10 @@ void RootContactItem::setExpanded(bool expand) {
 	update();
 }
 
+const QString& RootContactItem::text() {
+	return m_titleText;
+}
+
 int RootContactItem::rotation() const {
 	return m_rotation;
 }

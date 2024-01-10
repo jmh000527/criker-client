@@ -5,6 +5,7 @@
 #include <QSqlQueryModel>
 
 #include "CommonUtils.h"
+#include "UserManager.h"
 
 ChatWindowShell::ChatWindowShell(QWidget* parent)
 	: BasicWindow{ parent } {
@@ -65,31 +66,32 @@ ChatWindowShell::ChatWindowShell(QWidget* parent)
 
 ChatWindowShell::~ChatWindowShell() {}
 
-void ChatWindowShell::addTalkWindow(ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& uid) {
+void ChatWindowShell::addChatWindow(
+	ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& uid, bool isGroupChat) {
 	ui.rightStackedWidget->addWidget(chatWindow);
 
 	connect(m_emojiWindow, SIGNAL(signalEmojiWindowHide()), chatWindow, SLOT(onSetEmojiBtnFocusStatus()));
 
 	QListWidgetItem* item{ new QListWidgetItem{ ui.listWidget } };
-	m_chatWindowItemMap.insert(item, chatWindow);
 	item->setSelected(true);
+	m_chatWindowItemMap.insert(item, chatWindow);
 
-	//判断是单聊还是群聊，获取头像
-	QSqlQueryModel sqlDepModel;
-	QString strSql = QString("SELECT picture FROM tab_department WHERE departmentID=%1").arg(uid);
-	sqlDepModel.setQuery(strSql);
-	int rows = sqlDepModel.rowCount();
-
-	//单聊
-	if (rows == 0) {
-		QString sql = QString("SELECT picture FROM tab_employees WHERE employeeID=%1").arg(uid);
-		sqlDepModel.setQuery(sql);
-	}
-	QModelIndex index = sqlDepModel.index(0, 0);
-
-	QImage img;
-	img.load(sqlDepModel.data(index).toString());
-	chatWindowItem->setHeadPixmap(QPixmap::fromImage(img)); //设置头像
+	// //判断是单聊还是群聊，获取头像
+	// QSqlQueryModel sqlDepModel;
+	// QString strSql = QString("SELECT picture FROM tab_department WHERE departmentID=%1").arg(uid);
+	// sqlDepModel.setQuery(strSql);
+	// int rows = sqlDepModel.rowCount();
+	//
+	// //单聊
+	// if (rows == 0) {
+	// 	QString sql = QString("SELECT picture FROM tab_employees WHERE employeeID=%1").arg(uid);
+	// 	sqlDepModel.setQuery(sql);
+	// }
+	// QModelIndex index = sqlDepModel.index(0, 0);
+	//
+	// QImage img;
+	// img.load(sqlDepModel.data(index).toString());
+	// chatWindowItem->setHeadPixmap(QPixmap::fromImage(img)); //设置头像
 
 	ui.listWidget->addItem(item);
 	ui.listWidget->setItemWidget(item, chatWindowItem);
@@ -184,7 +186,7 @@ QStringList ChatWindowShell::getEmployeesID() {
 	//员工总数
 	int employeesNum = queryModel.rowCount();
 	QModelIndex index;
-	for (int i = 0; i < employeesNum; i++){
+	for (int i = 0; i < employeesNum; i++) {
 		index = queryModel.index(i, 0);
 		employeeIDList << queryModel.data(index).toString();
 	}

@@ -26,7 +26,7 @@ public:
 	~ChatWindowShell();
 
 	//添加新的聊天窗口
-	void addTalkWindow(ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& uid);
+	void addChatWindow(ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& uid, bool isGroupChat);
 	//设置当前聊天窗口
 	void setCurrentWidget(QWidget* widget) const;
 

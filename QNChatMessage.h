@@ -25,10 +25,10 @@ public:
 	};
 
 	void setTextSuccess();
-	void setText(QString text, QString time, QSize allSize, User_Type userType);
+	void setText(const QString& text, const QString& time, QSize allSize, User_Type userType);
 
 	QSize getRealString(QString src);
-	QSize fontRect(QString str);
+	QSize fontRect(const QString& str);
 
 	QString text();
 	QString time();

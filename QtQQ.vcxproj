@@ -68,6 +68,7 @@
     <IncludePath>$(SolutionDir);D:\Qt_Projects\QtQQ\thirdparty\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <IncludePath>D:\Qt_Projects\QtQQ\thirdparty\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -124,6 +125,7 @@
     <ClCompile Include="SkinWindow.cpp" />
     <ClCompile Include="SysTray.cpp" />
     <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="titlebar.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="UserLogin.cpp" />
@@ -157,6 +159,7 @@
     <ClInclude Include="GroupType.h" />
     <ClInclude Include="MsgType.h" />
     <ClInclude Include="thirdparty\json.hpp" />
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
     <QtMoc Include="TcpClient.h" />

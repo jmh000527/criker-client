@@ -3,7 +3,9 @@
 #include <QtWidgets/QWidget>
 
 #include "basicwindow.h"
+#include "Group.h"
 #include "ui_CCMainWindow.h"
+#include "User.h"
 
 class CCMainWindow : public BasicWindow {
 	Q_OBJECT
@@ -34,6 +36,8 @@ private:
 
 	void updateSearchStyle() const;
 	void addDepartment(QTreeWidgetItem* pRootGroupItem, const int DepID);
+	void addFriends(QTreeWidgetItem* pRootGroupItem, const User& user);
+	void addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group);
 
 	QString m_employeeID;	//账号 或QQ 号
 

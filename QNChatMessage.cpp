@@ -12,7 +12,7 @@ QNChatMessage::QNChatMessage(QWidget* parent)
 	: QWidget(parent) {
 	QFont te_font = this->font();
 	te_font.setFamily("MicrosoftYaHei");
-	te_font.setPointSize(11);
+	te_font.setPointSize(10);
 	//    te_font.setWordSpacing(0);
 	//    te_font.setLetterSpacing(QFont::PercentageSpacing,0);
 	//    te_font.setLetterSpacing(QFont::PercentageSpacing, 100);          //300%,100为默认  //设置字间距%
@@ -36,7 +36,7 @@ void QNChatMessage::setTextSuccess() {
 	m_isSending = true;
 }
 
-void QNChatMessage::setText(QString text, QString time, QSize allSize, QNChatMessage::User_Type userType) {
+void QNChatMessage::setText(const QString& text, const QString& time, QSize allSize, QNChatMessage::User_Type userType) {
 	m_msg = text;
 	m_userType = userType;
 	m_time = time;
@@ -57,7 +57,7 @@ void QNChatMessage::setText(QString text, QString time, QSize allSize, QNChatMes
 	this->update();
 }
 
-QSize QNChatMessage::fontRect(QString str) {
+QSize QNChatMessage::fontRect(const QString& str) {
 	m_msg = str;
 	int minHei = 30;
 	int iconWH = 40;
@@ -66,7 +66,7 @@ QSize QNChatMessage::fontRect(QString str) {
 	int iconTMPH = 10;
 	int sanJiaoW = 6;
 	int kuangTMP = 20;
-	int textSpaceRect = 11;
+	int textSpaceRect = 12;
 	m_kuangWidth = this->width() - kuangTMP - 2 * (iconWH + iconSpaceW + iconRectW);
 	m_textWidth = m_kuangWidth - 2 * textSpaceRect;
 	m_spaceWid = this->width() - m_textWidth;
@@ -95,9 +95,9 @@ QSize QNChatMessage::fontRect(QString str) {
 		                         m_kuangWidth, hei - m_lineHeight);
 	}
 	m_textLeftRect.setRect(m_kuangLeftRect.x() + textSpaceRect, m_kuangLeftRect.y() + iconTMPH,
-	                       m_kuangLeftRect.width() - 2 * textSpaceRect, m_kuangLeftRect.height() - 2 * iconTMPH);
+	                       m_kuangLeftRect.width() - 1 * textSpaceRect, m_kuangLeftRect.height() - 2 * iconTMPH);
 	m_textRightRect.setRect(m_kuangRightRect.x() + textSpaceRect, m_kuangRightRect.y() + iconTMPH,
-	                        m_kuangRightRect.width() - 2 * textSpaceRect, m_kuangRightRect.height() - 2 * iconTMPH);
+	                        m_kuangRightRect.width() - 1 * textSpaceRect, m_kuangRightRect.height() - 2 * iconTMPH);
 
 	return QSize(size.width(), hei);
 }
