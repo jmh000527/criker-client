@@ -15,7 +15,7 @@ class ChatWindow : public QWidget
 
 public:
 	ChatWindow(QWidget* parent, const QString& uid, bool isGroupChat);
-	~ChatWindow();
+	~ChatWindow() override;
 
 	void addEmojiImage(int emojiNum);
 	void setWindowName(const QString& name);

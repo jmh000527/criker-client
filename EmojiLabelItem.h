@@ -7,7 +7,7 @@ class EmojiLabelItem : public QClickLabel {
 
 public:
 	EmojiLabelItem(QWidget* parent);
-	~EmojiLabelItem();
+	~EmojiLabelItem() override;
 
 	void setEmojiName(int emojiName);
 

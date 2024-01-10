@@ -8,7 +8,7 @@ class QMsgTextEdit  : public QTextEdit
 
 public:
 	QMsgTextEdit(QWidget *parent);
-	~QMsgTextEdit();
+	~QMsgTextEdit() override;
 
 	void addEmojiUrl(int emojiNum);
 	void deleteAllEmojiImage();

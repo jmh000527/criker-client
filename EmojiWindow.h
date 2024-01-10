@@ -9,7 +9,7 @@ class EmojiWindow : public QWidget {
 
 public:
 	EmojiWindow(QWidget* parent = nullptr);
-	~EmojiWindow();
+	~EmojiWindow() override;
 
 private:
 	Ui::EmojiWindowClass ui;

@@ -11,7 +11,7 @@ class WindowManager  : public QObject
 
 public:
 	WindowManager();
-	~WindowManager();
+	~WindowManager() override;
 	static WindowManager* getInstance();
 
 	QWidget* findWindowByName(const QString& windowName);

@@ -270,10 +270,10 @@ void ChatWindow::dealMessageTime(const QString& curMsgTime) {
 	bool isShowTime = false;
 	if (ui.listWidget->count() > 0) {
 		QListWidgetItem* lastItem = ui.listWidget->item(ui.listWidget->count() - 1);
-		// QNChatMessage* messageW = (QNChatMessage*)ui.listWidget->itemWidget(lastItem);
 		auto* messageW = dynamic_cast<QNChatMessage*>(ui.listWidget->itemWidget(lastItem));
 		const int lastTime = messageW->time().toInt();
 		const int curTime = curMsgTime.toInt();
+
 		// qDebug() << "curTime lastTime:" << curTime - lastTime;
 		isShowTime = ((curTime - lastTime) > 60); // 两个消息相差一分钟
 		//        isShowTime = true;

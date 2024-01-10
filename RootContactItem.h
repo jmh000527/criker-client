@@ -10,7 +10,7 @@ class RootContactItem : public QLabel {
 
 public:
 	RootContactItem(bool showIndicator = true, QWidget* parent = nullptr);
-	~RootContactItem();
+	~RootContactItem() override;
 
 	void setText(const QString& title);
 	void setExpanded(bool expand);

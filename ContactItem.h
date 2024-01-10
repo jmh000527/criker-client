@@ -8,7 +8,7 @@ class ContactItem : public QWidget {
 
 public:
 	ContactItem(QWidget* parent = nullptr);
-	~ContactItem();
+	~ContactItem() override;
 
 	void setUsername(const QString& username) const;
 	void setSignature(const QString& signature) const;

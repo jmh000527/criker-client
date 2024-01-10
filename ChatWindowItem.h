@@ -8,7 +8,7 @@ class ChatWindowItem : public QWidget {
 
 public:
 	ChatWindowItem(QWidget* parent = nullptr);
-	~ChatWindowItem();
+	~ChatWindowItem() override;
 
 	void setHeadPixmap(const QPixmap& pixmap) const;
 	void setMsgLabelContent(const QString& msg) const;

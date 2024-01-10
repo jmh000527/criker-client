@@ -29,14 +29,14 @@ public:
 	MsgWebPage(QObject* parent = nullptr);
 
 protected:
-	bool acceptNavigationRequest(const QUrl& url, NavigationType type, bool isMainFrame);
+	bool acceptNavigationRequest(const QUrl& url, NavigationType type, bool isMainFrame) override;
 };
 
 class MsgWebView : public QWebEngineView {
 	Q_OBJECT
 public:
 	MsgWebView(QWidget* parent);
-	~MsgWebView();
+	~MsgWebView() override;
 
 	void appendMsg(const QString& html, const QString& obj = "0");
 

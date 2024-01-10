@@ -7,7 +7,7 @@ class CustomMenu : public QMenu {
 
 public:
 	CustomMenu(QWidget* parent = nullptr);
-	~CustomMenu();
+	~CustomMenu() override;
 
 public:
 	void addCustomMenu(const QString& text, const QString& icon, const QString& content);

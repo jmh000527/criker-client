@@ -23,7 +23,7 @@ class ChatWindowShell : public BasicWindow {
 
 public:
 	ChatWindowShell(QWidget* parent = nullptr);
-	~ChatWindowShell();
+	~ChatWindowShell() override;
 
 	//添加新的聊天窗口
 	void addChatWindow(ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& uid, bool isGroupChat);
@@ -37,23 +37,18 @@ protected:
 
 public slots:
 	void onEmojiBtnClicked(bool);	//表情按钮被点击
-	void updateSendTcpMsg(const QString& data, int msgType, QString file = "");	//客户端发送Tcp数据
 
 private slots:
 	void onChatWindowItemClicked(QListWidgetItem* item);	//左侧列表项被点击
-	void onEmojiItemClicked(int emojiNum);	//表情被选中
+	void onEmojiItemClicked(int emojiNum) const;	//表情被选中
 
 private:
 	Ui::ChatWindowShellClass ui;
 
 	void initControl();
-	void initTcpSocket();
 
 	QStringList getEmployeesID();
-	bool createJSFile(const QStringList& employeesList);
 
 	QMap<QListWidgetItem*, QWidget*> m_chatWindowItemMap;	//当前打开的聊天窗口的映射
 	EmojiWindow* m_emojiWindow;
-
-	QTcpSocket* m_tcpClientSocket;
 };
