@@ -30,4 +30,9 @@ public:
 	static void loadStyleSheet(QWidget* widget, const QString& sheetName);
 	static void setDefaultSkinColor(const QColor& color);
 	static QColor getDefaultSkinColor();
+	static QPixmap base64ToQPixmap(const std::string& base64String);
+
+private:
+	static QByteArray base64ToByteArray(const QString& base64String);
+	static QPixmap byteArrayToPixmap(const QByteArray& imageData);
 };

@@ -32,7 +32,7 @@ public:
 
 	QString text();
 	QString time();
-	User_Type userType();
+	User_Type userType() const;
 
 protected:
 	void paintEvent(QPaintEvent* event) override;

@@ -11,7 +11,7 @@ public:
 	BasicWindow(QWidget* parent = nullptr);
 	~BasicWindow() override;
 
-	void loadStyleSheet(const QString& sheetName);
+	virtual void loadStyleSheet(const QString& sheetName);
 	QPixmap getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize = QSize{ 0, 0 }) const;
 
 private:

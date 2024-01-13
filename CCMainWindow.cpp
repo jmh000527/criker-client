@@ -1,5 +1,6 @@
 ﻿#include "CCMainWindow.h"
 
+#include <QFile>
 #include <QPainter>
 #include <QTimer>
 #include <QMap>
@@ -23,13 +24,69 @@ CCMainWindow::CCMainWindow(QString employeeID, QWidget* parent)
 	setWindowFlags(windowFlags() | Qt::Tool);
 	loadStyleSheet("CCMainWindow");
 
-	setUserHeadPixmap(getHeadPicturePath());
+	setUserHeadPixmap();
 
 	initColtrol();
 	initTimer();
 }
 
 CCMainWindow::~CCMainWindow() = default;
+
+void CCMainWindow::loadStyleSheet(const QString& sheetName) {
+	m_styleSheetName = sheetName;
+	QFile file{ ":/Resources/QSS/" + sheetName + ".css" };
+	file.open(QFile::ReadOnly);
+
+	if (file.isOpen()) {
+		setStyleSheet("");
+		QString qStyleSheet{ QLatin1String{ file.readAll() } };
+
+		//获取用户当前皮肤的RGB
+		const QString r{ QString::number(m_colorBackground.red()) };
+		const QString g{ QString::number(m_colorBackground.green()) };
+		const QString b{ QString::number(m_colorBackground.blue()) };
+
+		const auto increaseValue{ 230 };
+		qStyleSheet += QString("QWidget[titleSkin = true] {\
+								background-color: rgb(%1, %2, %3);\
+								border-top-left-radius: 4px;\
+								border-top-right-radius: 4px;\
+								border-bottom: none;\
+								}\
+								QWidget[bottomSkin = true] {\
+								background-color: rgb(%4, %5, %6);\
+								border-bottom-left-radius: 4px;\
+								border-bottom-right-radius: 4px;\
+								border-top: none;\
+								}\
+								QWidget#CCMainWindowClass {\
+								background-color: rgb(%1, %2, %3);\
+								border: 1px solid rgb(%1, %2, %3);\
+								border-radius: 5px;\
+								}\
+								QTreeView {\
+								border-style: none;\
+								}\
+								QTreeView::item{\
+								color: rgba(255, 255, 255, 0);\
+								}\
+								QTreeView::item:selected:active{\
+								background-color: rgb(%1, %2, %3);\
+								}\
+								QTreeView::item:selected:active,\
+								QTreeView::item:hover{\
+								background-color: rgb(%4, %5, %6);\
+								}"
+			).arg(r).arg(g).arg(b)
+			 .arg(qMin(r.toInt() / 10 + increaseValue, 255))
+			 .arg(qMin(g.toInt() / 10 + increaseValue, 255))
+			 .arg(qMin(b.toInt() / 10 + increaseValue, 255));
+
+		setStyleSheet(qStyleSheet);
+	}
+
+	file.close();
+}
 
 void CCMainWindow::initTimer() {
 	auto* timer{ new QTimer{ this } };
@@ -42,7 +99,7 @@ void CCMainWindow::initTimer() {
 		        }
 		        level++;
 
-		        setUserLevelPixmap(level);
+		        // setUserLevelPixmap(level);
 	        }
 	);
 
@@ -52,7 +109,7 @@ void CCMainWindow::initTimer() {
 void CCMainWindow::initColtrol() {
 	ui.treeWidget->setStyle(new CustomProxyStyle{ this });
 
-	setUserLevelPixmap(0);
+	// setUserLevelPixmap(0);
 	setUserStatusMenuIcon(":/Resources/MainWindow/StatusSucceeded.png");
 
 	const auto appUpLayout{ new QHBoxLayout{ this } };
@@ -176,30 +233,33 @@ void CCMainWindow::setUserName(const QString& username) const {
 	ui.nameLabel->setText(elidedUserName);
 }
 
-void CCMainWindow::setUserLevelPixmap(const int level) const {
-	QPixmap levePixmap{ ui.levelBtn->size() };
-	levePixmap.fill(Qt::transparent);
+// void CCMainWindow::setUserLevelPixmap(const int level) const {
+// 	QPixmap levePixmap{ ui.levelBtn->size() };
+// 	levePixmap.fill(Qt::transparent);
+//
+// 	QPainter painter{ &levePixmap };
+// 	painter.drawPixmap(0, 4, QPixmap{ ":/Resources/MainWindow/lv.png" });
+//
+// 	const auto unitNum{ level % 10 }; //个位数
+// 	const auto tenNum{ level / 10 % 10 }; //十位数
+//
+// 	//十位，截取图片中的部分进行绘制
+// 	painter.drawPixmap(10, 4, QPixmap{ ":/Resources/MainWindow/levelvalue.png" }, tenNum * 6, 0, 6, 7);
+//
+// 	//个位，同上
+// 	painter.drawPixmap(16, 4, QPixmap{ ":/Resources/MainWindow/levelvalue.png" }, unitNum * 6, 0, 6, 7);
+//
+// 	ui.levelBtn->setIcon(levePixmap);
+// 	ui.levelBtn->setIconSize(ui.levelBtn->size());
+// }
 
-	QPainter painter{ &levePixmap };
-	painter.drawPixmap(0, 4, QPixmap{ ":/Resources/MainWindow/lv.png" });
+void CCMainWindow::setUserHeadPixmap() const {
+	const QPixmap headImage{ CommonUtils::base64ToQPixmap(UserManager::getCurrentUser().getHeadImage()) };
 
-	const auto unitNum{ level % 10 }; //个位数
-	const auto tenNum{ level / 10 % 10 }; //十位数
+	QPixmap mask;
+	mask.load(":/Resources/MainWindow/head_mask.png");
 
-	//十位，截取图片中的部分进行绘制
-	painter.drawPixmap(10, 4, QPixmap{ ":/Resources/MainWindow/levelvalue.png" }, tenNum * 6, 0, 6, 7);
-
-	//个位，同上
-	painter.drawPixmap(16, 4, QPixmap{ ":/Resources/MainWindow/levelvalue.png" }, unitNum * 6, 0, 6, 7);
-
-	ui.levelBtn->setIcon(levePixmap);
-	ui.levelBtn->setIconSize(ui.levelBtn->size());
-}
-
-void CCMainWindow::setUserHeadPixmap(const QString& headPath) const {
-	QPixmap pix;
-	pix.load(":/Resources/MainWindow/head_mask.png");
-	ui.headLabel->setPixmap(getRoundedImage(QPixmap{ headPath }, pix, ui.headLabel->size()));
+	ui.headLabel->setPixmap(getRoundedImage(headImage, mask, ui.headLabel->size()));
 }
 
 void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) const {
@@ -212,28 +272,28 @@ void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) const {
 	ui.statusBtn->setIconSize(ui.statusBtn->size());
 }
 
-QString CCMainWindow::getHeadPicturePath() {
-	QString headPicturePath{};
+// QString CCMainWindow::getHeadPicturePath() {
+// 	QString headPicturePath{};
+//
+// 	QSqlQuery queryPicture{ QString{ "SELECT picture FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
+// 	queryPicture.exec();
+// 	queryPicture.next();
+// 	headPicturePath = queryPicture.value(0).toString();
+//
+// 	return headPicturePath;
+// }
 
-	QSqlQuery queryPicture{ QString{ "SELECT picture FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
-	queryPicture.exec();
-	queryPicture.next();
-	headPicturePath = queryPicture.value(0).toString();
-
-	return headPicturePath;
-}
-
-QString CCMainWindow::getUsername() {
-	QString username{};
-
-	QSqlQuery queryUsername{
-		QString{ "SELECT employee_name FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
-	queryUsername.exec();
-	queryUsername.next();
-	username = queryUsername.value(0).toString();
-
-	return username;
-}
+// QString CCMainWindow::getUsername() {
+// 	QString username{};
+//
+// 	QSqlQuery queryUsername{
+// 		QString{ "SELECT employee_name FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
+// 	queryUsername.exec();
+// 	queryUsername.next();
+// 	username = queryUsername.value(0).toString();
+//
+// 	return username;
+// }
 
 QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QString& appName) {
 	const auto button{ new QPushButton{ this } };
@@ -258,7 +318,7 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 }
 
 void CCMainWindow::resizeEvent(QResizeEvent* event) {
-	setUserName(QString{ getUsername() });
+	setUserName(QString{ UserManager::getCurrentUser().getName().c_str() });
 
 	return BasicWindow::resizeEvent(event);
 }
@@ -329,7 +389,7 @@ void CCMainWindow::updateSearchStyle() const {
 	                               .arg(qMin(b.toInt() / 10 + increaseValue, 255)));
 }
 
-void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depID) {
+void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depID) const {
 	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
 
 	//添加子节点，子项数据为1
@@ -370,11 +430,14 @@ void CCMainWindow::addFriends(QTreeWidgetItem* pRootGroupItem, const User& user)
 	pChildItem->setData(0, Qt::UserRole + 1, user.getId());
 
 	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
-	// pContactItem->setHeadPixmap(getRoundedImage(groupPix, pixmap, pContactItem->getHeadLabelSize()));
-	pContactItem->setUsername(QString{ user.getName().c_str() });
-
 	pRootGroupItem->addChild(pChildItem);
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
+
+	const QPixmap headImage{ CommonUtils::base64ToQPixmap(user.getHeadImage()) };
+	QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
+
+	pContactItem->setHeadPixmap(getRoundedImage(headImage, mask, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(QString{ user.getName().c_str() });
 }
 
 void CCMainWindow::addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group) {
@@ -391,6 +454,15 @@ void CCMainWindow::addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group
 	pRootGroupItem->addChild(pChildItem);
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
 }
+
+// QByteArray CCMainWindow::base64ToByteArray(const QString& base64String) const {
+// 	return QByteArray::fromBase64(base64String.toUtf8());
+// }
+//
+// QPixmap CCMainWindow::byteArrayToPixmap(const QByteArray& imageData) const {
+// 	QImage image = QImage::fromData(imageData);
+// 	return QPixmap::fromImage(image);
+// }
 
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
@@ -434,7 +506,7 @@ void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {
 }
 
 void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
-	if (bool isChild = item->data(0, Qt::UserRole).toBool(); isChild == true && item!=nullptr) {
+	if (bool isChild = item->data(0, Qt::UserRole).toBool(); isChild == true && item != nullptr) {
 		// 循环向上查找父节点，直到找到顶级节点
 		const auto itemClicked = item;
 		while (item->parent()) {
@@ -445,20 +517,11 @@ void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
 		if (QTreeWidgetItem* topLevelItem = item) {
 			auto* topLevelItemWidget = dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(topLevelItem, 0));
 			const auto& topLevelItemText = topLevelItemWidget->text();
-			qDebug() << "Clicked on TopLevelItem: " << topLevelItemText;
+			// qDebug() << "Clicked on TopLevelItem: " << topLevelItemText;
 
-			WindowManager::getInstance()->addNewChatWindow(itemClicked->data(0, Qt::UserRole + 1).toString(), topLevelItemText == "群组");
+			WindowManager::getInstance()->addNewChatWindow(itemClicked->data(0, Qt::UserRole + 1).toString(),
+			                                               topLevelItemText == "群组");
 			// 在这里可以根据 topLevelItem 进行不同的处理
 		}
-
-		// // 继续处理你原有的子节点的点击逻辑
-		// bool bIsChild = item->data(0, Qt::UserRole).toBool();
-		// if (bIsChild) {
-		// 	WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
-		// }
 	}
-
-	// if (bool bIsChild = item->data(0, Qt::UserRole).toBool(); bIsChild) {
-	// 	WindowManager::getInstance()->addNewChatWindow(item->data(0, Qt::UserRole + 1).toString());
-	// }
 }

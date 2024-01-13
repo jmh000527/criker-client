@@ -21,37 +21,87 @@ ChatWindowShell::ChatWindowShell(QWidget* parent)
 	const QString b{ QString::number(backgroundColor.blue()) };
 	const auto increaseValue{ 230 };
 
-	ui.listWidget->setStyleSheet(QString{ "QListView {\
-											background-color: rgb(%1, %2, %3);\
-										 }" }.arg(r).arg(g).arg(b));
-	ui.listWidget->setStyleSheet(QString{ "QListView {\
-											padding: 4px; \
-											border: none;\
-										 }\
-										 QListView:item {\
-											border-radius:4px;\
-											background-color: transparent;\
-											height: 60px;\
-										 }\
-										 QListView::item:selected {\
-											border-radius:4px;\
-											background-color: rgba(%1, %2, %3, %4);\
-										 }\
-										 QListView::item:selected:!active{\
-											border-radius:4px;\
-											background-color: rgba(%1, %2, %3, %4);\
-										 }\
-										 QListView::item:selected:active{\
-											border-radius:4px;\
-											background-color: rgba(%1, %2, %3, %4);\
-										 }\
-										 QListView::item:hover{\
-											background-color: rgba(%1, %2, %3, %5);\
-										 }" }.arg(qMin(r.toInt() / 10 + increaseValue, 255))
-										     .arg(qMin(g.toInt() / 10 + increaseValue, 255))
-										     .arg(qMin(b.toInt() / 10 + increaseValue, 255))
-										     .arg(150).arg(100)
-	);
+	QString qss = QString(
+		"QListView#shellListWidget {"
+		"    padding: 4px; "
+		"    border-bottom-left-radius: 4px; "
+		"    border-top-left-radius: 4px; "
+		"}"
+		"QListView#shellListWidget::item {"
+		"    border-radius: 4px;"
+		"    background-color: transparent;"
+		"    height: 60px;"
+		"}"
+		"QListView#shellListWidget::item:selected {"
+		"    border-radius: 4px;"
+		"    background-color: rgba(%1, %2, %3, %4);"
+		"}"
+		"QListView#shellListWidget::item:selected:!active {"
+		"    border-radius: 4px;"
+		"    background-color: rgba(%1, %2, %3, %4);"
+		"}"
+		"QListView#shellListWidget::item:selected:active {"
+		"    border-radius: 4px;"
+		"    background-color: rgba(%1, %2, %3, %4);"
+		"}"
+		"QListView#shellListWidget::item:hover {"
+		"    background-color: rgba(%1, %2, %3, %5);"
+		"}").arg(qMin(r.toInt() / 10 + increaseValue, 255))
+		.arg(qMin(g.toInt() / 10 + increaseValue, 255))
+		.arg(qMin(b.toInt() / 10 + increaseValue, 255))
+		.arg(150).arg(100);
+
+	qss += QString(
+		"QListView#shellListWidget {"
+		"    background-color: rgb(%1, %2, %3);"
+		"}"
+		"QWidget#ChatWindowShellClass {"
+		"    border-radius: 4px;"
+		"    border: 1px solid rgb(%1, %2, %3);"
+		"    background-color: rgb(255, 255, 255);"
+		"}").arg(r).arg(g).arg(b);
+
+	setStyleSheet(qss);
+
+
+
+	// ui.listWidget->setStyleSheet(QString{ "QListView {\
+	// 										background-color: rgb(%1, %2, %3);\
+	// 									 }" }.arg(r).arg(g).arg(b));
+	//
+	// ui.listWidget->setStyleSheet(QString{ "QListView {\
+	// 										padding: 4px; \
+	// 										border: none;\
+	// 									 }\
+	// 									 QListView:item {\
+	// 										border-radius:4px;\
+	// 										background-color: transparent;\
+	// 										height: 60px;\
+	// 									 }\
+	// 									 QListView::item:selected {\
+	// 										border-radius:4px;\
+	// 										background-color: rgba(%1, %2, %3, %4);\
+	// 									 }\
+	// 									 QListView::item:selected:!active{\
+	// 										border-radius:4px;\
+	// 										background-color: rgba(%1, %2, %3, %4);\
+	// 									 }\
+	// 									 QListView::item:selected:active{\
+	// 										border-radius:4px;\
+	// 										background-color: rgba(%1, %2, %3, %4);\
+	// 									 }\
+	// 									 QListView::item:hover{\
+	// 										background-color: rgba(%1, %2, %3, %5);\
+	// 									 }" }.arg(qMin(r.toInt() / 10 + increaseValue, 255))
+	// 									     .arg(qMin(g.toInt() / 10 + increaseValue, 255))
+	// 									     .arg(qMin(b.toInt() / 10 + increaseValue, 255))
+	// 									     .arg(150).arg(100)
+	// );
+	//
+	// setStyleSheet(QString{ "QWidget#ChatWindowShellClass {\
+	// 								border-radius: 4px;\
+	// 								border: 1px solid #000000;\
+	// 							}" });
 }
 
 ChatWindowShell::~ChatWindowShell() {}
@@ -62,7 +112,7 @@ void ChatWindowShell::addChatWindow(
 
 	connect(m_emojiWindow, SIGNAL(signalEmojiWindowHide()), chatWindow, SLOT(onSetEmojiBtnFocusStatus()));
 
-	QListWidgetItem* item{ new QListWidgetItem{ ui.listWidget } };
+	QListWidgetItem* item{ new QListWidgetItem{ ui.shellListWidget } };
 	item->setSelected(true);
 	m_chatWindowItemMap.insert(item, chatWindow);
 
@@ -83,15 +133,15 @@ void ChatWindowShell::addChatWindow(
 	// img.load(sqlDepModel.data(index).toString());
 	// chatWindowItem->setHeadPixmap(QPixmap::fromImage(img)); //设置头像
 
-	ui.listWidget->addItem(item);
-	ui.listWidget->setItemWidget(item, chatWindowItem);
+	ui.shellListWidget->addItem(item);
+	ui.shellListWidget->setItemWidget(item, chatWindowItem);
 
 	onChatWindowItemClicked(item);
 	connect(chatWindowItem, &ChatWindowItem::signalCloseClicked,
 	        [chatWindowItem, chatWindow, item, this]() {
 		        m_chatWindowItemMap.remove(item);
 		        chatWindow->close();
-		        ui.listWidget->takeItem(ui.listWidget->row(item));
+		        ui.shellListWidget->takeItem(ui.shellListWidget->row(item));
 		        delete chatWindowItem;
 		        ui.rightStackedWidget->removeWidget(chatWindow);
 
@@ -155,9 +205,9 @@ void ChatWindowShell::initControl() {
 	leftWidgetSize.append(width() - 180);
 	ui.splitter->setSizes(leftWidgetSize);
 
-	ui.listWidget->setStyle(new CustomProxyStyle{ this });
+	ui.shellListWidget->setStyle(new CustomProxyStyle{ this });
 
-	connect(ui.listWidget, &QListWidget::itemClicked, this, &ChatWindowShell::onChatWindowItemClicked);
+	connect(ui.shellListWidget, &QListWidget::itemClicked, this, &ChatWindowShell::onChatWindowItemClicked);
 	connect(m_emojiWindow, SIGNAL(signalEmojiItemClicked(int)), this, SLOT(onEmojiItemClicked(int)));
 }
 

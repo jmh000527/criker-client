@@ -2,12 +2,6 @@
     font-family: Microsoft YaHei;
 }
 
-QWidget#CCMainWindowClass {
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border-radius: 4px;
-}
-
 QPushButton#placeholder1 {
     background-image: url(:Resources/MainWindow/medalwall_ani.png);
     background-repeat: no-repeat;
@@ -252,23 +246,6 @@ QPushButton#bottomBtn_7:hover {
 QPushButton#bottomBtn_7:pressed {
     border-image: url(:Resources/MainWindow/2014_btn_down.gft.png);
     border-width: 2px;
-}
-
-QTreeView {
-    border-style: none;
-}
-
-QTreeView::item {
-    color: rgba(255, 255, 255, 0);
-}
-
-QTreeView::item:selected:active {
-    background-color: rgba(135, 206, 250, 153);
-}
-
-QTreeView::item:selected:active,
-QTreeView::item:hover {
-    background-color: rgba(135, 206, 250, 50);
 }
 
 QLabel#userName {

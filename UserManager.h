@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QString>
+
 #include "user.h"
 #include "group.h"
 #include <vector>
@@ -11,6 +13,8 @@ public:
     static const User& getCurrentUser();
     static const std::vector<User>& getCurrentUserFriendList();
     static const std::vector<Group>& getCurrentUserGroupList();
+
+    static const User getFriend(const QString& uid);
 
     static void setCurrentUser(const User& user);
     static void setCurrentUserFriendList(const std::vector<User>& friends);

@@ -55,7 +55,6 @@ MsgWebView::MsgWebView(QWidget* parent)
 	channel->registerObject("external0", m_msgHtmlObj);
 
 	ChatWindowShell* chatWindowShell = WindowManager::getInstance()->getChatWindowShell();
-	connect(this, &MsgWebView::signalSendMsg, chatWindowShell, &ChatWindowShell::updateSendTcpMsg);
 
 	// //当前正在聊天的窗口ID
 	// QString strTalkId = WindowManger::getInstance()->getCreatingTalkId();

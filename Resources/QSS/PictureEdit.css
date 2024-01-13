@@ -1,0 +1,42 @@
+* {
+	font-family: Microsoft YaHei;
+}
+
+/* QPushButton#pushButton {
+	background: rgb(7, 189, 253);
+	color: #ffffff;
+	border: none;
+	border-radius: 4px;
+}
+
+QPushButton#pushButton:hover,
+QPushButton#pushButton:pressed {
+	background: rgb(33, 200, 253);
+} */
+
+QPushButton#sysmin {
+	border-image: url(:Resources/MainWindow/btn_mini_normal.gft.png);
+}
+
+QPushButton#sysmin:hover {
+	border-image: url(:Resources/MainWindow/btn_mini_highlight.gft.png);
+}
+
+QPushButton#sysmin:pressed {
+	border-image: url(:Resources/MainWindow/btn_mini_down.gft.png);
+}
+
+QPushButton#sysclose {
+	border-image: url(:Resources/MainWindow/btn_close_normal.gft.png);
+	border-top-right-radius: 4;
+}
+
+QPushButton#sysclose:hover {
+	border-image: url(:Resources/MainWindow/btn_close_highlight.gft.png);
+	border-top-right-radius: 4;
+}
+
+QPushButton#sysclose:pressed {
+	border-image: url(:Resources/MainWindow/btn_close_down.gft.png);
+	border-top-right-radius: 4;
+}

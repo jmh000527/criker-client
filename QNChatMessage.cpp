@@ -110,7 +110,7 @@ QString QNChatMessage::time() {
 	return m_time;
 }
 
-QNChatMessage::User_Type QNChatMessage::userType() {
+QNChatMessage::User_Type QNChatMessage::userType() const {
 	return m_userType;
 }
 

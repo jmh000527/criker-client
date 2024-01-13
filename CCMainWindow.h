@@ -17,16 +17,15 @@ public:
 private:
 	Ui::CCMainWindowClass ui{};
 
+	void loadStyleSheet(const QString& sheetName) override;
+
 	void initTimer();
 	void initColtrol();
 	void initContactTree();
 	void setUserName(const QString& username) const;
-	void setUserLevelPixmap(int level) const;
-	void setUserHeadPixmap(const QString& headPath) const;
+	// void setUserLevelPixmap(int level) const;
+	void setUserHeadPixmap() const;
 	void setUserStatusMenuIcon(const QString& statusPath) const;
-
-	QString getHeadPicturePath();
-	QString getUsername();
 
 	QWidget* createOtherAppExtension(const QString& appPath, const QString& appName);
 
@@ -35,7 +34,7 @@ private:
 	void mousePressEvent(QMouseEvent* event) override;
 
 	void updateSearchStyle() const;
-	void addDepartment(QTreeWidgetItem* pRootGroupItem, const int DepID);
+	void addDepartment(QTreeWidgetItem* pRootGroupItem, const int DepID) const;
 	void addFriends(QTreeWidgetItem* pRootGroupItem, const User& user);
 	void addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group);
 

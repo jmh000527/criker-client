@@ -7,6 +7,8 @@
 #include <QDir>
 #include <QSettings>
 
+#include "UserManager.h"
+
 CommonUtils::CommonUtils() = default;
 
 QPixmap CommonUtils::getRoundedImage(const QPixmap& src, QPixmap& mask, QSize maskSize) {
@@ -74,4 +76,26 @@ QColor CommonUtils::getDefaultSkinColor() {
 	}
 
 	return color;
+}
+
+QPixmap CommonUtils::base64ToQPixmap(const std::string& base64String) {
+	// 假设从服务器接收到的 Base64 图像数据
+	QString base64ImageData = QString{ base64String.c_str() };
+
+	// 将 Base64 字符串转换为 QByteArray
+	QByteArray imageData = base64ToByteArray(base64ImageData);
+
+	// 将 QByteArray 转换为 QPixmap
+	QPixmap headImage = byteArrayToPixmap(imageData);
+
+	return headImage;
+}
+
+QByteArray CommonUtils::base64ToByteArray(const QString& base64String) {
+	return QByteArray::fromBase64(base64String.toUtf8());
+}
+
+QPixmap CommonUtils::byteArrayToPixmap(const QByteArray& imageData) {
+	QImage image = QImage::fromData(imageData);
+	return QPixmap::fromImage(image);
 }

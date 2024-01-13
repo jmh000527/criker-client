@@ -7,27 +7,27 @@
     <x>0</x>
     <y>0</y>
     <width>1043</width>
-    <height>730</height>
+    <height>734</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ChatWindow</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
    <property name="spacing">
     <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>1</number>
+    <number>2</number>
    </property>
    <property name="topMargin">
-    <number>1</number>
+    <number>2</number>
    </property>
    <property name="rightMargin">
-    <number>1</number>
+    <number>2</number>
    </property>
    <property name="bottomMargin">
-    <number>1</number>
+    <number>2</number>
    </property>
    <item>
     <widget class="QSplitter" name="splitter">
@@ -79,7 +79,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QListWidget" name="listWidget">
+        <widget class="QListWidget" name="shellListWidget">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>

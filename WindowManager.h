@@ -14,7 +14,7 @@ public:
 	~WindowManager() override;
 	static WindowManager* getInstance();
 
-	QWidget* findWindowByName(const QString& windowName);
+	QWidget* findWindowByName(const QString& windowName) const;
 	void deleteWindowByName(const QString& windowName);
 	void addWindowName(QWidget* windowWidgetconst, const QString& windowName);
 	void addNewChatWindow(const QString& uid, bool isGroupChat);

@@ -36,7 +36,7 @@ ChatWindow::~ChatWindow() {
 	WindowManager::getInstance()->deleteWindowByName(m_chatId);
 }
 
-void ChatWindow::addEmojiImage(int emojiNum) {
+void ChatWindow::addEmojiImage(int emojiNum) const {
 	ui.textEdit->setFocus();
 	// ui.textEdit->addEmojiUrl(emojiNum);
 }
@@ -165,6 +165,8 @@ void ChatWindow::initControl() {
 	// 禁用垂直滚动条
 	ui.listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	ui.listWidget->verticalScrollBar()->setStyleSheet("QScrollBar{width:10px;}");
+	// ui.treeWidget->verticalScrollBar()->setStyleSheet("QScrollBar{width:10px;}");
+	ui.scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar{width:10px;}");
 
 	// // 设置 resize mode 为 Fixed
 	// ui.listWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
@@ -200,13 +202,31 @@ void ChatWindow::loadStyleSheet(const QString& sheetName) {
 		const QString b{ QString::number(backgroundColor.blue()) };
 		const auto increaseValue{ 230 };
 
-		qStyleSheet += QString("QWidget[titleskin = true] {\
+		qStyleSheet += QString("QWidget[titleskin=true] {\
 									background-color: rgb(%1, %2, %3);\
 									border-top-right-radius: 4px;\
 								}\
-								QWidget[bottomskin = true] {\
+								QWidget[bottomskin=true] {\
 									background-color: rgb(%4, %5, %6);\
 									border-top-right-radius: 4px;\
+								}\
+								QTreeView {\
+									outline: none;\
+									border-bottom-right-radius: 4px;\
+									border-top: none\
+								}\
+								QTreeView::item{\
+									color: rgba(255, 255, 255, 0);\
+									outline: none;\
+								}\
+								QTreeView::item:selected:active{\
+									background-color: rgba(%1, %2, %3, 153);\
+									outline: none;\
+								}\
+								QTreeView::item:selected:active,\
+								QTreeView::item:hover{\
+									background-color: rgb(%4, %5, %6);\
+									outline: none;\
 								}").arg(r).arg(g).arg(b)
 								   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
 								   .arg(qMin(g.toInt() / 10 + increaseValue, 255))
@@ -248,6 +268,19 @@ void ChatWindow::loadStyleSheet(const QString& sheetName) {
 								}\
 								QToolButton#sendBtn::menu-arrow{\
 									image: url(:Resources / MainWindow / aio_setting_white_normal.png);\
+								}").arg(r).arg(g).arg(b);
+
+		qStyleSheet += QString("QWidget#widget {\
+									border-bottom-right-radius: 4px;\
+								}\
+								QTreeWidget#treeWidget {\
+									border-bottom-right-radius: 4px;\
+								}\
+								QWidget#scrollAreaWidgetContents_2 {\
+									border-bottom-right-radius: 4px;\
+								}\
+								QScrollArea#scrollArea {\
+									border-bottom-right-radius: 4px;\
 								}").arg(r).arg(g).arg(b);
 
 
@@ -312,7 +345,7 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time) {
 		js["msg"] = message;
 		js["time"] = time.toStdString();
 
-		TcpClient::sendMessage(js, MsgType::GROUP_CHAT_MSG);
+		TcpClient::getInstance()->sendMessage(js, MsgType::GROUP_CHAT_MSG);
 	} else {
 		int friendid = m_chatId.toInt();
 		std::string message = msg.toStdString();
@@ -325,7 +358,7 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time) {
 		js["msg"] = message;
 		js["time"] = time.toStdString();
 
-		TcpClient::sendMessage(js, MsgType::ONE_CHAT_MSG);
+		TcpClient::getInstance()->sendMessage(js, MsgType::ONE_CHAT_MSG);
 	}
 }
 

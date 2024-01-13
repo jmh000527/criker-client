@@ -35,6 +35,6 @@ QPushButton#sysclose:pressed {
    border-top-right-radius: 4;
 }
 
-QLabel#titleIcon {
+/* QLabel#titleIcon {
    background-image: url(:Resources/MainWindow/qqlogoclassic.png);
-}
+} */

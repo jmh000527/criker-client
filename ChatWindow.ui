@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>881</width>
-    <height>439</height>
+    <width>795</width>
+    <height>731</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -408,12 +408,6 @@
    </item>
    <item>
     <widget class="QSplitter" name="splitter">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -421,6 +415,9 @@
       <number>1</number>
      </property>
      <widget class="QSplitter" name="bodySplitter">
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -439,19 +436,19 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <property name="spacing">
-         <number>0</number>
+         <number>6</number>
         </property>
         <property name="leftMargin">
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="topMargin">
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="bottomMargin">
-         <number>0</number>
+         <number>9</number>
         </property>
         <item>
          <widget class="QFrame" name="frameWidget">
@@ -467,6 +464,9 @@
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="spacing">
             <number>0</number>
@@ -475,13 +475,13 @@
             <number>0</number>
            </property>
            <property name="topMargin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
             <number>0</number>
            </property>
            <property name="bottomMargin">
-            <number>1</number>
+            <number>0</number>
            </property>
            <item>
             <widget class="QListWidget" name="listWidget">
@@ -515,7 +515,7 @@
       </widget>
       <widget class="QWidget" name="bottomWidget" native="true">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -529,7 +529,7 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>400</height>
+         <height>600</height>
         </size>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -746,10 +746,10 @@
       <property name="maximumSize">
        <size>
         <width>200</width>
-        <height>16777215</height>
+        <height>10000</height>
        </size>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -773,6 +773,9 @@
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QAbstractScrollArea::AdjustToContents</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -782,7 +785,7 @@
             <x>0</x>
             <y>0</y>
             <width>200</width>
-            <height>355</height>
+            <height>647</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -791,75 +794,62 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <widget class="QTreeWidget" name="treeWidget">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>1</y>
-             <width>198</width>
-             <height>354</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QScrollBar:horizontal {
-   background: #ffffff;
-   height: 6px;
-}
-
-QScrollBar::handle:horizontal {
-   background: #cccccc;
-   border-radius: 3px;
-   height: 6px;
-}
-
-QScrollBar::sub-line:horizontal {
-   background: transparent;
-}
-
-QScrollBar::add-line:horizontal {
-   background: transparent;
-}
-
-QScrollBar:vertical {
-   background: #ffffff;
-   width: 6px;
-}
-
-QScrollBar::handle:vertical {
-   background: #cccccc;
-   border-radius: 3px;
-   width: 6px;
-}
-
-QScrollBar::sub-line:vertical {
-   background: transparent;
-}
-
-QScrollBar::add-line:vertical {
-   background: transparent;
-}</string>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="editTriggers">
-            <set>QAbstractItemView::AllEditTriggers</set>
-           </property>
-           <property name="indentation">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="spacing">
             <number>0</number>
            </property>
-           <property name="headerHidden">
-            <bool>true</bool>
+           <property name="leftMargin">
+            <number>0</number>
            </property>
-           <column>
-            <property name="text">
-             <string notr="true">1</string>
-            </property>
-           </column>
-          </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTreeWidget" name="treeWidget">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::AdjustToContents</enum>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::AllEditTriggers</set>
+             </property>
+             <property name="indentation">
+              <number>0</number>
+             </property>
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>

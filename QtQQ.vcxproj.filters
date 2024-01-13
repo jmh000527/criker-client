@@ -91,9 +91,6 @@
     <ClCompile Include="WindowManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QMsgTextEdit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MsgWebView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -116,6 +113,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CutShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CutRectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CutRound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BackgroundWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PicturePreviewPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureEdit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -168,9 +189,6 @@
     <QtMoc Include="WindowManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="QMsgTextEdit.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="MsgWebView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -178,6 +196,18 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="TcpClient.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UserRegister.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="PicturePreviewPanel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="PictureEdit.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ImageView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -209,6 +239,18 @@
     <ClInclude Include="TimeManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CutShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CutRectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CutRound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BackgroundWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="UserLogin.ui">
@@ -230,6 +272,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ChatWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UserRegister.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="PictureEdit.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

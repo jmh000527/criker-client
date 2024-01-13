@@ -3,14 +3,8 @@
 }
 
 QWidget#ChatWindow {
-   background-color: #aa1010;
-   border: 1px solid #eeeeee;
-}
-
-QWidget#frameWidget {
    background-color: #ffffff;
-   border-top: 1px solid #eeeeee;
-   border-bottom: 1px solid #eeeeee;
+   border-bottom-right-radius: 4px;
 }
 
 QPushButton#sysmin {
@@ -321,3 +315,47 @@ QComboBox QAbstractItemView {
    color: #333333;
    font-size: 12px;
 }
+
+/* QScrollBar:horizontal {
+   background: #ffffff;
+   border-bottom-right-radius: 4px;
+   height: 6px;
+}
+
+QScrollBar::handle:horizontal {
+   background: #cccccc;
+   border-bottom-right-radius: 4px;
+   height: 6px;
+}
+
+QScrollBar::sub-line:horizontal {
+   background: transparent;
+   border-bottom-right-radius: 4px;
+}
+
+QScrollBar::add-line:horizontal {
+   background: transparent;
+   border-bottom-right-radius: 4px;
+}
+
+QScrollBar:vertical {
+   background: #ffffff;
+   width: 6px;
+   border-bottom-right-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+   background: #cccccc;
+   border-bottom-right-radius: 4px;
+   width: 6px;
+}
+
+QScrollBar::sub-line:vertical {
+   background: transparent;
+   border-bottom-right-radius: 4px;
+}
+
+QScrollBar::add-line:vertical {
+   background: transparent;
+   border-bottom-right-radius: 4px;
+} */

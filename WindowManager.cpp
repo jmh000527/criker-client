@@ -2,6 +2,8 @@
 
 #include "WindowManager.h"
 #include "ChatWindowShell.h"
+#include "CommonUtils.h"
+#include "UserManager.h"
 
 //单例模式，创建全局静态对象
 Q_GLOBAL_STATIC(WindowManager, theInstance)
@@ -9,13 +11,13 @@ Q_GLOBAL_STATIC(WindowManager, theInstance)
 WindowManager::WindowManager()
 	: QObject{ nullptr }, m_chatWindowShell{ nullptr } {}
 
-WindowManager::~WindowManager() {}
+WindowManager::~WindowManager() = default;
 
 WindowManager* WindowManager::getInstance() {
 	return theInstance;
 }
 
-QWidget* WindowManager::findWindowByName(const QString& windowName) {
+QWidget* WindowManager::findWindowByName(const QString& windowName) const {
 	if (m_windowMap.contains(windowName)) {
 		return m_windowMap.value(windowName);
 	} else {
@@ -49,25 +51,10 @@ void WindowManager::addNewChatWindow(const QString& uid, bool isGroupChat) {
 		ChatWindow* chatWindow{ new ChatWindow{ m_chatWindowShell, uid, isGroupChat} };
 		ChatWindowItem* chatWindowItem{ new ChatWindowItem{ chatWindow } };
 
-		// //判断群聊还是单聊
-		// QSqlQueryModel sqlDepModel;
-		// QString strSql = QString("SELECT department_name,sign FROM tab_department WHERE departmentID=%1").arg(uid);
-		// sqlDepModel.setQuery(strSql);
-		// int rows = sqlDepModel.rowCount();
-		//
-		// //单聊
-		// if (rows == 0) {
-		// 	QString sql = QString("SELECT employee_name,employee_sign FROM tab_employees WHERE employeeID=%1").arg(uid);
-		// 	sqlDepModel.setQuery(sql);
-		// }
-		//
-		// QModelIndex indexDepIndex = sqlDepModel.index(0, 0);
-		// QModelIndex signIndex = sqlDepModel.index(0, 1);
-		// QString strWindowName = sqlDepModel.data(signIndex).toString();
-		// QString strMsgLabel = sqlDepModel.data(indexDepIndex).toString();
-
+		const auto friendUser{ UserManager::getFriend(uid) };
 		chatWindow->setWindowName(uid);
-		chatWindowItem->setMsgLabelContent(uid); //左侧文本显示
+		chatWindowItem->setMsgLabelContent(friendUser.getName().c_str()); //左侧文本显示
+		chatWindowItem->setHeadPixmap(CommonUtils::base64ToQPixmap(friendUser.getHeadImage()));
 
 		m_chatWindowShell->addChatWindow(chatWindow, chatWindowItem, uid, isGroupChat);
 	} else {

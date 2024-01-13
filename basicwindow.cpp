@@ -42,11 +42,14 @@ void BasicWindow::loadStyleSheet(const QString& sheetName) {
 								background-color: rgb(%1, %2, %3);\
 								border-top-left-radius: 4px;\
 								border-top-right-radius: 4px;\
+								border: 1px solid rgb(%1, %2, %3);\
 								}\
 								QWidget[bottomSkin = true] {\
 								background-color: rgb(%4, %5, %6);\
 								border-bottom-left-radius: 4px;\
 								border-bottom-right-radius: 4px;\
+								border: 1px solid rgb(%1, %2, %3);\
+								border-top: none;\
 								}").arg(r).arg(g).arg(b)
 								   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
 								   .arg(qMin(g.toInt() / 10 + increaseValue, 255))

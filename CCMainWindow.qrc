@@ -72,7 +72,6 @@
         <file>Resources/MainWindow/fileopen_hover.png</file>
         <file>Resources/MainWindow/fileopen_press.png</file>
         <file>Resources/MainWindow/girl.png</file>
-        <file>Resources/MainWindow/head_mask.png</file>
         <file>Resources/MainWindow/levelvalue.png</file>
         <file>Resources/MainWindow/list_down.png</file>
         <file>Resources/MainWindow/lv.png</file>
@@ -363,5 +362,9 @@
         <file>Resources/MainWindow/MsgHtml/msgFont.txt</file>
         <file>Resources/MainWindow/MsgHtml/msgtmpl.txt</file>
         <file>Resources/MainWindow/MsgHtml/recvHtml.txt</file>
+        <file>Resources/QSS/ChatWindowShell.css</file>
+        <file>Resources/QSS/PictureEdit.css</file>
+        <file>Resources/MainWindow/head_mask.png</file>
+        <file>Resources/MainWindow/head_with_cross.png</file>
     </qresource>
 </RCC>

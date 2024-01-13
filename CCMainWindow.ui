@@ -70,31 +70,9 @@
         <property name="leftMargin">
          <number>12</number>
         </property>
-        <item>
-         <widget class="QLabel" name="titleIcon">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>42</width>
-            <height>18</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>42</width>
-            <height>18</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
@@ -107,56 +85,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="placeholder1">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="placeholder2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>24</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="sysmin">
@@ -320,34 +248,6 @@ font: 75 12pt &quot;微软雅黑&quot;;
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QPushButton" name="levelBtn">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>22</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>22</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="hasBorder" stdset="0">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
@@ -417,13 +317,13 @@ font: 75 12pt &quot;微软雅黑&quot;;
        <number>1</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="rightMargin">
        <number>1</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>1</number>
       </property>
       <item>
        <widget class="QWidget" name="searchWidget" native="true">
@@ -525,7 +425,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
            <x>0</x>
            <y>0</y>
            <width>278</width>
-           <height>474</height>
+           <height>472</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -610,7 +510,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
      <property name="bottomSkin" stdset="0">
       <bool>true</bool>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,1">
+     <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
       <property name="spacing">
        <number>6</number>
       </property>

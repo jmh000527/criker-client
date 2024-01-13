@@ -2,12 +2,6 @@
 	font-family: Microsoft YaHei;
 }
 
-QWidget#UserLogin {
-	background-color: #ffffff;
-	border: 1px solid #cccccc;
-	border-radius: 4px;
-}
-
 QLabel#TitleContent {
 	font-size: 12px;
 	color: #ffffff;
@@ -23,6 +17,19 @@ QPushButton#buttonLogin {
 
 QPushButton#buttonLogin:hover,
 QPushButton#buttonLogin:pressed {
+	background: rgb(33, 200, 253);
+}
+
+QPushButton#buttonRegister2 {
+	font-size: 14px;
+	background: rgb(7, 189, 253);
+	color: #ffffff;
+	border: none;
+	border-radius: 4px;
+}
+
+QPushButton#buttonRegister2:hover,
+QPushButton#buttonRegister2:pressed {
 	background: rgb(33, 200, 253);
 }
 
@@ -66,7 +73,8 @@ QCheckBox::indicator:enabled:checked:hover {
 }
 
 QLineEdit#lineEditUserAccount,
-QLineEdit#lineEditUserPassword {
+QLineEdit#lineEditUserPassword,
+QLineEdit#lineEditUserPasswordConfirm {
 	background: #FFFFFF;
 	border: 1px solid #DDDDDD;
 	border-radius: 2px;
@@ -75,10 +83,38 @@ QLineEdit#lineEditUserPassword {
 }
 
 QLineEdit#lineEditUserAccount:hover,
-QLineEdit#lineEditUserPassword:hover {
+QLineEdit#lineEditUserPassword:hover,
+QLineEdit#lineEditUserPasswordConfirm:hover {
 	background: #FFFFFF;
 	border: 1px solid rgb(0, 161, 219);
 	border-radius: 2px;
 	font-size: 14px;
 	color: #666666;
+}
+
+QPushButton#sysmin {
+	border-image: url(:Resources/MainWindow/btn_mini_normal.gft.png);
+}
+
+QPushButton#sysmin:hover {
+	border-image: url(:Resources/MainWindow/btn_mini_highlight.gft.png);
+}
+
+QPushButton#sysmin:pressed {
+	border-image: url(:Resources/MainWindow/btn_mini_down.gft.png);
+}
+
+QPushButton#sysclose {
+	border-image: url(:Resources/MainWindow/btn_close_normal.gft.png);
+	border-top-right-radius: 4;
+}
+
+QPushButton#sysclose:hover {
+	border-image: url(:Resources/MainWindow/btn_close_highlight.gft.png);
+	border-top-right-radius: 4;
+}
+
+QPushButton#sysclose:pressed {
+	border-image: url(:Resources/MainWindow/btn_close_down.gft.png);
+	border-top-right-radius: 4;
 }

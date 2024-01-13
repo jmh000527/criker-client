@@ -16,9 +16,11 @@ private:
 	Ui::UserLoginClass ui{};
 
 	void initControl();
-	bool connectMySQL();
-	bool verifyAccountCode();
+	bool verifyAccountCode() const;
+
+	void loadStyleSheet(const QString& sheetName) override;
 
 private slots:
 	void onLoginButtonClicked();
+	void onRegisterButtonClicked();
 };
