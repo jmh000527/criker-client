@@ -232,9 +232,10 @@ void TcpClient::readTaskHandler() {
 
 				auto msg = getValueFromJson<std::string>(js, "msg");
 				auto sentTime = getValueFromJson<std::string>(js, "time");
+				auto senderId = getValueFromJson<int>(js, "id");
 
 				// 发射信号
-				emit messageReceived(msg.c_str(), sentTime.c_str());
+				emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(senderId));
 
 				// 断开连接，如果需要
 				QObject::disconnect(this, &TcpClient::messageReceived,
@@ -256,9 +257,10 @@ void TcpClient::readTaskHandler() {
 
 				auto msg = getValueFromJson<std::string>(js, "msg");
 				auto sentTime = getValueFromJson<std::string>(js, "time");
+				auto senderId = getValueFromJson<int>(js, "id");
 
 				// 发射信号
-				emit messageReceived(msg.c_str(), sentTime.c_str());
+				emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(senderId));
 
 				// 断开连接，如果需要
 				QObject::disconnect(this, &TcpClient::messageReceived,
@@ -344,7 +346,7 @@ void TcpClient::doLoginResponse(json& responsejs) {
 				for (const auto& userstr : grpjs["users"]) {
 					std::string receieved = userstr;
 					json js = json::parse(receieved);
-					GroupUser user{ js["id"].get<int>(), js["name"], "", js["state"], js["role"] };
+					GroupUser user{ js["headimage"], js["id"].get<int>(), js["name"], "", js["state"], js["role"] };
 					users.push_back(user);
 				}
 
@@ -393,75 +395,75 @@ std::vector<char> TcpClient::constructMessage(const nlohmann::json& js, MsgType 
 }
 
 void TcpClient::onReadyRead() {
-	const auto data = TcpClient::receiveMessage();
-
-	QByteArray message;
-	MsgType messageType;
-	std::tie(message, messageType) = data;
-
-	if (message.isEmpty()) {
-		qDebug() << "Error receiving message.";
-	}
-
-	// Convert QByteArray to std::string
-	std::string buffer = message.toStdString();
-	// std::cout << buffer << std::endl;
-
-	// Deserialize the received data
-	json js = json::parse(buffer);
-	// MsgType msgtype{ static_cast<MsgType>(getValueFromJson<int>(js, "msgtype")) };
-
-	if (MsgType::ONE_CHAT_MSG == messageType) {
-		auto* targetWidget = WindowManager::getInstance()->findWindowByName(
-			QString::number(getValueFromJson<int>(js, "id")));
-		const auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
-
-		if (targetChatWindow) {
-			// 连接信号到槽函数
-			QObject::connect(this, &TcpClient::messageReceived,
-			                 targetChatWindow, &ChatWindow::onRecieveMessage);
-
-			auto msg = getValueFromJson<std::string>(js, "msg");
-			auto sentTime = getValueFromJson<std::string>(js, "time");
-
-			// 发射信号
-			emit messageReceived(msg.c_str(), sentTime.c_str());
-
-			// 断开连接，如果需要
-			QObject::disconnect(this, &TcpClient::messageReceived,
-			                    targetChatWindow, &ChatWindow::onRecieveMessage);
-		}
-	}
-
-	if (MsgType::GROUP_CHAT_MSG == messageType) {
-		auto* targetWidget = WindowManager::getInstance()->findWindowByName(
-			QString::number(getValueFromJson<int>(js, "groupid")));
-		const auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
-
-		if (targetChatWindow) {
-			// 连接信号到槽函数
-			QObject::connect(this, &TcpClient::messageReceived,
-			                 targetChatWindow, &ChatWindow::onRecieveMessage);
-
-			auto msg = getValueFromJson<std::string>(js, "msg");
-			auto sentTime = getValueFromJson<std::string>(js, "time");
-
-			// 发射信号
-			emit messageReceived(msg.c_str(), sentTime.c_str());
-
-			// 断开连接，如果需要
-			QObject::disconnect(this, &TcpClient::messageReceived,
-			                    targetChatWindow, &ChatWindow::onRecieveMessage);
-		}
-	}
-
-	if (MsgType::LOGIN_MSG_ACK == messageType) {
-		doLoginResponse(js);
-		rwsem.release();
-	}
-
-	if (MsgType::REG_MSG_ACK == messageType) {
-		doRegResponse(js);
-		rwsem.release();
-	}
+	// const auto data = TcpClient::receiveMessage();
+	//
+	// QByteArray message;
+	// MsgType messageType;
+	// std::tie(message, messageType) = data;
+	//
+	// if (message.isEmpty()) {
+	// 	qDebug() << "Error receiving message.";
+	// }
+	//
+	// // Convert QByteArray to std::string
+	// std::string buffer = message.toStdString();
+	// // std::cout << buffer << std::endl;
+	//
+	// // Deserialize the received data
+	// json js = json::parse(buffer);
+	// // MsgType msgtype{ static_cast<MsgType>(getValueFromJson<int>(js, "msgtype")) };
+	//
+	// if (MsgType::ONE_CHAT_MSG == messageType) {
+	// 	auto* targetWidget = WindowManager::getInstance()->findWindowByName(
+	// 		QString::number(getValueFromJson<int>(js, "id")));
+	// 	const auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
+	//
+	// 	if (targetChatWindow) {
+	// 		// 连接信号到槽函数
+	// 		QObject::connect(this, &TcpClient::messageReceived,
+	// 		                 targetChatWindow, &ChatWindow::onRecieveMessage);
+	//
+	// 		auto msg = getValueFromJson<std::string>(js, "msg");
+	// 		auto sentTime = getValueFromJson<std::string>(js, "time");
+	//
+	// 		// 发射信号
+	// 		emit messageReceived(msg.c_str(), sentTime.c_str());
+	//
+	// 		// 断开连接，如果需要
+	// 		QObject::disconnect(this, &TcpClient::messageReceived,
+	// 		                    targetChatWindow, &ChatWindow::onRecieveMessage);
+	// 	}
+	// }
+	//
+	// if (MsgType::GROUP_CHAT_MSG == messageType) {
+	// 	auto* targetWidget = WindowManager::getInstance()->findWindowByName(
+	// 		QString::number(getValueFromJson<int>(js, "groupid")));
+	// 	const auto* targetChatWindow = dynamic_cast<ChatWindow*>(targetWidget);
+	//
+	// 	if (targetChatWindow) {
+	// 		// 连接信号到槽函数
+	// 		QObject::connect(this, &TcpClient::messageReceived,
+	// 		                 targetChatWindow, &ChatWindow::onRecieveMessage);
+	//
+	// 		auto msg = getValueFromJson<std::string>(js, "msg");
+	// 		auto sentTime = getValueFromJson<std::string>(js, "time");
+	//
+	// 		// 发射信号
+	// 		emit messageReceived(msg.c_str(), sentTime.c_str());
+	//
+	// 		// 断开连接，如果需要
+	// 		QObject::disconnect(this, &TcpClient::messageReceived,
+	// 		                    targetChatWindow, &ChatWindow::onRecieveMessage);
+	// 	}
+	// }
+	//
+	// if (MsgType::LOGIN_MSG_ACK == messageType) {
+	// 	doLoginResponse(js);
+	// 	rwsem.release();
+	// }
+	//
+	// if (MsgType::REG_MSG_ACK == messageType) {
+	// 	doRegResponse(js);
+	// 	rwsem.release();
+	// }
 }

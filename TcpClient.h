@@ -50,7 +50,7 @@ private:
 	QTcpSocket* m_socket;
 
 signals:
-	void messageReceived(const QString& msg, const QString& time);
+	void messageReceived(const QString& msg, const QString& time, const QString& senderId);
 
 private slots:
 	void onReadyRead();

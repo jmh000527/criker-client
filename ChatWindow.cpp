@@ -45,32 +45,21 @@ void ChatWindow::setWindowName(const QString& name) {
 	ui.nameLabel->setText(name);
 }
 
-void ChatWindow::addGroupUser(QTreeWidgetItem* pRootItem, int userID) {
+void ChatWindow::addGroupUser(QTreeWidgetItem* pRootItem, const GroupUser& groupUser) {
 	auto* pChild = new QTreeWidgetItem();
 
 	//添加子节点
 	pChild->setData(0, Qt::UserRole, 1);
-	pChild->setData(0, Qt::UserRole + 1, userID);
+	pChild->setData(0, Qt::UserRole + 1, groupUser.getId());
 	auto* pContactItem = new ContactItem(ui.treeWidget);
 
-	// //获取名 签名 头像路径
-	// QString strName, strSign, strPicPath, strQuery;
-	// QSqlQueryModel queryInfoModel;
-	// queryInfoModel.setQuery(QString("SELECT employee_name,employee_sign,picture FROM tab_employees WHERE employeeID=%1").arg(employeeID));
-	// QModelIndex nameIndex, signIndex, picIndex;
-	// nameIndex = queryInfoModel.index(0, 0);
-	// signIndex = queryInfoModel.index(0, 1);
-	// picIndex = queryInfoModel.index(0, 2);
-	// strName = queryInfoModel.data(nameIndex).toString();
-	// strSign = queryInfoModel.data(signIndex).toString();
-	// strPicPath = queryInfoModel.data(picIndex).toString();
-
-	// QPixmap pix1;
-	// pix1.load(":/Resources/MainWindow/head_mask.png");
+	QPixmap mask;
+	mask.load(":/Resources/MainWindow/head_mask.png");
 	// QImage imageHead;
 	// imageHead.load(strPicPath);
-	// pContactItem->setHeadPixmap(CommonUtils::getRoundedImage(QPixmap::fromImage(imageHead), pix1, pContactItem->getHeadLabelSize()));
-	pContactItem->setUsername(QString::number(userID));
+	pContactItem->setHeadPixmap(CommonUtils::getRoundedImage(CommonUtils::base64ToQPixmap(groupUser.getHeadImage()),
+	                                                         mask, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(groupUser.getName().c_str());
 	// pContactItem->setSignature(strSign);
 
 	pRootItem->addChild(pChild);
@@ -131,13 +120,13 @@ void ChatWindow::initChatWindow() {
 	// nEmployeeNum = queryEmployeeModel.rowCount();
 	// QString qsGroupName = QString{ "%1 %2/%3" }.arg(strGroupName).arg(0).arg(nEmployeeNum);
 
-	Group currentGroup;
-	const auto& userGroupList = UserManager::getCurrentUserGroupList();
-	const auto iter = std::ranges::find_if(userGroupList,
-	                                       [this](const Group& group) { return group.getId() == m_chatId.toInt(); });
-	if (iter != userGroupList.end()) {
-		currentGroup = *iter;
-	}
+	Group currentGroup = UserManager::getGroup(m_chatId);
+	// const auto& userGroupList = UserManager::getCurrentUserGroupList();
+	// const auto iter = std::ranges::find_if(userGroupList,
+	//                                        [this](const Group& group) { return group.getId() == m_chatId.toInt(); });
+	// if (iter != userGroupList.end()) {
+	// 	currentGroup = *iter;
+	// }
 
 	pItemName->setText(currentGroup.getName().c_str());
 
@@ -149,8 +138,8 @@ void ChatWindow::initChatWindow() {
 	pRootItem->setExpanded(true);
 
 	const auto& currentGroupUsers{ currentGroup.getUsers() };
-	for(size_t i{}; i < currentGroupUsers.size(); ++i) {
-		addGroupUser(pRootItem, currentGroupUsers.at(i).getId());
+	for (size_t i{}; i < currentGroupUsers.size(); ++i) {
+		addGroupUser(pRootItem, currentGroupUsers.at(i));
 	}
 }
 
@@ -290,12 +279,43 @@ void ChatWindow::loadStyleSheet(const QString& sheetName) {
 	file.close();
 }
 
-void ChatWindow::dealMessage(QNChatMessage* messageW, QListWidgetItem* item, const QString& text, const QString& time, QNChatMessage::User_Type type) {
+void ChatWindow::dealMessage(
+	QNChatMessage* messageW, QListWidgetItem* item, const QString& text, const QString& time,
+	const QString& senderId, QNChatMessage::User_Type type) {
+	//设置头像
+	if (type == QNChatMessage::User_Me) {
+		QPixmap headImage = CommonUtils::base64ToQPixmap(UserManager::getCurrentUser().getHeadImage());
+		QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
+
+		messageW->setRightHeadImage(CommonUtils::getRoundedImage(headImage, mask));
+	} else if (type == QNChatMessage::User_She) {
+		if (m_isGroupChat) {
+			std::vector<GroupUser> currentGroupUsers{ UserManager::getGroup(m_chatId).getUsers() };
+			const auto iter = std::ranges::find_if(currentGroupUsers, [senderId](const auto& groupUser) {
+				return groupUser.getId() == senderId.toInt();
+			});
+
+			if (iter != std::end(currentGroupUsers)) {
+				QPixmap headImage = CommonUtils::base64ToQPixmap((*iter).getHeadImage());
+				QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
+
+				messageW->setLeftHeadImage(CommonUtils::getRoundedImage(headImage, mask));
+			}
+		} else {
+			QPixmap headImage = CommonUtils::base64ToQPixmap(UserManager::getFriend(m_chatId).getHeadImage());
+			QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
+
+			messageW->setLeftHeadImage(CommonUtils::getRoundedImage(headImage, mask));
+		}
+	}
+
 	const auto width = ui.listWidget->size().width();
 	messageW->setFixedWidth(width);
 	const QSize size = messageW->fontRect(text);
 	item->setSizeHint(QSize{ ui.listWidget->width(), size.height() });
 	messageW->setText(text, time, size, type);
+
+	//添加消息
 	ui.listWidget->setItemWidget(item, messageW);
 }
 
@@ -310,8 +330,7 @@ void ChatWindow::dealMessageTime(const QString& curMsgTime) {
 		// qDebug() << "curTime lastTime:" << curTime - lastTime;
 		isShowTime = ((curTime - lastTime) > 60); // 两个消息相差一分钟
 		//        isShowTime = true;
-	}
-	else {
+	} else {
 		isShowTime = true;
 	}
 	if (isShowTime) {
@@ -326,14 +345,13 @@ void ChatWindow::dealMessageTime(const QString& curMsgTime) {
 	}
 }
 
-void ChatWindow::sendMessage(const QString& msg, const QString& time) {
+void ChatWindow::sendMessage(const QString& msg, const QString& time, const QString& senderId) {
 	dealMessageTime(time);
 	auto* messageW = new QNChatMessage(ui.listWidget->parentWidget());
 	auto* item = new QListWidgetItem(ui.listWidget);
-	dealMessage(messageW, item, msg, time, QNChatMessage::User_Me);
-	messageW->setTextSuccess();
+	dealMessage(messageW, item, msg, time, senderId, QNChatMessage::User_Me);
 
-	if(m_isGroupChat) {
+	if (m_isGroupChat) {
 		int groupid = m_chatId.toInt();
 		std::string message = msg.toStdString();
 
@@ -345,7 +363,9 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time) {
 		js["msg"] = message;
 		js["time"] = time.toStdString();
 
-		TcpClient::getInstance()->sendMessage(js, MsgType::GROUP_CHAT_MSG);
+		if (TcpClient::getInstance()->sendMessage(js, MsgType::GROUP_CHAT_MSG)) {
+			messageW->setTextSuccess();
+		}
 	} else {
 		int friendid = m_chatId.toInt();
 		std::string message = msg.toStdString();
@@ -358,21 +378,24 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time) {
 		js["msg"] = message;
 		js["time"] = time.toStdString();
 
-		TcpClient::getInstance()->sendMessage(js, MsgType::ONE_CHAT_MSG);
+		if (TcpClient::getInstance()->sendMessage(js, MsgType::ONE_CHAT_MSG)) {
+			messageW->setTextSuccess();
+		}
 	}
 }
 
-void ChatWindow::onRecieveMessage(const QString& msg, const QString& time) {
+void ChatWindow::onRecieveMessage(const QString& msg, const QString& time, const QString& senderId) {
 	dealMessageTime(time);
 	auto* messageW = new QNChatMessage(ui.listWidget->parentWidget());
 	auto* item = new QListWidgetItem(ui.listWidget);
-	dealMessage(messageW, item, msg, time, QNChatMessage::User_She);
+	dealMessage(messageW, item, msg, time, senderId, QNChatMessage::User_She);
 	messageW->setTextSuccess();
 }
 
 void ChatWindow::onSendBtnClicked(bool) {
 	if (ui.textEdit->toPlainText().isEmpty()) {
-		QToolTip::showText(this->mapToGlobal(QPoint(630, 660)), QString::fromLocal8Bit("发送的信息不能为空"),this, QRect(0, 0, 120, 100), 2000);
+		QToolTip::showText(this->mapToGlobal(QPoint(630, 660)), QString::fromLocal8Bit("发送的信息不能为空"), this,
+		                   QRect(0, 0, 120, 100), 2000);
 		return;
 	}
 
@@ -380,7 +403,7 @@ void ChatWindow::onSendBtnClicked(bool) {
 	const QString time = QString::number(QDateTime::currentDateTime().toSecsSinceEpoch());
 	bool isSending = true; // 发送中
 
-	sendMessage(msg, time);
+	sendMessage(msg, time, QString::number(UserManager::getCurrentUser().getId()));
 
 	ui.listWidget->setCurrentRow(ui.listWidget->count() - 1);
 	ui.textEdit->clear();

@@ -30,6 +30,9 @@ public:
 	QSize getRealString(QString src);
 	QSize fontRect(const QString& str);
 
+	void setRightHeadImage(const QPixmap& headImage);
+	void setLeftHeadImage(const QPixmap& headImage);
+
 	QString text();
 	QString time();
 	User_Type userType() const;

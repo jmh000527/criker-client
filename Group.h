@@ -9,7 +9,7 @@
 
 class GroupUser : public User {
 public:
-    explicit GroupUser(int id, std::string name, std::string password, std::string state, std::string role);
+    explicit GroupUser(std::string base64String, int id, std::string name, std::string password, std::string state, std::string role);
 
     std::string getRole() const;
     void setRole(const std::string& role);

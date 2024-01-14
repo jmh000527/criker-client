@@ -4,6 +4,7 @@
 #include <QListWidgetItem>
 
 #include "basicwindow.h"
+#include "Group.h"
 #include "QNChatMessage.h"
 #include "ui_ChatWindow.h"
 
@@ -21,7 +22,7 @@ public:
 	void setWindowName(const QString& name);
 
 private:
-	void addGroupUser(QTreeWidgetItem* pRootItem, int userID);
+	void addGroupUser(QTreeWidgetItem* pRootItem, const GroupUser& groupUser);
 
 	void initP2PChat();		//初始化单聊
 	int getCompDepID();
@@ -31,9 +32,9 @@ private:
 	// void initGroupChatStatus();
 	void loadStyleSheet(const QString& sheetName);
 
-	void dealMessage(QNChatMessage* messageW, QListWidgetItem* item, const QString& text, const QString& time, QNChatMessage::User_Type type);
+	void dealMessage(QNChatMessage* messageW, QListWidgetItem* item, const QString& text, const QString& time, const QString& senderId, QNChatMessage::User_Type type);
 	void dealMessageTime(const QString& curMsgTime);
-	void sendMessage(const QString& msg, const QString& time);
+	void sendMessage(const QString& msg, const QString& time, const QString& senderId);
 
 	Ui::ChatWindow ui;
 	QString m_chatId;
@@ -45,5 +46,5 @@ private slots:
 	void onItemDoubleClicked(QTreeWidgetItem* item, int colum);
 
 public slots:
-	void onRecieveMessage(const QString& msg, const QString& time);
+	void onRecieveMessage(const QString& msg, const QString& time, const QString& senderId);
 };

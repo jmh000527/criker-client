@@ -36,6 +36,10 @@ void WindowManager::addWindowName(QWidget* windowWidget, const QString& windowNa
 }
 
 void WindowManager::addNewChatWindow(const QString& uid, bool isGroupChat) {
+	if(uid.toInt() == UserManager::getCurrentUser().getId()) {
+		return;
+	}
+
 	if (m_chatWindowShell == nullptr) {
 		m_chatWindowShell = new ChatWindowShell;
 
@@ -50,11 +54,13 @@ void WindowManager::addNewChatWindow(const QString& uid, bool isGroupChat) {
 	if (widget == nullptr) {
 		ChatWindow* chatWindow{ new ChatWindow{ m_chatWindowShell, uid, isGroupChat} };
 		ChatWindowItem* chatWindowItem{ new ChatWindowItem{ chatWindow } };
-
-		const auto friendUser{ UserManager::getFriend(uid) };
 		chatWindow->setWindowName(uid);
-		chatWindowItem->setMsgLabelContent(friendUser.getName().c_str()); //左侧文本显示
-		chatWindowItem->setHeadPixmap(CommonUtils::base64ToQPixmap(friendUser.getHeadImage()));
+
+		if(!isGroupChat) {
+			const auto friendUser{ UserManager::getFriend(uid) };
+			chatWindowItem->setMsgLabelContent(friendUser.getName().c_str()); //左侧文本显示
+			chatWindowItem->setHeadPixmap(CommonUtils::base64ToQPixmap(friendUser.getHeadImage()));
+		}
 
 		m_chatWindowShell->addChatWindow(chatWindow, chatWindowItem, uid, isGroupChat);
 	} else {

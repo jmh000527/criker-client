@@ -8,18 +8,20 @@
 #include <QLabel>
 #include <QDebug>
 
+#include "CommonUtils.h"
+
 QNChatMessage::QNChatMessage(QWidget* parent)
 	: QWidget(parent) {
 	QFont te_font = this->font();
 	te_font.setFamily("MicrosoftYaHei");
 	te_font.setPointSize(10);
-	//    te_font.setWordSpacing(0);
-	//    te_font.setLetterSpacing(QFont::PercentageSpacing,0);
-	//    te_font.setLetterSpacing(QFont::PercentageSpacing, 100);          //300%,100为默认  //设置字间距%
-	//    te_font.setLetterSpacing(QFont::AbsoluteSpacing, 0);             //设置字间距为3像素 //设置字间距像素值
+	te_font.setWordSpacing(0);
+	te_font.setLetterSpacing(QFont::PercentageSpacing,0);
+	te_font.setLetterSpacing(QFont::PercentageSpacing, 100);          //300%,100为默认  //设置字间距%
+	te_font.setLetterSpacing(QFont::AbsoluteSpacing, 0);             //设置字间距为3像素 //设置字间距像素值
 	this->setFont(te_font);
-	m_leftPixmap = QPixmap(":/img/Customer Copy.png");
-	m_rightPixmap = QPixmap(":/img/CustomerService.png");
+	// m_leftPixmap = QPixmap(":/img/Customer Copy.png");
+	// m_rightPixmap = QPixmap(":/img/CustomerService.png");
 
 	m_loadingMovie = new QMovie(this);
 	m_loadingMovie->setFileName(":/img/loading4.gif");
@@ -99,7 +101,15 @@ QSize QNChatMessage::fontRect(const QString& str) {
 	m_textRightRect.setRect(m_kuangRightRect.x() + textSpaceRect, m_kuangRightRect.y() + iconTMPH,
 	                        m_kuangRightRect.width() - 1 * textSpaceRect, m_kuangRightRect.height() - 2 * iconTMPH);
 
-	return QSize(size.width(), hei);
+	return { size.width(), hei };
+}
+
+void QNChatMessage::setRightHeadImage(const QPixmap& headImage) {
+	m_rightPixmap = headImage;
+}
+
+void QNChatMessage::setLeftHeadImage(const QPixmap& headImage) {
+	m_leftPixmap = headImage;
 }
 
 QString QNChatMessage::text() {
@@ -153,7 +163,7 @@ QSize QNChatMessage::getRealString(QString src) {
 			}
 		}
 	}
-	return QSize(nMaxWidth + m_spaceWid, (nCount + 1) * m_lineHeight + 2 * m_lineHeight);
+	return { nMaxWidth + m_spaceWid, (nCount + 1) * m_lineHeight + 2 * m_lineHeight };
 }
 
 void QNChatMessage::paintEvent(QPaintEvent* event) {
@@ -211,11 +221,11 @@ void QNChatMessage::paintEvent(QPaintEvent* event) {
 	} else if (m_userType == User_Type::User_Me) {
 		// 自己
 		//头像
-		//        painter.drawRoundedRect(m_iconRightRect,m_iconRightRect.width(),m_iconRightRect.height());
+		// painter.drawRoundedRect(m_iconRightRect,m_iconRightRect.width(),m_iconRightRect.height());
 		painter.drawPixmap(m_iconRightRect, m_rightPixmap);
 
 		//框
-		QColor col_Kuang(75, 164, 242);
+		QColor col_Kuang(CommonUtils::getDefaultSkinColor());
 		painter.setBrush(QBrush(col_Kuang));
 		painter.drawRoundedRect(m_kuangRightRect, 4, 4);
 

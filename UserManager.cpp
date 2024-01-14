@@ -29,6 +29,14 @@ const User UserManager::getFriend(const QString& uid) {
 	return *iter;
 }
 
+const Group UserManager::getGroup(const QString& uid) {
+	const auto iter = std::ranges::find_if(g_currentUserGroupList, [&uid](const auto& group) {
+		return group.getId() == uid.toInt();
+	});
+
+	return *iter;
+}
+
 void UserManager::setCurrentUser(const User& user) {
 	g_currentUser = user;
 }
