@@ -17,8 +17,8 @@
 #include "UserManager.h"
 #include "WindowManager.h"
 
-CCMainWindow::CCMainWindow(QString employeeID, QWidget* parent)
-	: BasicWindow{ parent }, m_employeeID{ std::move(employeeID) } {
+CCMainWindow::CCMainWindow(QWidget* parent)
+	: BasicWindow{ parent } {
 	ui.setupUi(this);
 
 	setWindowFlags(windowFlags() | Qt::Tool);
@@ -28,9 +28,18 @@ CCMainWindow::CCMainWindow(QString employeeID, QWidget* parent)
 
 	initColtrol();
 	initTimer();
+
+	//初始化搜索结果展示部件
+	strs << "A1" << "A2" << "A3" << "A4" << "B1" << "B2" << "B3" << "B4";
+	strs << "C1" << "C2" << "C3" << "C4" << "D1" << "D2" << "D3" << "D4";
+	m_pSearchResult = new SearchResult{ this };
 }
 
 CCMainWindow::~CCMainWindow() = default;
+
+void CCMainWindow::setLineEditText(QString text) const {
+	ui.searchLineEdit->setText(text);
+}
 
 void CCMainWindow::loadStyleSheet(const QString& sheetName) {
 	m_styleSheetName = sheetName;
@@ -171,31 +180,13 @@ void CCMainWindow::initContactTree() {
 	        SLOT(onItemDoubleClicked(QTreeWidgetItem *, int)));
 
 	//根节点
-	QTreeWidgetItem* pRootFriendItem{ new QTreeWidgetItem };
+	const auto pRootFriendItem{ new QTreeWidgetItem };
 	pRootFriendItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 	pRootFriendItem->setData(0, Qt::UserRole, QVariant{ 0 });
 
-	QTreeWidgetItem* pRootGroupItem{ new QTreeWidgetItem };
+	const auto pRootGroupItem{ new QTreeWidgetItem };
 	pRootGroupItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
 	pRootGroupItem->setData(0, Qt::UserRole, QVariant{ 0 });
-
-	// //获取公司部门ID
-	// QSqlQuery queryComDepID(
-	// 	QString("SELECT departmentID FROM tab_department WHERE department_name='%1'").arg(QString{ "公司群" }));
-	// queryComDepID.exec();
-	// queryComDepID.first();
-	// int CompDepID = queryComDepID.value(0).toInt();
-	//
-	// //获取登陆者所在的部门ID
-	// QSqlQuery querySelfDepID(
-	// 	QString("SELECT departmentID FROM tab_employees WHERE employeeID=%1").arg(CommonInfo::loginEmployeeID));
-	// querySelfDepID.exec();
-	// querySelfDepID.first();
-	// int SelfDepID = querySelfDepID.value(0).toInt();
-
-	// //初始化公司群及所在的群
-	// addDepartment(pRootGroupItem, CompDepID);
-	// addDepartment(pRootFriendItem, SelfDepID);
 
 	//向treeWidget添加当前账户好友
 	for (const auto& user : UserManager::getCurrentUserFriendList()) {
@@ -208,9 +199,9 @@ void CCMainWindow::initContactTree() {
 	}
 
 	//插入分组节点
-	RootContactItem* pItemFriend{ new RootContactItem{ true, ui.treeWidget } };
+	const auto pItemFriend{ new RootContactItem{ true, ui.treeWidget } };
 	pItemFriend->setText(QString{ "好友" });
-	RootContactItem* pItemGroup{ new RootContactItem{ true, ui.treeWidget } };
+	const auto pItemGroup{ new RootContactItem{ true, ui.treeWidget } };
 	pItemGroup->setText(QString{ "群组" });
 
 	ui.treeWidget->addTopLevelItem(pRootFriendItem);
@@ -218,11 +209,19 @@ void CCMainWindow::initContactTree() {
 
 	ui.treeWidget->setItemWidget(pRootFriendItem, 0, pItemFriend);
 	ui.treeWidget->setItemWidget(pRootGroupItem, 0, pItemGroup);
+}
 
-	// QStringList departments{ "信息科学与技术学院", "文学院", "外国语学院", "考古学院" };
-	// for (const auto& department : departments) {
-	// 	addDepartment(pRootGroupItem, department);
-	// }
+void CCMainWindow::initShowResult() {
+	const auto showPoint = ui.searchLineEdit->mapTo(this, ui.searchLineEdit->geometry().bottomLeft());
+	const auto width = ui.searchWidget->width();
+
+	m_pSearchResult->move(showPoint.x(), showPoint.y());
+	m_pSearchResult->setFixedWidth(width);
+	onSearchLineEditTextChanged(ui.searchLineEdit->text());
+	m_pSearchResult->setFixedHeight(ui.searchLineEdit->height() * 7);
+
+	// 连接 textChanged 信号到槽函数
+	connect(ui.searchLineEdit, &QLineEdit::textChanged, this, &CCMainWindow::onSearchLineEditTextChanged);
 }
 
 void CCMainWindow::setUserName(const QString& username) const {
@@ -272,29 +271,6 @@ void CCMainWindow::setUserStatusMenuIcon(const QString& statusPath) const {
 	ui.statusBtn->setIconSize(ui.statusBtn->size());
 }
 
-// QString CCMainWindow::getHeadPicturePath() {
-// 	QString headPicturePath{};
-//
-// 	QSqlQuery queryPicture{ QString{ "SELECT picture FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
-// 	queryPicture.exec();
-// 	queryPicture.next();
-// 	headPicturePath = queryPicture.value(0).toString();
-//
-// 	return headPicturePath;
-// }
-
-// QString CCMainWindow::getUsername() {
-// 	QString username{};
-//
-// 	QSqlQuery queryUsername{
-// 		QString{ "SELECT employee_name FROM tab_employees WHERE employeeID = %1" }.arg(m_employeeID) };
-// 	queryUsername.exec();
-// 	queryUsername.next();
-// 	username = queryUsername.value(0).toString();
-//
-// 	return username;
-// }
-
 QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QString& appName) {
 	const auto button{ new QPushButton{ this } };
 	button->setFixedSize(QSize{ 20, 20 });
@@ -319,8 +295,17 @@ QWidget* CCMainWindow::createOtherAppExtension(const QString& appPath, const QSt
 
 void CCMainWindow::resizeEvent(QResizeEvent* event) {
 	setUserName(QString{ UserManager::getCurrentUser().getName().c_str() });
+	initShowResult();
+	// m_pSearchResult->hide();                      //隐藏展示
 
 	return BasicWindow::resizeEvent(event);
+}
+
+void CCMainWindow::showEvent(QShowEvent* event) {
+	initShowResult();
+	m_pSearchResult->hide(); //隐藏展示
+
+	return BasicWindow::showEvent(event);
 }
 
 bool CCMainWindow::eventFilter(QObject* watched, QEvent* event) {
@@ -351,9 +336,16 @@ bool CCMainWindow::eventFilter(QObject* watched, QEvent* event) {
 			                               .arg(r)
 			                               .arg(g)
 			                               .arg(b));
+			//搜索结果展示部件
+			m_pSearchResult->show(); //如果获得焦点  就展示下拉界面
 		} else if (event->type() == QEvent::FocusOut) {
 			//还原搜索部件样式
 			updateSearchStyle();
+
+			// 搜索结果展示部件
+			if (!m_pSearchResult->underMouse()) {
+				m_pSearchResult->hide();
+			}
 		}
 	}
 
@@ -390,7 +382,7 @@ void CCMainWindow::updateSearchStyle() const {
 }
 
 void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depID) const {
-	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+	const auto pChildItem{ new QTreeWidgetItem };
 
 	//添加子节点，子项数据为1
 	pChildItem->setData(0, Qt::UserRole, 1);
@@ -411,7 +403,7 @@ void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depI
 	queryDepName.first();
 
 	//设置头像
-	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
+	const auto pContactItem{ new ContactItem{ ui.treeWidget } };
 	QPixmap pixmap{ ":/Resources/MainWindow/head_mask.png" };
 	pContactItem->setHeadPixmap(getRoundedImage(groupPix, pixmap, pContactItem->getHeadLabelSize()));
 	pContactItem->setUsername(queryDepName.value(0).toString());
@@ -423,13 +415,13 @@ void CCMainWindow::addDepartment(QTreeWidgetItem* pRootGroupItem, const int depI
 }
 
 void CCMainWindow::addFriends(QTreeWidgetItem* pRootGroupItem, const User& user) {
-	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+	const auto pChildItem{ new QTreeWidgetItem };
 
 	//添加子节点，子项数据为1
 	pChildItem->setData(0, Qt::UserRole, 1);
 	pChildItem->setData(0, Qt::UserRole + 1, user.getId());
 
-	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
+	const auto pContactItem{ new ContactItem{ ui.treeWidget } };
 	pRootGroupItem->addChild(pChildItem);
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
 
@@ -441,13 +433,13 @@ void CCMainWindow::addFriends(QTreeWidgetItem* pRootGroupItem, const User& user)
 }
 
 void CCMainWindow::addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group) {
-	QTreeWidgetItem* pChildItem{ new QTreeWidgetItem };
+	const auto pChildItem{ new QTreeWidgetItem };
 
 	//添加子节点，子项数据为1
 	pChildItem->setData(0, Qt::UserRole, 1);
 	pChildItem->setData(0, Qt::UserRole + 1, group.getId());
 
-	ContactItem* pContactItem{ new ContactItem{ ui.treeWidget } };
+	const auto pContactItem{ new ContactItem{ ui.treeWidget } };
 	// pContactItem->setHeadPixmap(getRoundedImage(groupPix, pixmap, pContactItem->getHeadLabelSize()));
 	pContactItem->setUsername(QString{ group.getName().c_str() });
 
@@ -455,25 +447,16 @@ void CCMainWindow::addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
 }
 
-// QByteArray CCMainWindow::base64ToByteArray(const QString& base64String) const {
-// 	return QByteArray::fromBase64(base64String.toUtf8());
-// }
-//
-// QPixmap CCMainWindow::byteArrayToPixmap(const QByteArray& imageData) const {
-// 	QImage image = QImage::fromData(imageData);
-// 	return QPixmap::fromImage(image);
-// }
-
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
-		SkinWindow* skinWindow{ new SkinWindow };
+		const auto skinWindow{ new SkinWindow };
 		skinWindow->show();
 	}
 }
 
 void CCMainWindow::onItemClicked(QTreeWidgetItem* item, int column) {
 	//数据为0表示根项，数据为1表示子项
-	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	const auto isChild{ item->data(0, Qt::UserRole).toBool() };
 	if (!isChild) {
 		item->setExpanded(!item->isExpanded());
 	}
@@ -482,9 +465,9 @@ void CCMainWindow::onItemClicked(QTreeWidgetItem* item, int column) {
 }
 
 void CCMainWindow::onItemExpanded(QTreeWidgetItem* item) {
-	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	const auto isChild{ item->data(0, Qt::UserRole).toBool() };
 	if (!isChild) {
-		RootContactItem* pRootContactItem{ dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(item, 0)) };
+		const auto pRootContactItem{ dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(item, 0)) };
 		if (pRootContactItem != nullptr) {
 			pRootContactItem->setExpanded(true);
 		}
@@ -494,9 +477,9 @@ void CCMainWindow::onItemExpanded(QTreeWidgetItem* item) {
 }
 
 void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {
-	bool isChild{ item->data(0, Qt::UserRole).toBool() };
+	const auto isChild{ item->data(0, Qt::UserRole).toBool() };
 	if (!isChild) {
-		RootContactItem* pRootContactItem{ dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(item, 0)) };
+		const auto pRootContactItem{ dynamic_cast<RootContactItem*>(ui.treeWidget->itemWidget(item, 0)) };
 		if (pRootContactItem != nullptr) {
 			pRootContactItem->setExpanded(false);
 		}
@@ -506,7 +489,7 @@ void CCMainWindow::onItemCollapsed(QTreeWidgetItem* item) {
 }
 
 void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
-	if (bool isChild = item->data(0, Qt::UserRole).toBool(); isChild == true && item != nullptr) {
+	if (const auto isChild = item->data(0, Qt::UserRole).toBool(); isChild == true && item != nullptr) {
 		// 循环向上查找父节点，直到找到顶级节点
 		const auto itemClicked = item;
 		while (item->parent()) {
@@ -524,4 +507,22 @@ void CCMainWindow::onItemDoubleClicked(QTreeWidgetItem* item, int column) {
 			// 在这里可以根据 topLevelItem 进行不同的处理
 		}
 	}
+}
+
+void CCMainWindow::onSearchLineEditTextChanged(const QString& arg1) const {
+	QStringList ss;
+	QString s;
+
+	//遍历我们存储的所有信息 后续是数据库查询
+	for (auto i = 0; i < strs.size(); i++) {
+		s = strs.at(i);
+
+		//模糊匹配 当前的信息被包含在这一元素内
+		if (s.contains(arg1)) {
+			ss.append(s); //存储在新的list内 准备显示
+		}
+	}
+
+	m_pSearchResult->strs = ss; //下拉界面的变量赋值
+	m_pSearchResult->showTable(); //下拉界面展示查询到的信息
 }

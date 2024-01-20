@@ -193,9 +193,9 @@ void UserLogin::loadStyleSheet(const QString& sheetName) {
 								QPushButton#buttonLogin:pressed{\
 								background: rgba(%1, %2, %3, 150);\
 								}").arg(r).arg(g).arg(b)
-										.arg(qMin(r.toInt() / 10 + increaseValue, 255))
-										.arg(qMin(g.toInt() / 10 + increaseValue, 255))
-										.arg(qMin(b.toInt() / 10 + increaseValue, 255));
+								   .arg(qMin(r.toInt() / 10 + increaseValue, 255))
+								   .arg(qMin(g.toInt() / 10 + increaseValue, 255))
+								   .arg(qMin(b.toInt() / 10 + increaseValue, 255));
 
 		setStyleSheet(qStyleSheet);
 	}
@@ -213,7 +213,7 @@ void UserLogin::onLoginButtonClicked() {
 
 	close();
 
-	CCMainWindow* mainWindow{ new CCMainWindow{ CommonInfo::loginEmployeeID } };
+	CCMainWindow* mainWindow{ new CCMainWindow{} };
 	mainWindow->show();
 }
 

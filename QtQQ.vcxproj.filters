@@ -139,6 +139,9 @@
     <ClCompile Include="ImageView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SearchResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h">
@@ -210,6 +213,9 @@
     <QtMoc Include="ImageView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="SearchResult.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonUtils.h">
@@ -278,6 +284,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="PictureEdit.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="SearchResult.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

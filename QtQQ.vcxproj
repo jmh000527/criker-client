@@ -128,6 +128,7 @@
     <ClCompile Include="QClickLabel.cpp" />
     <ClCompile Include="QNChatMessage.cpp" />
     <ClCompile Include="RootContactItem.cpp" />
+    <ClCompile Include="SearchResult.cpp" />
     <ClCompile Include="SkinWindow.cpp" />
     <ClCompile Include="SysTray.cpp" />
     <ClCompile Include="TcpClient.cpp" />
@@ -149,6 +150,7 @@
     <QtUic Include="ContactItem.ui" />
     <QtUic Include="EmojiWindow.ui" />
     <QtUic Include="PictureEdit.ui" />
+    <QtUic Include="SearchResult.ui" />
     <QtUic Include="SkinWindow.ui" />
     <QtUic Include="UserLogin.ui" />
     <QtUic Include="UserRegister.ui" />
@@ -174,6 +176,7 @@
     <ClInclude Include="MsgType.h" />
     <QtMoc Include="PicturePreviewPanel.h" />
     <QtMoc Include="PictureEdit.h" />
+    <QtMoc Include="SearchResult.h" />
     <ClInclude Include="thirdparty\json.hpp" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="User.h" />
