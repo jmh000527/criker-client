@@ -43,6 +43,8 @@ private:
 	void addDepartment(QTreeWidgetItem* pRootGroupItem, const int DepID) const;
 	void addFriends(QTreeWidgetItem* pRootGroupItem, const User& user);
 	void addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group);
+	void addUserMessage(const User& user, const QString& msg, const QString& time);
+	void addGroupMessage(const Group& group, const QString& msg, const QString& time);
 
 	SearchResult* m_pSearchResult{};
 	QStringList strs;                   //初始化的信息   本程序为构造函数内 静态信息 后续可以在数据库动态获取
@@ -56,4 +58,7 @@ private slots:
 	void onItemDoubleClicked(QTreeWidgetItem* item, int column);
 
 	void onSearchLineEditTextChanged(const QString& arg1) const;      //编辑时触发
+
+public slots:
+	void onAddMessage(const QString msg, const QString time, const QString senderId);
 };

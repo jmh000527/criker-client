@@ -31,6 +31,7 @@ public:
 	static void setDefaultSkinColor(const QColor& color);
 	static QColor getDefaultSkinColor();
 	static QPixmap base64ToQPixmap(const std::string& base64String);
+	static QPixmap replaceColorWithBackground(const QPixmap& originalPixmap);
 
 private:
 	static QByteArray base64ToByteArray(const QString& base64String);

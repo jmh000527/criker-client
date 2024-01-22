@@ -91,6 +91,24 @@ QPixmap CommonUtils::base64ToQPixmap(const std::string& base64String) {
 	return headImage;
 }
 
+QPixmap CommonUtils::replaceColorWithBackground(const QPixmap& originalPixmap) {
+	// 创建新的QImage
+	QImage originalImage = originalPixmap.toImage();
+	QImage newImage = originalImage; // 创建一个新的QImage，复制原始图像
+
+	// 替换非透明部分的颜色
+	for (int y = 0; y < newImage.height(); ++y) {
+		for (int x = 0; x < newImage.width(); ++x) {
+			if (qAlpha(newImage.pixel(x, y)) > 0) {
+				newImage.setPixelColor(x, y, getDefaultSkinColor());
+			}
+		}
+	}
+
+	// 返回新的QPixmap
+	return QPixmap::fromImage(newImage);
+}
+
 QByteArray CommonUtils::base64ToByteArray(const QString& base64String) {
 	return QByteArray::fromBase64(base64String.toUtf8());
 }

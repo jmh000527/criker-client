@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>CCMainWindow</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_6">
+  <layout class="QVBoxLayout" name="verticalLayout_7">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -248,6 +248,19 @@ font: 75 12pt &quot;微软雅黑&quot;;
               </property>
              </widget>
             </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
            </layout>
           </item>
           <item>
@@ -412,28 +425,124 @@ font: 75 12pt &quot;微软雅黑&quot;;
        </widget>
       </item>
       <item>
-       <widget class="QScrollArea" name="scrollArea">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>278</width>
-           <height>472</height>
-          </rect>
+       <widget class="QWidget" name="barWidget" native="true">
+        <layout class="QHBoxLayout" name="tabBar">
+         <property name="spacing">
+          <number>0</number>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="leftMargin">
+          <number>0</number>
          </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="btnMessage">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="CCMainWindow.qrc">
+             <normaloff>:/Resources/MainWindow/tab/icon_last_normal.png</normaloff>
+             <normalon>:/Resources/MainWindow/tab/icon_last_selected.png</normalon>:/Resources/MainWindow/tab/icon_last_normal.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>22</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+           <property name="default">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnContact">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="CCMainWindow.qrc">
+             <normaloff>:/Resources/MainWindow/tab/icon_group_normal.png</normaloff>
+             <normalon>:/Resources/MainWindow/tab/icon_group_selected.png</normalon>:/Resources/MainWindow/tab/icon_group_normal.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>22</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <widget class="QWidget" name="pageMessage">
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QListWidget" name="msgListWidget">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAsNeeded</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::AllEditTriggers</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="pageContact">
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="spacing">
            <number>0</number>
@@ -456,7 +565,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
              <enum>QFrame::NoFrame</enum>
             </property>
             <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
+             <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
             <property name="horizontalScrollBarPolicy">
              <enum>Qt::ScrollBarAlwaysOff</enum>

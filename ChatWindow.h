@@ -46,5 +46,5 @@ private slots:
 	void onItemDoubleClicked(QTreeWidgetItem* item, int colum);
 
 public slots:
-	void onRecieveMessage(const QString& msg, const QString& time, const QString& senderId);
+	void onRecieveMessage(const QString msg, const QString time, const QString senderId);
 };

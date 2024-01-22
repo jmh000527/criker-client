@@ -8,9 +8,9 @@
 
 class User {
 public:
-	explicit User(int id = -1, std::string name = "", std::string password = "", std::string state = "offline");
+	// explicit User(int id = -1, std::string name = "", std::string password = "", std::string state = "offline");
 	explicit User(
-		std::string base64, int id = -1, std::string name = "", std::string password = "",
+		std::string base64 = "", int id = -1, std::string name = "", std::string password = "",
 		std::string state = "offline");
 
 	void setId(int id);

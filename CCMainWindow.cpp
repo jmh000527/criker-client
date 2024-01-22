@@ -1,5 +1,6 @@
 ﻿#include "CCMainWindow.h"
 
+#include <QDateTime>
 #include <QFile>
 #include <QPainter>
 #include <QTimer>
@@ -16,10 +17,15 @@
 #include "SysTray.h"
 #include "UserManager.h"
 #include "WindowManager.h"
+#include "WinToastHandlerCallBack.h"
+
+#include "WinToast/wintoastlib.h"
 
 CCMainWindow::CCMainWindow(QWidget* parent)
 	: BasicWindow{ parent } {
 	ui.setupUi(this);
+	//存储MainWindow指针
+	WindowManager::getInstance()->setMainWindowPointer(this);
 
 	setWindowFlags(windowFlags() | Qt::Tool);
 	loadStyleSheet("CCMainWindow");
@@ -33,9 +39,15 @@ CCMainWindow::CCMainWindow(QWidget* parent)
 	strs << "A1" << "A2" << "A3" << "A4" << "B1" << "B2" << "B3" << "B4";
 	strs << "C1" << "C2" << "C3" << "C4" << "D1" << "D2" << "D3" << "D4";
 	m_pSearchResult = new SearchResult{ this };
+
+	//TabBar相关
+	ui.stackedWidget->setCurrentIndex(0);
 }
 
-CCMainWindow::~CCMainWindow() = default;
+CCMainWindow::~CCMainWindow() {
+	// // 在应用程序退出时清理 WinToast
+	// WinToastLib::WinToast::instance()->finalize();
+}
 
 void CCMainWindow::setLineEditText(QString text) const {
 	ui.searchLineEdit->setText(text);
@@ -45,6 +57,36 @@ void CCMainWindow::loadStyleSheet(const QString& sheetName) {
 	m_styleSheetName = sheetName;
 	QFile file{ ":/Resources/QSS/" + sheetName + ".css" };
 	file.open(QFile::ReadOnly);
+
+	// QPixmap messageSelected{ ":/Resources/MainWindow/tab/icon_last_selected.png" };
+	// QPixmap messageNormal{ ":/Resources/MainWindow/tab/icon_last_normal.png" };
+	// QPixmap contactSelected{ ":/Resources/MainWindow/tab/icon_group_selected.png" };
+	// QPixmap contactNormal{ ":/Resources/MainWindow/tab/icon_group_normal.png" };
+	//
+	// messageSelected = CommonUtils::replaceColorWithBackground(messageSelected);
+	// contactSelected = CommonUtils::replaceColorWithBackground(contactSelected);
+	//
+	// QObject::connect(ui.btnMessage, &QPushButton::toggled, [this, messageNormal, messageSelected](bool checked) {
+	// 	if (checked) {
+	// 		// 按钮被选中时的逻辑
+	// 		ui.btnMessage->setIcon(messageSelected);
+	// 	}
+	// 	else {
+	// 		// 按钮取消选中时的逻辑
+	// 		ui.btnMessage->setIcon(messageNormal);
+	// 	}
+	// 				 });
+	//
+	// QObject::connect(ui.btnContact, &QPushButton::toggled, [this, contactNormal, contactSelected](bool checked) {
+	// 	if (checked) {
+	// 		// 按钮被选中时的逻辑
+	// 		ui.btnContact->setIcon(contactSelected);
+	// 	}
+	// 	else {
+	// 		// 按钮取消选中时的逻辑
+	// 		ui.btnContact->setIcon(contactNormal);
+	// 	}
+	// 				 });
 
 	if (file.isOpen()) {
 		setStyleSheet("");
@@ -73,6 +115,20 @@ void CCMainWindow::loadStyleSheet(const QString& sheetName) {
 								border: 1px solid rgb(%1, %2, %3);\
 								border-radius: 5px;\
 								}\
+								QWidget#barWidget{\
+								background-color: rgb(%4, %5, %6);\
+								}\
+								QPushButton#btnMessage, #btnContact{\
+								background-color: rgb(%4, %5, %6);\
+								border-none;\
+						        background: transparent;\
+								}\
+							    QPushButton:hover{\
+								background-color: rgb(205, 205, 205);\
+							    }\
+							    QPushButton:pressed, QPushButton:checked{\
+								background-color: rgb(%1, %2, %3);\
+							    }\
 								QTreeView {\
 								border-style: none;\
 								}\
@@ -84,6 +140,20 @@ void CCMainWindow::loadStyleSheet(const QString& sheetName) {
 								}\
 								QTreeView::item:selected:active,\
 								QTreeView::item:hover{\
+								background-color: rgb(%4, %5, %6);\
+								}\
+								QListWidget#msgListWidget {\
+								border-style: none;\
+								outline: none;\
+								}\
+								QListWidget#msgListWidget::item{\
+								color: rgba(255, 255, 255, 0);\
+								}\
+								QListWidget#msgListWidget::item:selected:active{\
+								background-color: rgb(%1, %2, %3);\
+								}\
+								QListWidget#msgListWidget::item:selected:active,\
+								QListWidget#msgListWidget::item:hover{\
 								background-color: rgb(%4, %5, %6);\
 								}"
 			).arg(r).arg(g).arg(b)
@@ -166,6 +236,17 @@ void CCMainWindow::initColtrol() {
 
 	//初始化联系人部件
 	initContactTree();
+
+	//初始化barWidget信号
+	connect(ui.btnMessage, &QPushButton::clicked, [this]() {
+		ui.stackedWidget->setCurrentIndex(0);
+	});
+	connect(ui.btnContact, &QPushButton::clicked, [this]() {
+		ui.stackedWidget->setCurrentIndex(1);
+		if(ui.btnMessage->isChecked()) {
+			ui.btnMessage->setChecked(false);
+		}
+	});
 }
 
 void CCMainWindow::initContactTree() {
@@ -447,6 +528,76 @@ void CCMainWindow::addGroups(QTreeWidgetItem* pRootGroupItem, const Group& group
 	ui.treeWidget->setItemWidget(pChildItem, 0, pContactItem);
 }
 
+void CCMainWindow::addUserMessage(const User& user, const QString& msg, const QString& time) {
+	const auto pContactItem{ new ContactItem{ ui.msgListWidget } };
+	const QPixmap headImage{ CommonUtils::base64ToQPixmap(user.getHeadImage()) };
+	QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
+
+	const QDateTime dateTime = QDateTime::fromSecsSinceEpoch(time.toInt());
+	const QTime time1 = dateTime.time();
+	const QString timeString = time1.toString("hh:mm");
+
+	pContactItem->setHeadPixmap(getRoundedImage(headImage, mask, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(QString{ user.getName().c_str() });
+	pContactItem->setSignature("(" + timeString + ") " + msg);
+
+	// 创建QListWidgetItem，并将自定义的QWidget子类设置为其小部件
+	QListWidgetItem* item1 = new QListWidgetItem{};
+
+	QSize sizeHint = pContactItem->sizeHint();
+	item1->setSizeHint(QSize{ sizeHint.width(), 54 });
+	ui.msgListWidget->insertItem(0, item1);
+	ui.msgListWidget->setItemWidget(item1, pContactItem);
+
+	// 更新布局
+	ui.msgListWidget->update();
+
+	// std::wstring appName = L"QtQQ";
+	// std::wstring firstLine = msg.toStdWString();
+	// std::wstring secondLine = time.toStdWString();
+ //    std::wstring imagePath= L":D:/Qt_Projects/QtQQ/Resources/MainWindow/girl.png";
+	// NotifyManager::showNotification(appName, firstLine, secondLine, imagePath);
+}
+
+void CCMainWindow::addGroupMessage(const Group& group, const QString& msg, const QString& time) {
+	const auto pContactItem{ new ContactItem{ ui.msgListWidget } };
+	// const QPixmap headImage{ CommonUtils::base64ToQPixmap(group.getHeadImage()) };
+	// QPixmap mask{ ":/Resources/MainWindow/head_mask.png" };
+
+	const QDateTime dateTime = QDateTime::fromSecsSinceEpoch(time.toInt());
+	const QTime time1 = dateTime.time();
+	const QString timeString = time1.toString("hh:mm");
+
+	// pContactItem->setHeadPixmap(getRoundedImage(headImage, mask, pContactItem->getHeadLabelSize()));
+	pContactItem->setUsername(QString{ group.getName().c_str() });
+	pContactItem->setSignature("(" + timeString + ") " + msg);
+
+	// 创建QListWidgetItem，并将自定义的QWidget子类设置为其小部件
+	QListWidgetItem* item1 = new QListWidgetItem{};
+
+	QSize sizeHint = pContactItem->sizeHint();
+	item1->setSizeHint(QSize{ sizeHint.width(), 54 });
+	ui.msgListWidget->insertItem(0, item1);
+	ui.msgListWidget->setItemWidget(item1, pContactItem);
+
+	// 更新布局
+	ui.msgListWidget->update();
+}
+
+// void CCMainWindow::pushToSystem() {
+// 	// 初始化 WinToast
+// 	WinToastLib::WinToast::instance()->initialize();
+//
+// 	// 创建通知
+// 	WinToastLib::WinToastTemplate templ = WinToastLib::WinToastTemplate(WinToastLib::WinToastTemplate::ImageAndText04);
+// 	templ.setImagePath(L"path_to_your_image.png"); // 设置通知图像
+// 	templ.setTextField(L"title", WinToastLib::WinToastTemplate::FirstLine); // 设置通知标题
+// 	templ.setTextField(L"message", WinToastLib::WinToastTemplate::SecondLine); // 设置通知消息
+//
+// 	// 发送通知
+// 	WinToastLib::WinToast::instance()->showToast(templ, new WinToastHandlerCallback());
+// }
+
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
 		const auto skinWindow{ new SkinWindow };
@@ -525,4 +676,14 @@ void CCMainWindow::onSearchLineEditTextChanged(const QString& arg1) const {
 
 	m_pSearchResult->strs = ss; //下拉界面的变量赋值
 	m_pSearchResult->showTable(); //下拉界面展示查询到的信息
+}
+
+void CCMainWindow::onAddMessage(const QString msg, const QString time, const QString senderId) {
+	if(UserManager::isGroupChat(senderId)) {
+		const Group sender{ UserManager::getGroup(senderId) };
+		addGroupMessage(sender, msg, time);
+	} else {
+		const User sender{ UserManager::getFriend(senderId) };
+		addUserMessage(sender, msg, time);
+	}
 }

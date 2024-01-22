@@ -366,5 +366,9 @@
         <file>Resources/QSS/PictureEdit.css</file>
         <file>Resources/MainWindow/head_mask.png</file>
         <file>Resources/MainWindow/head_with_cross.png</file>
+        <file>Resources/MainWindow/qqicon_p_blue.png</file>
+        <file>Resources/MainWindow/qqicon_p_gray.png</file>
+        <file>Resources/MainWindow/qqicon_t_blue.png</file>
+        <file>Resources/MainWindow/qqicon_t_gray.png</file>
     </qresource>
 </RCC>

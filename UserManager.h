@@ -14,6 +14,8 @@ public:
     static const std::vector<User>& getCurrentUserFriendList();
     static const std::vector<Group>& getCurrentUserGroupList();
 
+    static bool isGroupChat(const QString& uid);
+
     static const User getFriend(const QString& uid);
     static const Group getGroup(const QString& uid);
 

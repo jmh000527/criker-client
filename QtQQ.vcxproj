@@ -65,7 +65,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>$(SolutionDir);D:\Qt_Projects\QtQQ\thirdparty\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);D:\Qt_Projects\QtQQ\thirdparty\include;D:\Qt_Projects\QtQQ\thirdparty\include\WinToast;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <IncludePath>D:\Qt_Projects\QtQQ\thirdparty\include;$(IncludePath)</IncludePath>
@@ -132,6 +132,7 @@
     <ClCompile Include="SkinWindow.cpp" />
     <ClCompile Include="SysTray.cpp" />
     <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="thirdparty\src\wintoastlib.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="titlebar.cpp" />
     <ClCompile Include="User.cpp" />
@@ -172,11 +173,13 @@
     <ClInclude Include="CutShape.h" />
     <ClInclude Include="Group.h" />
     <ClInclude Include="GroupType.h" />
+    <ClInclude Include="WinToastHandlerCallBack.h" />
     <QtMoc Include="ImageView.h" />
     <ClInclude Include="MsgType.h" />
     <QtMoc Include="PicturePreviewPanel.h" />
     <QtMoc Include="PictureEdit.h" />
     <QtMoc Include="SearchResult.h" />
+    <ClInclude Include="thirdparty\include\WinToast\wintoastlib.h" />
     <ClInclude Include="thirdparty\json.hpp" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="User.h" />

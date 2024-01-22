@@ -142,6 +142,9 @@
     <ClCompile Include="SearchResult.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="thirdparty\src\wintoastlib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="titlebar.h">
@@ -255,6 +258,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BackgroundWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\include\WinToast\wintoastlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinToastHandlerCallBack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "user.h"
 
-User::User(int id, std::string name, std::string password, std::string state)
-    : m_id{ id }, m_name{ std::move(name) }, m_password{ std::move(password) }, m_state{ std::move(state) } {}
+// User::User(int id, std::string name, std::string password, std::string state)
+//     : m_id{ id }, m_name{ std::move(name) }, m_password{ std::move(password) }, m_state{ std::move(state) } {}
 
 User::User(std::string base64, int id, std::string name, std::string password, std::string state)
     : m_base64ImageBinary{ std::move(base64) }, m_id{ id }, m_name{ std::move(name) },

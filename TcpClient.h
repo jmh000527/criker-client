@@ -43,14 +43,14 @@ public:
 private:
 	//构造消息
 	static std::vector<char> constructMessage(const nlohmann::json& js, MsgType msgtype);
-	std::tuple<QByteArray, MsgType> receiveMessage();
+	std::list<std::tuple<QByteArray, MsgType>> receiveMessage() const;
 	void doRegResponse(nlohmann::json& responsejs);
 	void doLoginResponse(nlohmann::json& responsejs);
 
 	QTcpSocket* m_socket;
 
 signals:
-	void messageReceived(const QString& msg, const QString& time, const QString& senderId);
+	void messageReceived(const QString msg, const QString time, const QString senderId);
 
 private slots:
 	void onReadyRead();

@@ -76,6 +76,14 @@ void WindowManager::addNewChatWindow(const QString& uid, bool isGroupChat) {
 	m_chatWindowShell->activateWindow();
 }
 
+void WindowManager::setMainWindowPointer(CCMainWindow* pMainWindow) {
+	m_mainWindow = pMainWindow;
+}
+
+CCMainWindow* WindowManager::getMainWindowPointer() const {
+	return m_mainWindow;
+}
+
 ChatWindowShell* WindowManager::getChatWindowShell() {
 	return m_chatWindowShell;
 }

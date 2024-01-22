@@ -1,6 +1,8 @@
 #include "UserManager.h"
 
-User UserManager::g_currentUser;
+#include <stdexcept>
+
+User UserManager::g_currentUser{ "" };
 std::vector<User> UserManager::g_currentUserFriendList;
 std::vector<Group> UserManager::g_currentUserGroupList;
 
@@ -21,12 +23,41 @@ const std::vector<Group>& UserManager::getCurrentUserGroupList() {
 	return g_currentUserGroupList;
 }
 
+bool UserManager::isGroupChat(const QString& uid) {
+	// 查找用户
+	const auto iterUser = std::ranges::find_if(g_currentUserFriendList, [&uid](const auto& user) {
+		return user.getId() == uid.toInt();
+											   });
+
+	// 查找群组
+	const auto iterGroup = std::ranges::find_if(g_currentUserGroupList, [&uid](const auto& group) {
+		return group.getId() == uid.toInt();
+												});
+
+	// 处理都找到的情况，抛出异常
+	if (iterUser != g_currentUserFriendList.end() && iterGroup != g_currentUserGroupList.end()) {
+		throw std::logic_error("Found in both user and group lists.");
+	}
+
+	// 处理都没找到的情况，抛出异常
+	if (iterUser == g_currentUserFriendList.end() && iterGroup == g_currentUserGroupList.end()) {
+		throw std::logic_error("Not found in user or group lists.");
+	}
+
+	// 返回结果
+	return iterGroup != std::end(g_currentUserGroupList);
+}
+
 const User UserManager::getFriend(const QString& uid) {
 	const auto iter = std::ranges::find_if(g_currentUserFriendList, [&uid](const auto& user) {
 		return user.getId() == uid.toInt();
 	});
 
-	return *iter;
+	if (iter != std::end(g_currentUserFriendList)) {
+		return *iter;
+	} else {
+		return User{};
+	}
 }
 
 const Group UserManager::getGroup(const QString& uid) {
@@ -34,7 +65,11 @@ const Group UserManager::getGroup(const QString& uid) {
 		return group.getId() == uid.toInt();
 	});
 
-	return *iter;
+	if (iter != std::end(g_currentUserGroupList)) {
+		return *iter;
+	} else {
+		return Group{};
+	}
 }
 
 void UserManager::setCurrentUser(const User& user) {

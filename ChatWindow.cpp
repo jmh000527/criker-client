@@ -384,7 +384,7 @@ void ChatWindow::sendMessage(const QString& msg, const QString& time, const QStr
 	}
 }
 
-void ChatWindow::onRecieveMessage(const QString& msg, const QString& time, const QString& senderId) {
+void ChatWindow::onRecieveMessage(const QString msg, const QString time, const QString senderId) {
 	dealMessageTime(time);
 	auto* messageW = new QNChatMessage(ui.listWidget->parentWidget());
 	auto* item = new QListWidgetItem(ui.listWidget);
