@@ -55,10 +55,15 @@ ChatWindowShell::ChatWindowShell(QWidget* parent)
 		"QListView#shellListWidget {"
 		"    background-color: rgb(%1, %2, %3);"
 		"}"
+		"QStackedWidget#rightStackedWidget {"
+		"    background-color: transparent;"
+		"    border-top-right-radius: 4px;"
+		"    border-bottom-right-radius: 4px;"
+		"}"
 		"QWidget#ChatWindowShellClass {"
 		"    border-radius: 4px;"
+		"    background-color: white;"
 		"    border: 1px solid rgb(%1, %2, %3);"
-		"    background-color: rgb(255, 255, 255);"
 		"}").arg(r).arg(g).arg(b);
 
 	setStyleSheet(qss);
@@ -186,10 +191,10 @@ void ChatWindowShell::onChatWindowItemClicked(QListWidgetItem* item) {
 	ui.rightStackedWidget->setCurrentWidget(chatWindowWidget);
 }
 
-void ChatWindowShell::onEmojiItemClicked(int emojiNum) const {
+void ChatWindowShell::onEmojiItemClicked(QString unicodeEmoji) const {
 	ChatWindow* currentChatWindow{ dynamic_cast<ChatWindow*>(ui.rightStackedWidget->currentWidget()) };
 	if (currentChatWindow != nullptr) {
-		currentChatWindow->addEmojiImage(emojiNum);
+		currentChatWindow->addEmojiImage(unicodeEmoji);
 	}
 }
 
@@ -208,7 +213,7 @@ void ChatWindowShell::initControl() {
 	ui.shellListWidget->setStyle(new CustomProxyStyle{ this });
 
 	connect(ui.shellListWidget, &QListWidget::itemClicked, this, &ChatWindowShell::onChatWindowItemClicked);
-	connect(m_emojiWindow, SIGNAL(signalEmojiItemClicked(int)), this, SLOT(onEmojiItemClicked(int)));
+	connect(m_emojiWindow, SIGNAL(signalEmojiItemClicked(QString)), this, SLOT(onEmojiItemClicked(QString)));
 }
 
 QStringList ChatWindowShell::getEmployeesID() {

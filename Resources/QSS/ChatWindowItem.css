@@ -5,14 +5,17 @@
 QPushButton#tclosebtn {
     border-image: url(:Resources/MainWindow/close.png);
     border-width: 0px;
+    padding: 2px;
 }
 
 QPushButton#tclosebtn:hover {
     border-image: url(:Resources/MainWindow/close-hover.png);
     border-width: 0px;
+    padding: 2px;
 }
 
 QPushButton#tclosebtn:pressed {
     border-image: url(:Resources/MainWindow/close-hover.png);
     border-width: 0px;
+    padding: 2px;
 }

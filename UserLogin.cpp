@@ -52,7 +52,8 @@ void UserLogin::initControl() {
 	QPixmap pix{ ":/Resources/MainWindow/head_mask.png" };
 
 	headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/app/logo.ico" }, pix, headLabel->size()));
-	headLabel->move(width() / 2 - headLabelSize.width() / 2, ui.titleWidget->height() - headLabelSize.height() / 2);
+	auto y = 106 - headLabelSize.height() / 2;
+	headLabel->move(width() / 2 - headLabelSize.width() / 2, y);
 
 	connect(ui.buttonLogin, &QPushButton::clicked, this, &UserLogin::onLoginButtonClicked);
 	connect(ui.buttonRegister, &QPushButton::clicked, this, &UserLogin::onRegisterButtonClicked);
@@ -168,19 +169,19 @@ void UserLogin::loadStyleSheet(const QString& sheetName) {
 
 		const auto increaseValue{ 230 };
 		qStyleSheet += QString("QWidget#UserLoginClass {\
-								border: 1px solid rgb(%1, %2, %3);\
-								background-color: rgb(%1, %2, %3);\
+								background-color: transparent;\
 								border-radius: 4px;\
 								}\
-								QWidget#titleWidget {\
+								QWidget#titleWidget, #titleWidget_2 {\
 								background-color: rgb(%1, %2, %3);\
 								border-top-right-radius: 4px;\
 								border-top-left-radius: 4px;\
 								}\
-								QWidget#bodyWidget {\
+								QWidget#bodyWidget, #bodyWidget_2 {\
 								background-color: rgb(%4, %5, %6);\
 								border-bottom-right-radius: 4px;\
 								border-bottom-left-radius: 4px;\
+								border: 1px solid rgb(%1, %2, %3);\
 								}\
 								QPushButton#buttonLogin {\
 								font-size: 14px;\
@@ -218,14 +219,16 @@ void UserLogin::onLoginButtonClicked() {
 }
 
 void UserLogin::onRegisterButtonClicked() {
-	UserRegister* userRegister{ new UserRegister{} };
-
-	// // 生成随机偏移量
-	// int xOffset = QRandomGenerator::global()->bounded(50);  // 范围为[0, 200)
-	// int yOffset = QRandomGenerator::global()->bounded(50);  // 范围为[0, 200)
+	// UserRegister* userRegister{ new UserRegister{} };
 	//
-	// // 设置第二个窗口的初始位置，随机偏移
-	// userRegister->move(this->pos() + QPoint(xOffset, yOffset));
+	// // // 生成随机偏移量
+	// // int xOffset = QRandomGenerator::global()->bounded(50);  // 范围为[0, 200)
+	// // int yOffset = QRandomGenerator::global()->bounded(50);  // 范围为[0, 200)
+	// //
+	// // // 设置第二个窗口的初始位置，随机偏移
+	// // userRegister->move(this->pos() + QPoint(xOffset, yOffset));
+	//
+	// userRegister->show();
 
-	userRegister->show();
+	ui.stackedWidget->setCurrentIndex(1);
 }

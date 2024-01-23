@@ -20,9 +20,9 @@ private:
 
 signals:
 	void signalEmojiWindowHide();
-	void signalEmojiItemClicked(int emojiNum);
+	void signalEmojiItemClicked(QString);
 
 
 private slots:
-	void addEmoji(int emojiNum);
+	void addEmoji(QString unicodeEmoji);
 };

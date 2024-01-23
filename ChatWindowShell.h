@@ -40,7 +40,7 @@ public slots:
 
 private slots:
 	void onChatWindowItemClicked(QListWidgetItem* item);	//左侧列表项被点击
-	void onEmojiItemClicked(int emojiNum) const;	//表情被选中
+	void onEmojiItemClicked(QString unicodeEmoji) const;	//表情被选中
 
 private:
 	Ui::ChatWindowShellClass ui;

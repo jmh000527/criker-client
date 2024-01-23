@@ -36,9 +36,23 @@ ChatWindow::~ChatWindow() {
 	WindowManager::getInstance()->deleteWindowByName(m_chatId);
 }
 
-void ChatWindow::addEmojiImage(int emojiNum) const {
+void ChatWindow::addEmojiImage(QString unicodeEmoji) const {
 	ui.textEdit->setFocus();
 	// ui.textEdit->addEmojiUrl(emojiNum);
+
+	// Unicode Emoji
+	// 插入文字
+	// ui.textEdit->insertPlainText("Hello, ");
+
+	// 获取当前光标位置
+	QTextCursor cursor = ui.textEdit->textCursor();
+
+	// // 在光标位置插入Unicode Emoji（这里以笑脸Emoji为例）
+	// char32_t  t[] = { 0x1F601,0x0 };
+	cursor.insertText(unicodeEmoji);
+
+	// 插入更多文字
+	// cursor.insertImage(QImage{ ":/Resources/MainWindow/app/app_7.png" });
 }
 
 void ChatWindow::setWindowName(const QString& name) {

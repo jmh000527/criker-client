@@ -108,12 +108,12 @@ void CCMainWindow::loadStyleSheet(const QString& sheetName) {
 								background-color: rgb(%4, %5, %6);\
 								border-bottom-left-radius: 4px;\
 								border-bottom-right-radius: 4px;\
+								border: 1px solid rgb(%1, %2, %3);\
 								border-top: none;\
 								}\
 								QWidget#CCMainWindowClass {\
 								background-color: rgb(%1, %2, %3);\
-								border: 1px solid rgb(%1, %2, %3);\
-								border-radius: 5px;\
+								border-radius: 4px;\
 								}\
 								QWidget#barWidget{\
 								background-color: rgb(%4, %5, %6);\

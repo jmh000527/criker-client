@@ -18,7 +18,7 @@ public:
 	ChatWindow(QWidget* parent, const QString& uid, bool isGroupChat);
 	~ChatWindow() override;
 
-	void addEmojiImage(int emojiNum) const;
+	void addEmojiImage(QString unicodeEmoji) const;
 	void setWindowName(const QString& name);
 
 private:

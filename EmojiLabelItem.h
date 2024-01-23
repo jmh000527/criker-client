@@ -9,10 +9,10 @@ public:
 	EmojiLabelItem(QWidget* parent);
 	~EmojiLabelItem() override;
 
-	void setEmojiName(int emojiName);
+	void setEmojiCodePoint(QString unicodeEmoji);
 
 signals:
-	void emojiClicked(int emojiNum);
+	void emojiClicked(QString unicodeEmoji);
 
 private:
 	void initControl();
