@@ -232,7 +232,7 @@ void CCMainWindow::initColtrol() {
 	connect(NotifyManager::getInstance(), &NotifyManager::signalSkinChanged, this, &CCMainWindow::updateSearchStyle);
 
 	//系统托盘
-	auto* sysTray{ new SysTray{ this } };
+	m_sysTray =  new SysTray{ this };
 
 	//初始化联系人部件
 	initContactTree();
@@ -552,11 +552,9 @@ void CCMainWindow::addUserMessage(const User& user, const QString& msg, const QS
 	// 更新布局
 	ui.msgListWidget->update();
 
-	// std::wstring appName = L"QtQQ";
-	// std::wstring firstLine = msg.toStdWString();
-	// std::wstring secondLine = time.toStdWString();
- //    std::wstring imagePath= L":D:/Qt_Projects/QtQQ/Resources/MainWindow/girl.png";
-	// NotifyManager::showNotification(appName, firstLine, secondLine, imagePath);
+	//系统通知中心推送
+	QIcon icon{ headImage };
+	m_sysTray->showMessage(user.getName().c_str(), msg, icon);
 }
 
 void CCMainWindow::addGroupMessage(const Group& group, const QString& msg, const QString& time) {
@@ -582,6 +580,10 @@ void CCMainWindow::addGroupMessage(const Group& group, const QString& msg, const
 
 	// 更新布局
 	ui.msgListWidget->update();
+
+	//系统通知中心推送
+	// QIcon icon{ headImage };
+	m_sysTray->showMessage(group.getName().c_str(), msg, m_sysTray->icon());
 }
 
 void CCMainWindow::pushToSystem(const QString msg, const QString time, const QString senderId) {
@@ -688,6 +690,4 @@ void CCMainWindow::onAddMessage(const QString msg, const QString time, const QSt
 		const User sender{ UserManager::getFriend(senderId) };
 		addUserMessage(sender, msg, time);
 	}
-
-	pushToSystem(msg, time, senderId);
 }

@@ -5,6 +5,7 @@
 #include "basicwindow.h"
 #include "Group.h"
 #include "SearchResult.h"
+#include "SysTray.h"
 #include "ui_CCMainWindow.h"
 #include "User.h"
 
@@ -48,6 +49,7 @@ private:
 	void addUserMessage(const User& user, const QString& msg, const QString& time);
 	void addGroupMessage(const Group& group, const QString& msg, const QString& time);
 
+	SysTray* m_sysTray{};
 	SearchResult* m_pSearchResult{};
 	QStringList strs;                   //初始化的信息   本程序为构造函数内 静态信息 后续可以在数据库动态获取
 
