@@ -27,6 +27,8 @@ private:
 	void initContactTree();
 	void initShowResult();
 
+	static void pushToSystem(const QString msg, const QString time, const QString senderId);
+
 	void setUserName(const QString& username) const;
 	// void setUserLevelPixmap(int level) const;
 	void setUserHeadPixmap() const;

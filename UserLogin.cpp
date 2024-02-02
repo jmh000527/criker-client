@@ -1,17 +1,21 @@
 #include "UserLogin.h"
 
+#include <QBuffer>
 #include <QFile>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QRandomGenerator>
+#include <QTimer>
 
 #include <thread>
 
 #include "CCMainWindow.h"
 #include "CommonInfo.h"
 #include "MsgType.h"
+#include "PictureEdit.h"
 #include "TcpClient.h"
 #include "UserRegister.h"
 
@@ -44,52 +48,25 @@ UserLogin::UserLogin(QWidget* parent)
 UserLogin::~UserLogin() = default;
 
 void UserLogin::initControl() {
-	QLabel* headLabel{ new QLabel{ this } };
+	m_headLabel = new QClickLabel{ this };
 	const QSize headLabelSize{ 68, 68 };
 
-	headLabel->setFixedSize(headLabelSize);
+	m_headLabel->setFixedSize(headLabelSize);
 
 	QPixmap pix{ ":/Resources/MainWindow/head_mask.png" };
 
-	headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/app/logo.ico" }, pix, headLabel->size()));
+	m_headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/app/logo.ico" }, pix, m_headLabel->size()));
 	auto y = 106 - headLabelSize.height() / 2;
-	headLabel->move(width() / 2 - headLabelSize.width() / 2, y);
+	m_headLabel->move(width() / 2 - headLabelSize.width() / 2, y);
 
+	//登录页
 	connect(ui.buttonLogin, &QPushButton::clicked, this, &UserLogin::onLoginButtonClicked);
 	connect(ui.buttonRegister, &QPushButton::clicked, this, &UserLogin::onRegisterButtonClicked);
-}
 
-// bool UserLogin::connectMySQL() {
-// 	QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-// 	db.setDatabaseName("chatqq");
-// 	db.setHostName("127.0.0.1");
-// 	db.setUserName("root");
-// 	db.setPassword("JMH20000527");
-// 	db.setPort(3306);
-//
-// 	if (db.open()) {
-// 		return true;
-// 	} else {
-// 		QSqlError error = db.lastError();
-// 		QMessageBox::information(NULL, QString{ "连接数据库失败" }, db.lastError().databaseText());
-//
-// 		// QFile file(LOG_FILE);
-// 		// file.open(QIODevice::WriteOnly | QIODevice::Append);
-// 		// QTextStream text_stream(&file);
-// 		// text_stream << "database connect error:" << errno << " " << error.driverText() << "\r\n";
-// 		// QStringList drivers = db.drivers();
-// 		// for (int i = 0; i < drivers.size(); i++) {
-// 		// 	text_stream << "drives:" << drivers[i] << "\r\n";
-// 		// }
-// 		// text_stream << "bool:" << db.isOpenError() << "driverName:" << db.driverName() << "\r\n";
-// 		// text_stream << error.nativeErrorCode();
-// 		//
-// 		// file.flush();
-// 		// file.close();
-//
-// 		return false;
-// 	}
-// }
+	//注册页
+	connect(m_headLabel, &QClickLabel::clicked, this, &UserLogin::onHeadLabelClicked);
+	connect(ui.buttonRegister2, &QPushButton::clicked, this, &UserLogin::onRegister2ButtonClicked);
+}
 
 bool UserLogin::verifyAccountCode() const {
 	QString account = ui.lineEditUserAccount->text();
@@ -112,45 +89,11 @@ bool UserLogin::verifyAccountCode() const {
 		TcpClient::rwsem.acquire();
 
 		if (TcpClient::isLoginSuccess) {
-			// // Enter the chat main menu
-			// TcpClient::isMainMenuRunning = true;
-			// TcpClient::mainMenu(clientfd);
 			return true;
 		}
 
 		return false;
 	}
-
-	//QQ号登陆
-	QString strSqlCode = QString{ "SELECT code FROM tab_accounts WHERE employeeID=%1" }.arg(account);
-	QSqlQuery queryEmployeeID(strSqlCode);
-	queryEmployeeID.exec();
-	if (queryEmployeeID.first()) {
-		QString strCode = queryEmployeeID.value(0).toString();
-		if (strCode == password) {
-			CommonInfo::loginEmployeeID = account;
-			CommonInfo::loginPassword = account;
-			CommonInfo::isAccount = false;
-
-			return true;
-		}
-	}
-
-	//账号登录
-	strSqlCode = QString("SELECT code,employeeID FROM tab_accounts WHERE account='%1'").arg(account);
-	QSqlQuery queryAccount(strSqlCode);
-	if (queryAccount.first()) {
-		QString strCode = queryAccount.value(0).toString();
-		if (strCode == password) {
-			CommonInfo::loginEmployeeID = queryAccount.value(1).toString();
-			CommonInfo::loginPassword = account;
-			CommonInfo::isAccount = true;
-
-			return true;
-		}
-	}
-
-	return false;
 }
 
 void UserLogin::loadStyleSheet(const QString& sheetName) {
@@ -204,6 +147,12 @@ void UserLogin::loadStyleSheet(const QString& sheetName) {
 	file.close();
 }
 
+void UserLogin::onReceiveData(QImage& headImage) {
+	QPixmap pix{ ":/Resources/MainWindow/head_mask.png" };
+	m_headLabel->setPixmap(getRoundedImage(QPixmap::fromImage(headImage), pix, m_headLabel->size()));
+	m_headImage = headImage;
+}
+
 void UserLogin::onLoginButtonClicked() {
 	if (!verifyAccountCode()) {
 		QMessageBox::warning(nullptr, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("名输入的账号或密码有误,请从新输入!"));
@@ -219,16 +168,95 @@ void UserLogin::onLoginButtonClicked() {
 }
 
 void UserLogin::onRegisterButtonClicked() {
-	// UserRegister* userRegister{ new UserRegister{} };
-	//
-	// // // 生成随机偏移量
-	// // int xOffset = QRandomGenerator::global()->bounded(50);  // 范围为[0, 200)
-	// // int yOffset = QRandomGenerator::global()->bounded(50);  // 范围为[0, 200)
-	// //
-	// // // 设置第二个窗口的初始位置，随机偏移
-	// // userRegister->move(this->pos() + QPoint(xOffset, yOffset));
-	//
-	// userRegister->show();
-
 	ui.stackedWidget->setCurrentIndex(1);
+
+	//更换新建头像标识
+	QPixmap pix{ ":/Resources/MainWindow/head_mask.png" };
+	m_headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/head_with_cross.png" }, pix,
+	                                       m_headLabel->size()));
+
+
+}
+
+void UserLogin::onHeadLabelClicked() {
+	QString filepath = QFileDialog::getOpenFileName(nullptr, QStringLiteral("选择图片"), ".", "*.jpg");
+
+	if (!filepath.trimmed().isEmpty()) {
+		auto* w = new PictureEdit(filepath);
+
+		connect(w, &PictureEdit::destroyed, [=]() {
+			delete w;
+				});
+		connect(w, SIGNAL(sendData(QImage&)), this, SLOT(onReceiveData(QImage&))); //子窗口发信号，主窗口接收
+
+		w->show();
+	}
+}
+
+void UserLogin::onRegister2ButtonClicked() {
+	QString name = ui.lineEditUserAccount_2->text();
+	QString password = ui.lineEditUserPassword_2->text();
+	QString passwordConfirm = ui.lineEditUserPasswordConfirm->text();
+
+	if (password != passwordConfirm) {
+		return;
+	}
+
+	// QPixmap pixmap{ m_headLabel->pixmap() };
+	QPixmap pixmap = QPixmap::fromImage(m_headImage);
+
+	// 将 QPixmap 转换为 QByteArray
+	QByteArray byteArray;
+	QBuffer buffer(&byteArray);
+	buffer.open(QIODevice::WriteOnly);
+	pixmap.save(&buffer, "JPEG");
+	buffer.close();
+
+	// 将 QByteArray 转换为 Base64 编码
+	QString base64Image = byteArray.toBase64();
+
+	//构造注册JSON请求
+	nlohmann::json js;
+	js["msgtype"] = static_cast<int>(MsgType::REG_MSG);
+	js["name"] = name.toStdString();
+	js["password"] = password.toStdString();
+	js["headimage"] = base64Image.toStdString();
+
+	TcpClient::isRegisterSuccess = false;
+
+	//发送注册请求
+	if (!TcpClient::getInstance()->sendMessage(js, MsgType::REG_MSG)) {
+		QMessageBox::information(NULL, QString{ "请求发送失败" }, "请求发送失败");
+		exit(1);
+	}
+
+	// 使用定时器等待服务器返回，超过五秒弹出对话框
+	QTimer timer;
+	timer.setSingleShot(true);
+
+	QObject::connect(&timer, &QTimer::timeout, [&]() {
+		// 释放信号量
+		TcpClient::rwsem.release();
+		QMessageBox::information(NULL, QString{ "注册超时" }, "注册超时，请重试");
+					 });
+
+	// 启动定时器，等待五秒
+	timer.start(5000);
+
+	// 信号量阻塞，等待服务器返回注册请求确认
+	TcpClient::rwsem.acquire();
+
+	if (TcpClient::isRegisterSuccess) {
+		QMessageBox::information(NULL, QString{ "注册成功" }, "注册成功");
+
+		disconnect(ui.buttonRegister2, &QPushButton::clicked, this, &UserLogin::onRegister2ButtonClicked);
+		ui.buttonRegister2->setText("返回登陆");
+
+		ui.lineEditUserAccount->setText(name);
+		ui.buttonForgetPassword->setText(password);
+
+		connect(ui.buttonRegister2, &QPushButton::clicked, [this]() {
+			ui.stackedWidget->setCurrentIndex(0);
+		});
+	}
 }

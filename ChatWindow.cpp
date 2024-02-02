@@ -60,7 +60,7 @@ void ChatWindow::setWindowName(const QString& name) {
 }
 
 void ChatWindow::addGroupUser(QTreeWidgetItem* pRootItem, const GroupUser& groupUser) {
-	auto* pChild = new QTreeWidgetItem();
+	auto* pChild = new QTreeWidgetItem{};
 
 	//添加子节点
 	pChild->setData(0, Qt::UserRole, 1);
@@ -284,7 +284,7 @@ void ChatWindow::loadStyleSheet(const QString& sheetName) {
 								}\
 								QScrollArea#scrollArea {\
 									border-bottom-right-radius: 4px;\
-								}").arg(r).arg(g).arg(b);
+								}");
 
 
 		setStyleSheet(qStyleSheet);

@@ -5,9 +5,11 @@
 #include <QMessageBox>
 #include <QtEndian>
 #include <QTimer>
+#include <QNetworkRequest>
 
 #include "Group.h"
 #include "MsgType.h"
+#include "NotifyManager.h"
 #include "User.h"
 #include "UserManager.h"
 #include "WindowManager.h"
@@ -19,9 +21,7 @@ std::atomic_bool TcpClient::isRegisterSuccess{ false };
 std::counting_semaphore<1> TcpClient::rwsem(0);
 
 TcpClient::TcpClient()
-	: m_socket{ new QTcpSocket{ this } } {
-	// connect(m_socket, &QTcpSocket::readyRead, this, &TcpClient::onReadyRead);
-}
+	: m_socket{ new QTcpSocket{ this } } {}
 
 TcpClient* TcpClient::getInstance() {
 	static TcpClient instance;

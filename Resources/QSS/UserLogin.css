@@ -73,7 +73,9 @@ QCheckBox::indicator:enabled:checked:hover {
 }
 
 QLineEdit#lineEditUserAccount,
+QLineEdit#lineEditUserAccount_2,
 QLineEdit#lineEditUserPassword,
+QLineEdit#lineEditUserPassword_2,
 QLineEdit#lineEditUserPasswordConfirm {
 	background: #FFFFFF;
 	border: 1px solid #DDDDDD;
@@ -83,7 +85,9 @@ QLineEdit#lineEditUserPasswordConfirm {
 }
 
 QLineEdit#lineEditUserAccount:hover,
+QLineEdit#lineEditUserAccount_2:hover,
 QLineEdit#lineEditUserPassword:hover,
+QLineEdit#lineEditUserPassword_2:hover,
 QLineEdit#lineEditUserPasswordConfirm:hover {
 	background: #FFFFFF;
 	border: 1px solid rgb(0, 161, 219);

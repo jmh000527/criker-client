@@ -19,7 +19,8 @@ signals:
 public:
 	static NotifyManager* getInstance();
 	void notifyOtherWindowChangeSkin(const QColor& color);
-    static void showNotification(std::wstring& appName, std::wstring& firstLine, std::wstring& secondLine, std::wstring& imagePath);
+    static void showNotification(const std::wstring& appName, const std::wstring& firstLine, const std::wstring& secondLine, const std::wstring&
+                                 imagePath);
 
 private:
 	inline static NotifyManager* instance{};

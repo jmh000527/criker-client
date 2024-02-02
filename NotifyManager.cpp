@@ -22,8 +22,10 @@ void NotifyManager::notifyOtherWindowChangeSkin(const QColor& color) {
 	CommonUtils::setDefaultSkinColor(color);
 }
 
-void NotifyManager::showNotification(std::wstring& appName, std::wstring& firstLine, std::wstring& secondLine, std::wstring& imagePath) {
+void NotifyManager::showNotification(const std::wstring& appName, const std::wstring& firstLine, const std::wstring& secondLine, const std::wstring&
+                                     imagePath) {
     std::wstring appUserModelID = L"Fucker's APP'ID";
+    WinToastLib::WinToast::instance()->initialize();
     WinToastLib::WinToast::instance()->setAppName(appName);
     WinToastLib::WinToast::instance()->setAppUserModelId(appUserModelID);
 

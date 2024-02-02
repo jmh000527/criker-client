@@ -27,6 +27,7 @@ EmojiWindow::~EmojiWindow() {}
 
 void EmojiWindow::initControl() {
 	CommonUtils::loadStyleSheet(this, "EmotionWindow");
+
 	// 定义Unicode Emoji范围
 	char32_t startCodePoint = 0x1F600;  // 起始码点
 	char32_t endCodePoint = 0x1F64F;    // 结束码点

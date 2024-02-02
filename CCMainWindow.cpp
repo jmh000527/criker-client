@@ -584,19 +584,21 @@ void CCMainWindow::addGroupMessage(const Group& group, const QString& msg, const
 	ui.msgListWidget->update();
 }
 
-// void CCMainWindow::pushToSystem() {
-// 	// 初始化 WinToast
-// 	WinToastLib::WinToast::instance()->initialize();
-//
-// 	// 创建通知
-// 	WinToastLib::WinToastTemplate templ = WinToastLib::WinToastTemplate(WinToastLib::WinToastTemplate::ImageAndText04);
-// 	templ.setImagePath(L"path_to_your_image.png"); // 设置通知图像
-// 	templ.setTextField(L"title", WinToastLib::WinToastTemplate::FirstLine); // 设置通知标题
-// 	templ.setTextField(L"message", WinToastLib::WinToastTemplate::SecondLine); // 设置通知消息
-//
-// 	// 发送通知
-// 	WinToastLib::WinToast::instance()->showToast(templ, new WinToastHandlerCallback());
-// }
+void CCMainWindow::pushToSystem(const QString msg, const QString time, const QString senderId) {
+	// // 初始化 WinToast
+	// WinToastLib::WinToast::instance()->initialize();
+	//
+	// // 创建通知
+	// WinToastLib::WinToastTemplate templ = WinToastLib::WinToastTemplate(WinToastLib::WinToastTemplate::ImageAndText04);
+	// templ.setImagePath(L"path_to_your_image.png"); // 设置通知图像
+	// templ.setTextField(L"title", WinToastLib::WinToastTemplate::FirstLine); // 设置通知标题
+	// templ.setTextField(L"message", WinToastLib::WinToastTemplate::SecondLine); // 设置通知消息
+	//
+	// // 发送通知
+	// WinToastLib::WinToast::instance()->showToast(templ, new WinToastLib::IWinToastHandler());
+
+	// NotifyManager::showNotification(QString{ "Criker" }.toStdWString(), QString{ "Criker" }.toStdWString(), msg.toStdWString(), QString{ "D:/Qt/dcm/labels/1_0.jpg" }.toStdWString());
+}
 
 void CCMainWindow::onAppIconClicked() const {
 	if (sender()->objectName() == "app_skin") {
@@ -686,4 +688,6 @@ void CCMainWindow::onAddMessage(const QString msg, const QString time, const QSt
 		const User sender{ UserManager::getFriend(senderId) };
 		addUserMessage(sender, msg, time);
 	}
+
+	pushToSystem(msg, time, senderId);
 }

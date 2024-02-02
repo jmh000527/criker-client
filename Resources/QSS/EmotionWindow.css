@@ -19,7 +19,7 @@ QWidget#EmojiWidget {
 }
 
 QLabel#emojiLabelItem {
-    background-color: rgb(250, 230, 236);
+    background-color: rgb(222, 222, 222);
 }
 
 QLabel#emojiLabelItem:hover {
@@ -47,7 +47,7 @@ QScrollBar::add-line:horizontal {
 }
 
 QScrollBar:vertical {
-    background-color: rgb(250, 230, 236);
+    background-color: rgb(222, 222, 222);
     width: 6px;
 }
 
@@ -63,8 +63,4 @@ QScrollBar::sub-line:vertical {
 
 QScrollBar::add-line:vertical {
     background: transparent;
-}
-
-QWidget#topWidget {
-    border-image: url(:Resources/MainWindow/emoback.png);
 }

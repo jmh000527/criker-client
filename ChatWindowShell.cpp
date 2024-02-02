@@ -109,7 +109,9 @@ ChatWindowShell::ChatWindowShell(QWidget* parent)
 	// 							}" });
 }
 
-ChatWindowShell::~ChatWindowShell() {}
+ChatWindowShell::~ChatWindowShell() {
+	delete m_emojiWindow;
+}
 
 void ChatWindowShell::addChatWindow(
 	ChatWindow* chatWindow, ChatWindowItem* chatWindowItem, const QString& uid, bool isGroupChat) {
@@ -168,7 +170,7 @@ bool ChatWindowShell::eventFilter(QObject* obj, QEvent* event) {
 	if (obj == m_emojiWindow && event->type() == QEvent::Leave) {
 		// 鼠标离开Emoji面板时隐藏面板
 		m_emojiWindow->hide();
-		return true;
+		// return true;
 	}
 	return QDialog::eventFilter(obj, event);
 }
@@ -202,7 +204,7 @@ void ChatWindowShell::initControl() {
 	loadStyleSheet("TalkWindow");
 	setWindowTitle(QString{ "聊天窗口" });
 
-	m_emojiWindow = new EmojiWindow;
+	m_emojiWindow = new EmojiWindow{};
 	m_emojiWindow->hide();
 
 	QList<int> leftWidgetSize;
