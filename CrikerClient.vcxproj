@@ -16,6 +16,7 @@
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.22621.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.22621.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <ProjectName>CrikerClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -65,7 +66,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>$(SolutionDir);D:\Qt_Projects\QtQQ\thirdparty\include;D:\Qt_Projects\QtQQ\thirdparty\include\WinToast;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir);$(SolutionDir)\thirdparty\include;$(SolutionDir)\thirdparty\include\WinToast;$(SolutionDir)\thirdparty\include\nlohmann;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -114,7 +115,6 @@
     <ClCompile Include="ChatWindow.cpp" />
     <ClCompile Include="ChatWindowItem.cpp" />
     <ClCompile Include="ChatWindowShell.cpp" />
-    <ClCompile Include="CommonInfo.cpp" />
     <ClCompile Include="CommonUtils.cpp" />
     <ClCompile Include="ContactItem.cpp" />
     <ClCompile Include="CustomMenu.cpp" />
@@ -125,7 +125,6 @@
     <ClCompile Include="EmojiWindow.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="ImageView.cpp" />
-    <ClCompile Include="MsgWebView.cpp" />
     <ClCompile Include="NotifyManager.cpp" />
     <ClCompile Include="PictureEdit.cpp" />
     <ClCompile Include="PicturePreviewPanel.cpp" />
@@ -137,7 +136,6 @@
     <ClCompile Include="SysTray.cpp" />
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="thirdparty\src\wintoastlib.cpp" />
-    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="titlebar.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="UserLogin.cpp" />
@@ -171,7 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackgroundWidget.h" />
-    <ClInclude Include="CommonInfo.h" />
     <ClInclude Include="CutRectangle.h" />
     <ClInclude Include="CutRound.h" />
     <ClInclude Include="CutShape.h" />
@@ -185,13 +182,11 @@
     <QtMoc Include="SearchResult.h" />
     <ClInclude Include="thirdparty\include\WinToast\wintoastlib.h" />
     <ClInclude Include="thirdparty\json.hpp" />
-    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="UserManager.h" />
     <QtMoc Include="UserRegister.h" />
     <QtMoc Include="TcpClient.h" />
     <QtMoc Include="QNChatMessage.h" />
-    <QtMoc Include="MsgWebView.h" />
     <QtMoc Include="WindowManager.h" />
     <QtMoc Include="EmojiLabelItem.h" />
     <QtMoc Include="EmojiWindow.h" />

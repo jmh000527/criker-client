@@ -8,7 +8,6 @@
 #include <QSqlQuery>
 
 #include "ChatWindowShell.h"
-#include "CommonInfo.h"
 #include "CommonUtils.h"
 #include "ContactItem.h"
 #include "NotifyManager.h"

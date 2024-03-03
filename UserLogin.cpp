@@ -13,7 +13,6 @@
 #include <thread>
 
 #include "CCMainWindow.h"
-#include "CommonInfo.h"
 #include "MsgType.h"
 #include "PictureEdit.h"
 #include "TcpClient.h"
