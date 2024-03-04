@@ -1,4 +1,4 @@
-﻿#include "titlebar.h"
+﻿#include "TitleBar.h"
 
 #include <QApplication>
 #include <QHBoxLayout>

@@ -2,7 +2,7 @@
 
 #include <QDialog>
 
-#include "titlebar.h"
+#include "TitleBar.h"
 
 class BasicWindow : public QDialog {
 	Q_OBJECT

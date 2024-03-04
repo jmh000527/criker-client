@@ -448,7 +448,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="CCMainWindow.qrc">
+            <iconset>
              <normaloff>:/Resources/MainWindow/tab/icon_last_normal.png</normaloff>
              <normalon>:/Resources/MainWindow/tab/icon_last_selected.png</normalon>:/Resources/MainWindow/tab/icon_last_normal.png</iconset>
            </property>
@@ -481,7 +481,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="CCMainWindow.qrc">
+            <iconset>
              <normaloff>:/Resources/MainWindow/tab/icon_group_normal.png</normaloff>
              <normalon>:/Resources/MainWindow/tab/icon_group_selected.png</normalon>:/Resources/MainWindow/tab/icon_group_normal.png</iconset>
            </property>
@@ -840,7 +840,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="CCMainWindow.qrc"/>
+  <include location="../qrc/CCMainWindow.qrc"/>
  </resources>
  <connections/>
 </ui>

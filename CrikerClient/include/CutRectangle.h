@@ -1,7 +1,8 @@
 #pragma once
 
-#include <CutShape.h>
 #include <QMouseEvent>
+
+#include "CutShape.h"
 
 class CutRectangle : public CutShape {
 public:

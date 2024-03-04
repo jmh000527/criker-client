@@ -66,11 +66,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>$(SolutionDir);$(SolutionDir)\thirdparty\include;$(SolutionDir)\thirdparty\include\WinToast;$(SolutionDir)\thirdparty\include\nlohmann;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\CrikerClient\include;$(SolutionDir)\CrikerClient\thirdparty\include;$(SolutionDir)\CrikerClient\thirdparty\include\WinToast;$(SolutionDir)\CrikerClient\thirdparty\include\nlohmann;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>D:\Qt_Projects\QtQQ\thirdparty\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\CrikerClient\include;$(SolutionDir)\CrikerClient\thirdparty\include;$(SolutionDir)\CrikerClient\thirdparty\include\WinToast;$(SolutionDir)\CrikerClient\thirdparty\include\nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -110,97 +110,95 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BackgroundWidget.cpp" />
-    <ClCompile Include="basicwindow.cpp" />
-    <ClCompile Include="ChatWindow.cpp" />
-    <ClCompile Include="ChatWindowItem.cpp" />
-    <ClCompile Include="ChatWindowShell.cpp" />
-    <ClCompile Include="CommonUtils.cpp" />
-    <ClCompile Include="ContactItem.cpp" />
-    <ClCompile Include="CustomMenu.cpp" />
-    <ClCompile Include="CutRectangle.cpp" />
-    <ClCompile Include="CutRound.cpp" />
-    <ClCompile Include="CutShape.cpp" />
-    <ClCompile Include="EmojiLabelItem.cpp" />
-    <ClCompile Include="EmojiWindow.cpp" />
-    <ClCompile Include="Group.cpp" />
-    <ClCompile Include="ImageView.cpp" />
-    <ClCompile Include="NotifyManager.cpp" />
-    <ClCompile Include="PictureEdit.cpp" />
-    <ClCompile Include="PicturePreviewPanel.cpp" />
-    <ClCompile Include="QClickLabel.cpp" />
-    <ClCompile Include="QNChatMessage.cpp" />
-    <ClCompile Include="RootContactItem.cpp" />
-    <ClCompile Include="SearchResult.cpp" />
-    <ClCompile Include="SkinWindow.cpp" />
-    <ClCompile Include="SysTray.cpp" />
-    <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="src\BackgroundWidget.cpp" />
+    <ClCompile Include="src\BasicWindow.cpp" />
+    <ClCompile Include="src\CCMainWindow.cpp" />
+    <ClCompile Include="src\ChatWindow.cpp" />
+    <ClCompile Include="src\ChatWindowItem.cpp" />
+    <ClCompile Include="src\ChatWindowShell.cpp" />
+    <ClCompile Include="src\CommonUtils.cpp" />
+    <ClCompile Include="src\ContactItem.cpp" />
+    <ClCompile Include="src\CustomMenu.cpp" />
+    <ClCompile Include="src\CutRectangle.cpp" />
+    <ClCompile Include="src\CutRound.cpp" />
+    <ClCompile Include="src\CutShape.cpp" />
+    <ClCompile Include="src\EmojiLabelItem.cpp" />
+    <ClCompile Include="src\EmojiWindow.cpp" />
+    <ClCompile Include="src\Group.cpp" />
+    <ClCompile Include="src\ImageView.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NotifyManager.cpp" />
+    <ClCompile Include="src\PictureEdit.cpp" />
+    <ClCompile Include="src\PicturePreviewPanel.cpp" />
+    <ClCompile Include="src\QClickLabel.cpp" />
+    <ClCompile Include="src\QNChatMessage.cpp" />
+    <ClCompile Include="src\RootContactItem.cpp" />
+    <ClCompile Include="src\SearchResult.cpp" />
+    <ClCompile Include="src\SkinWindow.cpp" />
+    <ClCompile Include="src\SysTray.cpp" />
+    <ClCompile Include="src\TcpClient.cpp" />
+    <ClCompile Include="src\TitleBar.cpp" />
+    <ClCompile Include="src\User.cpp" />
+    <ClCompile Include="src\UserLogin.cpp" />
+    <ClCompile Include="src\UserManager.cpp" />
+    <ClCompile Include="src\UserRegister.cpp" />
+    <ClCompile Include="src\WindowManager.cpp" />
     <ClCompile Include="thirdparty\src\wintoastlib.cpp" />
-    <ClCompile Include="titlebar.cpp" />
-    <ClCompile Include="User.cpp" />
-    <ClCompile Include="UserLogin.cpp" />
-    <ClCompile Include="UserManager.cpp" />
-    <ClCompile Include="UserRegister.cpp" />
-    <ClCompile Include="WindowManager.cpp" />
-    <QtRcc Include="CCMainWindow.qrc" />
-    <QtUic Include="CCMainWindow.ui" />
-    <QtMoc Include="CCMainWindow.h" />
-    <ClCompile Include="CCMainWindow.cpp" />
-    <ClCompile Include="main.cpp" />
-    <QtUic Include="ChatWindow.ui" />
-    <QtUic Include="ChatWindowItem.ui" />
-    <QtUic Include="ChatWindowShell.ui" />
-    <QtUic Include="ContactItem.ui" />
-    <QtUic Include="EmojiWindow.ui" />
-    <QtUic Include="PictureEdit.ui" />
-    <QtUic Include="SearchResult.ui" />
-    <QtUic Include="SkinWindow.ui" />
-    <QtUic Include="UserLogin.ui" />
-    <QtUic Include="UserRegister.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="titlebar.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="basicwindow.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="NotifyManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BackgroundWidget.h" />
-    <ClInclude Include="CutRectangle.h" />
-    <ClInclude Include="CutRound.h" />
-    <ClInclude Include="CutShape.h" />
-    <ClInclude Include="Group.h" />
-    <ClInclude Include="GroupType.h" />
-    <ClInclude Include="WinToastHandlerCallBack.h" />
-    <QtMoc Include="ImageView.h" />
-    <ClInclude Include="MsgType.h" />
-    <QtMoc Include="PicturePreviewPanel.h" />
-    <QtMoc Include="PictureEdit.h" />
-    <QtMoc Include="SearchResult.h" />
+    <ClInclude Include="include\BackgroundWidget.h" />
+    <QtMoc Include="include\BasicWindow.h" />
+    <QtMoc Include="include\CCMainWindow.h" />
+    <QtMoc Include="include\ChatWindow.h" />
+    <QtMoc Include="include\ChatWindowItem.h" />
+    <QtMoc Include="include\ChatWindowShell.h" />
+    <ClInclude Include="include\CommonUtils.h" />
+    <QtMoc Include="include\ContactItem.h" />
+    <QtMoc Include="include\CustomMenu.h" />
+    <ClInclude Include="include\CutRectangle.h" />
+    <ClInclude Include="include\CutRound.h" />
+    <ClInclude Include="include\CutShape.h" />
+    <QtMoc Include="include\EmojiLabelItem.h" />
+    <QtMoc Include="include\EmojiWindow.h" />
+    <ClInclude Include="include\Group.h" />
+    <ClInclude Include="include\GroupType.h" />
+    <QtMoc Include="include\ImageView.h" />
+    <ClInclude Include="include\MsgType.h" />
+    <QtMoc Include="include\NotifyManager.h" />
+    <QtMoc Include="include\PictureEdit.h" />
+    <QtMoc Include="include\PicturePreviewPanel.h" />
+    <QtMoc Include="include\QClickLabel.h" />
+    <QtMoc Include="include\QNChatMessage.h" />
+    <QtMoc Include="include\RootContactItem.h" />
+    <QtMoc Include="include\SearchResult.h" />
+    <QtMoc Include="include\SkinWindow.h" />
+    <QtMoc Include="include\SysTray.h" />
+    <QtMoc Include="include\TcpClient.h" />
+    <QtMoc Include="include\TitleBar.h" />
+    <ClInclude Include="include\User.h" />
+    <QtMoc Include="include\UserLogin.h" />
+    <ClInclude Include="include\UserManager.h" />
+    <QtMoc Include="include\UserRegister.h" />
+    <QtMoc Include="include\WindowManager.h" />
+    <ClInclude Include="include\WinToastHandlerCallBack.h" />
     <ClInclude Include="thirdparty\include\WinToast\wintoastlib.h" />
     <ClInclude Include="thirdparty\json.hpp" />
-    <ClInclude Include="User.h" />
-    <ClInclude Include="UserManager.h" />
-    <QtMoc Include="UserRegister.h" />
-    <QtMoc Include="TcpClient.h" />
-    <QtMoc Include="QNChatMessage.h" />
-    <QtMoc Include="WindowManager.h" />
-    <QtMoc Include="EmojiLabelItem.h" />
-    <QtMoc Include="EmojiWindow.h" />
-    <QtMoc Include="ChatWindowShell.h" />
-    <QtMoc Include="ChatWindowItem.h" />
-    <QtMoc Include="ChatWindow.h" />
-    <ClInclude Include="CommonUtils.h" />
-    <QtMoc Include="ContactItem.h" />
-    <QtMoc Include="RootContactItem.h" />
-    <QtMoc Include="CustomMenu.h" />
-    <QtMoc Include="SysTray.h" />
-    <QtMoc Include="QClickLabel.h" />
-    <QtMoc Include="SkinWindow.h" />
-    <QtMoc Include="UserLogin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ui\CCMainWindow.ui" />
+    <QtUic Include="ui\ChatWindow.ui" />
+    <QtUic Include="ui\ChatWindowItem.ui" />
+    <QtUic Include="ui\ChatWindowShell.ui" />
+    <QtUic Include="ui\ContactItem.ui" />
+    <QtUic Include="ui\EmojiWindow.ui" />
+    <QtUic Include="ui\PictureEdit.ui" />
+    <QtUic Include="ui\SearchResult.ui" />
+    <QtUic Include="ui\SkinWindow.ui" />
+    <QtUic Include="ui\UserLogin.ui" />
+    <QtUic Include="ui\UserRegister.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="qrc\CCMainWindow.qrc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

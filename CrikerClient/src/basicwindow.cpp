@@ -1,4 +1,4 @@
-﻿#include "basicwindow.h"
+﻿#include "BasicWindow.h"
 #include "CommonUtils.h"
 #include "NotifyManager.h"
 

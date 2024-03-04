@@ -7,7 +7,7 @@
 
 #include "MsgType.h"
 
-#include "thirdparty/include/nlohmann/json.hpp"
+#include "json.hpp"
 
 constexpr int MAX_PACKAGE_SIZE = 10 * 1024 * 1024;
 

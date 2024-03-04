@@ -1,6 +1,6 @@
 #pragma once
 
-#include "thirdparty/include/nlohmann/json.hpp"
+#include "json.hpp"
 
 enum class MsgType {
     LOGIN_MSG = 1,      //登陆消息
