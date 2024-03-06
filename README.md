@@ -43,6 +43,8 @@ Criker 是一款简单开源即时通讯工具，旨在提供友好的用户界�
 
 ![ChatTool Screenshot 7](images/screenshot7.png)
 
+![ChatTool Screenshot 8](images/screenshot8.png)
+
 ## 技术细节
 
 Criker 是使用以下技术构建的：
@@ -54,7 +56,7 @@ Criker 是使用以下技术构建的：
 
 ## 贡献
 
-服务端 GitHub 仓库链接：[Github](https://github.com/jmh000527/criker-server)
+服务端 GitHub 仓库链接：[https://github.com/jmh000527/criker-server](https://github.com/jmh000527/criker-server)
 
 ## 联系我
 
