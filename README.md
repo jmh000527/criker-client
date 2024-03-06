@@ -1,4 +1,4 @@
-# Criker 聊天工具
+# Criker 即时通讯软件（客户端）
 
 ![Criker Logo](images/qq_detective.png)
 
