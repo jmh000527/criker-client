@@ -14,7 +14,7 @@ SysTray::~SysTray() = default;
 
 void SysTray::initSystemTray() {
 	setToolTip(QStringLiteral("QtQQ"));
-	setIcon(QIcon{ ":/Resources/MainWindow/app/logo.ico" });
+	setIcon(QIcon{ ":/Resources/MainWindow/app/qq_detective.ico" });
 
 	connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this,
 	        SLOT(onIconActivate(QSystemTrayIcon::ActivationReason)));
@@ -23,7 +23,7 @@ void SysTray::initSystemTray() {
 void SysTray::addSysTrayMenu() const {
 	// auto* customMenu{ new CustomMenu{ m_parent } };
 	const QScopedPointer<CustomMenu> customMenu{new CustomMenu{ m_parent }};
-	customMenu->addCustomMenu("onShow", ":/Resources/MainWindow/app/logo.ico", QStringLiteral("显示"));
+	customMenu->addCustomMenu("onShow", ":/Resources/MainWindow/app/qq_detective.ico", QStringLiteral("显示"));
 	customMenu->addCustomMenu("onQuit", ":/Resources/MainWindow/app/page_close_btn_hover.png", QStringLiteral("退出"));
 
 	connect(customMenu->getAction("onShow"), SIGNAL(triggered(bool)), m_parent, SLOT(onShowNormal(bool)));

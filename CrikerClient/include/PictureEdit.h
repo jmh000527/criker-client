@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include "basicwindow.h"
+#include "BasicWindow.h"
 #include "ui_PictureEdit.h"
 
 class PictureEdit : public BasicWindow {

@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QTcpSocket>
 
-#include "basicwindow.h"
+#include "BasicWindow.h"
 #include "ChatWindowItem.h"
 #include "EmojiWindow.h"
 #include "ui_ChatWindowShell.h"

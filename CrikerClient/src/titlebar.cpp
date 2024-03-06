@@ -25,6 +25,7 @@ TitleBar::~TitleBar() = default;
 void TitleBar::setTitleIcon(const QString& filePath) const {
 	const QPixmap titleIcon{ filePath };
 	m_pIcon->setFixedSize(titleIcon.size());
+	m_pIcon->setFixedSize(QSize{18, 18});
 	m_pIcon->setPixmap(titleIcon);
 }
 

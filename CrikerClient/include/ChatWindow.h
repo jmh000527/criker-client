@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QListWidgetItem>
 
-#include "basicwindow.h"
+#include "BasicWindow.h"
 #include "Group.h"
 #include "QNChatMessage.h"
 #include "ui_ChatWindow.h"

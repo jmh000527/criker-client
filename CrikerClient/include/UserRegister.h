@@ -2,7 +2,7 @@
 
 #include <QDialog>
 
-#include "basicwindow.h"
+#include "BasicWindow.h"
 #include "QClickLabel.h"
 #include "ui_UserRegister.h"
 

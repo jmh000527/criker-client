@@ -2,7 +2,7 @@
 
 #include <QtWidgets/QWidget>
 
-#include "basicwindow.h"
+#include "BasicWindow.h"
 #include "Group.h"
 #include "SearchResult.h"
 #include "SysTray.h"

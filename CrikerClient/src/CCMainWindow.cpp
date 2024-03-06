@@ -35,8 +35,12 @@ CCMainWindow::CCMainWindow(QWidget* parent)
 	initTimer();
 
 	//初始化搜索结果展示部件
-	strs << "A1" << "A2" << "A3" << "A4" << "B1" << "B2" << "B3" << "B4";
-	strs << "C1" << "C2" << "C3" << "C4" << "D1" << "D2" << "D3" << "D4";
+	// strs << "A1" << "A2" << "A3" << "A4" << "B1" << "B2" << "B3" << "B4";
+	// strs << "C1" << "C2" << "C3" << "C4" << "D1" << "D2" << "D3" << "D4";
+	auto userList = UserManager::getCurrentUserFriendList();
+	for(const auto& user : userList) {
+		strs << user.getName().c_str();
+	}
 	m_pSearchResult = new SearchResult{ this };
 
 	//TabBar相关
@@ -122,8 +126,10 @@ void CCMainWindow::loadStyleSheet(const QString& sheetName) {
 								border-none;\
 						        background: transparent;\
 								}\
-							    QPushButton:hover{\
+							    QPushButton#btnMessage, #btnContact:hover{\
 								background-color: rgb(205, 205, 205);\
+								border-none;\
+						        background: transparent;\
 							    }\
 							    QPushButton:pressed, QPushButton:checked{\
 								background-color: rgb(%1, %2, %3);\
@@ -194,11 +200,11 @@ void CCMainWindow::initColtrol() {
 
 	appUpLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
 	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_7.png", "app_7"));
-	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_2.png", "app_2"));
-	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_3.png", "app_3"));
-	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_4.png", "app_4"));
-	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_5.png", "app_5"));
-	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_6.png", "app_6"));
+	// appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_2.png", "app_2"));
+	// appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_3.png", "app_3"));
+	// appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_4.png", "app_4"));
+	// appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_5.png", "app_5"));
+	// appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_6.png", "app_6"));
 	appUpLayout->addStretch();
 	appUpLayout->setSpacing(2);
 	appUpLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/skin.png", "app_skin"));
@@ -208,10 +214,10 @@ void CCMainWindow::initColtrol() {
 	const auto appBottomLayout{ new QHBoxLayout{ this } };
 
 	appBottomLayout->setContentsMargins(QMargins{ 0, 0, 0, 0 });
-	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_10.png", "app_10"));
+	// appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_10.png", "app_10"));
 	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_8.png", "app_8"));
-	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_11.png", "app_11"));
-	appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_9.png", "app_9"));
+	// appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_11.png", "app_11"));
+	// appBottomLayout->addWidget(createOtherAppExtension(":/Resources/MainWindow/app/app_9.png", "app_9"));
 
 	ui.bottomLayout_up->addLayout(appBottomLayout);
 	ui.bottomLayout_up->addStretch();

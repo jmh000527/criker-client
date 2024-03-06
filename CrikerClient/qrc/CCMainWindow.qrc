@@ -360,5 +360,9 @@
         <file>Resources/MainWindow/qqicon_p_gray.png</file>
         <file>Resources/MainWindow/qqicon_t_blue.png</file>
         <file>Resources/MainWindow/qqicon_t_gray.png</file>
+        <file>Resources/MainWindow/user.png</file>
+        <file>Resources/MainWindow/app/qq_detective.ico</file>
+        <file>Resources/MainWindow/app/qq_detective.png</file>
+        <file>Resources/MainWindow/app/qq_logo.png</file>
     </qresource>
 </RCC>

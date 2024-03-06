@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include "basicwindow.h"
+#include "BasicWindow.h"
 #include "QClickLabel.h"
 #include "ui_UserLogin.h"
 

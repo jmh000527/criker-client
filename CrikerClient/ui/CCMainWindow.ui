@@ -448,7 +448,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../qrc/CCMainWindow.qrc">
              <normaloff>:/Resources/MainWindow/tab/icon_last_normal.png</normaloff>
              <normalon>:/Resources/MainWindow/tab/icon_last_selected.png</normalon>:/Resources/MainWindow/tab/icon_last_normal.png</iconset>
            </property>
@@ -481,7 +481,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
             <string/>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../qrc/CCMainWindow.qrc">
              <normaloff>:/Resources/MainWindow/tab/icon_group_normal.png</normaloff>
              <normalon>:/Resources/MainWindow/tab/icon_group_selected.png</normalon>:/Resources/MainWindow/tab/icon_group_normal.png</iconset>
            </property>
@@ -827,7 +827,7 @@ font: 75 12pt &quot;微软雅黑&quot;;
            </size>
           </property>
           <property name="text">
-           <string>应用宝</string>
+           <string/>
           </property>
          </widget>
         </item>

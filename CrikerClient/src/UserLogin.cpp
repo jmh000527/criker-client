@@ -35,7 +35,7 @@ UserLogin::UserLogin(QWidget* parent)
 
 	setAttribute(Qt::WA_DeleteOnClose);
 	initTitleBar();
-	setTitleBarTitle("", ":/Resources/MainWindow/qqlogoclassic.png");
+	// setTitleBarTitle("", ":/Resources/MainWindow/qqlogoclassic.png");
 	loadStyleSheet("UserLogin");
 	initControl();
 
@@ -54,7 +54,7 @@ void UserLogin::initControl() {
 
 	QPixmap pix{ ":/Resources/MainWindow/head_mask.png" };
 
-	m_headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/app/logo.ico" }, pix, m_headLabel->size()));
+	m_headLabel->setPixmap(getRoundedImage(QPixmap{ ":/Resources/MainWindow/app/qq_detective.ico" }, pix, m_headLabel->size()));
 	auto y = 106 - headLabelSize.height() / 2;
 	m_headLabel->move(width() / 2 - headLabelSize.width() / 2, y);
 
