@@ -54,13 +54,12 @@ Criker 是使用以下技术构建的：
 
 ## 贡献
 
-服务端 GitHub 仓库链接：[https://github.com/yourusername/chattool](https://github.com/yourusername/chattool)
+服务端 GitHub 仓库链接：[Github](https://github.com/jmh000527/criker-server)
 
-## 联系我们
+## 联系我
 
-如果您有任何疑问或反馈，可以通过以下方式联系我们：
+如果您有任何疑问或反馈，可以通过以下方式联系我：
 
-- 电子邮件：info@chattool.com
-- 官方网站：[https://www.chattool.com/contact](https://www.chattool.com/contact)
+- 电子邮件：jmh000527@qq.com
 
-谢谢您选择 ChatTool，愿您有愉快的聊天体验！
+谢谢您选择 Criker，愿您有愉快的聊天体验！
