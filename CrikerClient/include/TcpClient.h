@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <QObject>
 #include <QString>
 #include <QTcpSocket>
@@ -48,10 +49,11 @@ private:
 	void doLoginResponse(nlohmann::json& responsejs);
 
 	QTcpSocket* m_socket;
+	mutable std::mutex m_mutex;
 
 signals:
 	void messageReceived(const QString msg, const QString time, const QString senderId);
 
 private slots:
-	void onReadyRead();
+	void onReadyRead() const;
 };

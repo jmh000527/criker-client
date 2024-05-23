@@ -1,6 +1,7 @@
 #include "TcpClient.h"
 
 #include <iostream>
+#include <mutex>
 #include <QByteArray>
 #include <QMessageBox>
 #include <QtEndian>
@@ -67,6 +68,55 @@ bool TcpClient::sendMessage(const json& js, MsgType msgType) const {
 	return true;
 }
 
+// std::list<std::tuple<QByteArray, MsgType>> TcpClient::receiveMessage() const {
+// 	if (!m_socket) {
+// 		qDebug() << "Socket not initialized.";
+// 		return {};
+// 	}
+//
+// 	if (!m_socket->waitForReadyRead(-1)) {
+// 		qDebug() << "waitForReadyRead failed.";
+// 		return {};
+// 	}
+//
+// 	QByteArray buffer;
+// 	MsgType messageType;
+// 	uint32_t messageLength;
+//
+// 	std::list<std::tuple<QByteArray, MsgType>> messageList;
+//
+// 	while (m_socket->bytesAvailable() >= sizeof(MessageHeader)) {
+// 		// 读取消息头
+// 		MessageHeader header;
+// 		m_socket->read(reinterpret_cast<char*>(&header), sizeof(MessageHeader));
+//
+// 		// 转换字节序，获取包头中各项的值
+// 		messageType = static_cast<MsgType>(qFromBigEndian(header.type));
+// 		messageLength = qFromBigEndian(header.length);
+//
+// 		// 处理非法包
+// 		if (messageLength <= 0 || messageLength > MAX_PACKAGE_SIZE) {
+// 			return {};
+// 		}
+//
+// 		// 阻塞等待数据直到接收到完整的消息体
+// 		while (m_socket->bytesAvailable() < messageLength) {
+// 			if (!m_socket->waitForReadyRead(-1)) {
+// 				qDebug() << "waitForReadyRead failed.";
+// 				return {};
+// 			}
+// 		}
+//
+// 		// 读取消息体
+// 		if(m_socket->bytesAvailable() >= messageLength) {
+// 			buffer = m_socket->read(messageLength);
+// 			messageList.emplace_back(buffer, messageType);
+// 		}
+// 	}
+//
+// 	return messageList;
+// }
+
 std::list<std::tuple<QByteArray, MsgType>> TcpClient::receiveMessage() const {
 	if (!m_socket) {
 		qDebug() << "Socket not initialized.";
@@ -78,36 +128,53 @@ std::list<std::tuple<QByteArray, MsgType>> TcpClient::receiveMessage() const {
 		return {};
 	}
 
-	QByteArray buffer;
-	MsgType messageType;
-	uint32_t messageLength;
-
 	std::list<std::tuple<QByteArray, MsgType>> messageList;
 
 	while (m_socket->bytesAvailable() >= sizeof(MessageHeader)) {
 		// 读取消息头
 		MessageHeader header;
-		m_socket->read(reinterpret_cast<char*>(&header), sizeof(MessageHeader));
+		int bytesRead = 0;
+		while (bytesRead < sizeof(MessageHeader)) {
+			int result = m_socket->read(reinterpret_cast<char*>(&header) + bytesRead,
+			                            sizeof(MessageHeader) - bytesRead);
+			if (result <= 0) {
+				qDebug() << "Failed to read message header.";
+				return messageList;
+			}
+			bytesRead += result;
+		}
 
 		// 转换字节序，获取包头中各项的值
-		messageType = static_cast<MsgType>(qFromBigEndian(header.type));
-		messageLength = qFromBigEndian(header.length);
+		MsgType messageType = static_cast<MsgType>(qFromBigEndian(header.type));
+		uint32_t messageLength = qFromBigEndian(header.length);
 
 		// 处理非法包
 		if (messageLength <= 0 || messageLength > MAX_PACKAGE_SIZE) {
-			return {};
+			qDebug() << "Invalid message length:" << messageLength;
+			continue;
 		}
 
 		// 阻塞等待数据直到接收到完整的消息体
 		while (m_socket->bytesAvailable() < messageLength) {
 			if (!m_socket->waitForReadyRead(-1)) {
 				qDebug() << "waitForReadyRead failed.";
-				return {};
+				return messageList;
 			}
 		}
 
 		// 读取消息体
-		buffer = m_socket->read(messageLength);
+		QByteArray buffer;
+		buffer.resize(messageLength);
+		bytesRead = 0;
+		while (bytesRead < messageLength) {
+			int result = m_socket->read(buffer.data() + bytesRead, messageLength - bytesRead);
+			if (result <= 0) {
+				qDebug() << "Failed to read message body.";
+				return messageList;
+			}
+			bytesRead += result;
+		}
+
 		messageList.emplace_back(buffer, messageType);
 	}
 
@@ -126,7 +193,7 @@ void TcpClient::readTaskHandler() {
 	for (;;) {
 		const std::list<std::tuple<QByteArray, MsgType>> data = TcpClient::receiveMessage();
 
-		for(const auto& message1: data) {
+		for (const auto& message1 : data) {
 			QByteArray message;
 			MsgType messageType;
 			std::tie(message, messageType) = message1;
@@ -153,26 +220,33 @@ void TcpClient::readTaskHandler() {
 				auto sentTime = getValueFromJson<std::string>(js, "time");
 				auto senderId = getValueFromJson<int>(js, "id");
 
+				// 存在对应聊天界面
 				if (targetChatWindow) {
+					std::lock_guard<std::mutex> lockGuard{ m_mutex };
 					// 连接信号到槽函数
 					QObject::connect(this, &TcpClient::messageReceived,
-									 targetChatWindow, &ChatWindow::onRecieveMessage);
+					                 targetChatWindow, &ChatWindow::onRecieveMessage);
 
 					// 发射信号
 					emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(senderId));
 
 					// 断开连接，如果需要
 					QObject::disconnect(this, &TcpClient::messageReceived,
-										targetChatWindow, &ChatWindow::onRecieveMessage);
+					                    targetChatWindow, &ChatWindow::onRecieveMessage);
 				}
 
 				//在CCMainWindow界面添加消息提醒
-				QObject::connect(this, &TcpClient::messageReceived, WindowManager::getInstance()->getMainWindowPointer(), &CCMainWindow::onAddMessage);
+				{
+					std::lock_guard<std::mutex> lockGuard{ m_mutex };
+					QObject::connect(this, &TcpClient::messageReceived,
+					                 WindowManager::getInstance()->getMainWindowPointer(), &CCMainWindow::onAddMessage);
 
-				emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(senderId));
+					emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(senderId));
 
-				QObject::disconnect(this, &TcpClient::messageReceived, WindowManager::getInstance()->getMainWindowPointer(), &CCMainWindow::onAddMessage);
-
+					QObject::disconnect(this, &TcpClient::messageReceived,
+					                    WindowManager::getInstance()->getMainWindowPointer(),
+					                    &CCMainWindow::onAddMessage);
+				}
 				continue;
 			}
 
@@ -187,24 +261,31 @@ void TcpClient::readTaskHandler() {
 				auto groupId = getValueFromJson<int>(js, "groupid");
 
 				if (targetChatWindow) {
+					std::lock_guard<std::mutex> lockGuard{ m_mutex };
 					// 连接信号到槽函数
 					QObject::connect(this, &TcpClient::messageReceived,
-									 targetChatWindow, &ChatWindow::onRecieveMessage);
+					                 targetChatWindow, &ChatWindow::onRecieveMessage);
 
 					// 发射信号
 					emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(senderId));
 
 					// 断开连接，如果需要
 					QObject::disconnect(this, &TcpClient::messageReceived,
-										targetChatWindow, &ChatWindow::onRecieveMessage);
+					                    targetChatWindow, &ChatWindow::onRecieveMessage);
 				}
 
 				//在CCMainWindow界面添加消息提醒
-				QObject::connect(this, &TcpClient::messageReceived, WindowManager::getInstance()->getMainWindowPointer(), &CCMainWindow::onAddMessage);
+				{
+					std::lock_guard<std::mutex> lockGuard{ m_mutex };
+					QObject::connect(this, &TcpClient::messageReceived,
+					                 WindowManager::getInstance()->getMainWindowPointer(), &CCMainWindow::onAddMessage);
 
-				emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(groupId));
+					emit messageReceived(msg.c_str(), sentTime.c_str(), QString::number(groupId));
 
-				QObject::disconnect(this, &TcpClient::messageReceived, WindowManager::getInstance()->getMainWindowPointer(), &CCMainWindow::onAddMessage);
+					QObject::disconnect(this, &TcpClient::messageReceived,
+					                    WindowManager::getInstance()->getMainWindowPointer(),
+					                    &CCMainWindow::onAddMessage);
+				}
 
 				continue;
 			}
@@ -244,7 +325,7 @@ void TcpClient::doLoginResponse(json& responsejs) {
 		isLoginSuccess = false;
 	} else {
 		// 登录成功
-		User currentUser{""};
+		User currentUser{ "" };
 		currentUser.setId(responsejs["id"].get<int>());
 		currentUser.setName(responsejs["name"]);
 		currentUser.setHeadImage(responsejs["headimage"]);
@@ -258,7 +339,7 @@ void TcpClient::doLoginResponse(json& responsejs) {
 				std::string receieved = str;
 				json js = json::parse(receieved);
 
-				User user{""};
+				User user{ "" };
 				user.setId(js["id"].get<int>());
 				user.setName(js["name"]);
 				user.setState(js["state"]);
@@ -334,8 +415,7 @@ std::vector<char> TcpClient::constructMessage(const nlohmann::json& js, MsgType 
 	return messageData;
 }
 
-void TcpClient::onReadyRead()
-{
+void TcpClient::onReadyRead() const {
 	QByteArray buffer;
 	MsgType messageType;
 	uint32_t messageLength;
