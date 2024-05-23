@@ -1,9 +1,11 @@
 #pragma once
 
+#include <mutex>
 #include <QObject>
 
 #include "CCMainWindow.h"
 #include "ChatWindowShell.h"
+#include "MsgType.h"
 
 
 class WindowManager  : public QObject
@@ -25,9 +27,15 @@ public:
 
 	ChatWindowShell* getChatWindowShell();
 
+	std::optional<std::tuple<QByteArray, MsgType>> pullMessage();
+	void pushMessage(const std::tuple<QByteArray, MsgType>& message);
 
 private:
 	ChatWindowShell* m_chatWindowShell;
 	QMap<QString, QWidget*> m_windowMap;
 	CCMainWindow* m_mainWindow;
+
+	std::mutex m_mutex;
+	std::condition_variable m_condition;
+	std::list<std::tuple<QByteArray, MsgType>> m_messageQueue;
 };

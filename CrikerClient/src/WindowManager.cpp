@@ -87,3 +87,20 @@ CCMainWindow* WindowManager::getMainWindowPointer() const {
 ChatWindowShell* WindowManager::getChatWindowShell() {
 	return m_chatWindowShell;
 }
+
+std::optional<std::tuple<QByteArray, MsgType>> WindowManager::pullMessage() {
+	std::unique_lock<std::mutex> uniqueLock{ m_mutex };
+	m_condition.wait(uniqueLock, [this]() { return !m_messageQueue.empty(); });
+	if (m_messageQueue.empty()) {
+		return std::nullopt;
+	}
+	auto message = m_messageQueue.front();
+	m_messageQueue.pop_front();
+	return message;
+}
+
+void WindowManager::pushMessage(const std::tuple<QByteArray, MsgType>& message) {
+	std::lock_guard<std::mutex> lockGuard{ m_mutex };
+	m_messageQueue.push_back(message);
+	m_condition.notify_one();
+}

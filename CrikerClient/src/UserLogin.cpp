@@ -33,6 +33,10 @@ UserLogin::UserLogin(QWidget* parent)
 	std::thread readTask(&TcpClient::readTaskHandler, TcpClient::getInstance());
 	readTask.detach();
 
+	//开启处理消息的线程
+	std::thread messageTask(&TcpClient::messageTaskHandler, TcpClient::getInstance());
+	messageTask.detach();
+
 	setAttribute(Qt::WA_DeleteOnClose);
 	initTitleBar();
 	// setTitleBarTitle("", ":/Resources/MainWindow/qqlogoclassic.png");

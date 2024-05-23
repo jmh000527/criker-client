@@ -35,6 +35,7 @@ public:
 	void closeConnection();
 
 	void readTaskHandler();
+	void messageTaskHandler();
 	bool establishConnection(const QString& ipAddress, quint16 portNumber);
 
 	static std::atomic_bool isLoginSuccess;
